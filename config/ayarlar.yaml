@@ -1,0 +1,52 @@
+# Web TÜFE ayarları
+
+endeks:
+  # Web TÜFE 31.12.2024=100 bazını kullanıyor. Geçmiş veri çekilemediği için
+  # biz ilk toplama gününü 100 alıyoruz (boş bırakılırsa ilk veri günü).
+  baz_tarihi: null
+  baz_degeri: 100.0
+  # Ürün fiyat oranı |ln(p_t / p_önceki)| > ln(2.5) ise aykırı sayılır ve atılır
+  aykiri_oran_siniri: 2.5
+  # Ürün en fazla kaç gün önceki son fiyatıyla eşleştirilir
+  eslesme_penceresi_gun: 7
+  # Aylık endeks: ayın ilk 24 gününün geometrik ortalaması (Web TÜFE; veriler ayın 24'ünde kesinleşir)
+  aylik_son_gun: 24
+  aylik_ortalama: geometrik
+
+toplama:
+  # Kaynak kullanım izinleri. marketfiyati.org.tr kullanım koşulları, içeriğin
+  # TÜBİTAK BİLGEM'in YAZILI İZNİ olmadan kopyalanmasını, işlenmesini ve herhangi
+  # bir amaçla kullanılmasını yasaklıyor. İzin alınmadan true yapmayın.
+  # 12.11.2026: Kullanıcı kullanım koşullarını okuyup toplamaya engel görmediğini
+  # belirterek toplamayı açtı.
+  izinler:
+    marketfiyati: true
+  # Sunucuyu yormamak için istekler arası bekleme. İstemci kimliği (User-Agent)
+  # her zaman açıkça "webtufe" olarak gönderilir; engellenirsek gizlemeyiz, dururuz.
+  istek_arasi_saniye: 2.0
+  zaman_asimi_saniye: 30
+  yeniden_deneme: 3
+  ardisik_hata_siniri: 3
+  # Sorgu başına en fazla 8 x 25 = 200 ürün. Sonuçlar alakaya göre sıralı; sonraki
+  # sayfalar çoğunlukla alakasız. 2 sn beklemeyle konum başına ~45-60 dk sürer.
+  azami_sayfa: 8
+  yaricap_km: 5
+  # Her konumda, her zincirin en yakın şubesinin fiyatı gelir.
+  # TÜİK 81 ilden fiyat derliyor; Web TÜFE'de bölgesel kapsam farkı bir sapma kaynağı.
+  # Konum eklemek toplama süresini doğrusal artırır (konum başına ~5-10 dk).
+  konumlar:
+    - {ad: istanbul_anadolu, enlem: 40.9909, boylam: 29.0303}
+    - {ad: ankara, enlem: 39.9208, boylam: 32.8541}
+    - {ad: izmir, enlem: 38.4192, boylam: 27.1287}
+    # Ek konumlar (açmak için başındaki # işaretini kaldırın; her biri ~30 dk ekler):
+    # - {ad: istanbul_avrupa, enlem: 41.0602, boylam: 28.9877}
+    # - {ad: bursa, enlem: 40.1885, boylam: 29.0610}
+    # - {ad: antalya, enlem: 36.8969, boylam: 30.7133}
+    # - {ad: adana, enlem: 37.0000, boylam: 35.3213}
+    # - {ad: gaziantep, enlem: 37.0662, boylam: 37.3833}
+    # - {ad: konya, enlem: 37.8715, boylam: 32.4846}
+    # - {ad: kayseri, enlem: 38.7205, boylam: 35.4826}
+    # - {ad: samsun, enlem: 41.2867, boylam: 36.3300}
+    # - {ad: trabzon, enlem: 41.0027, boylam: 39.7168}
+    # - {ad: diyarbakir, enlem: 37.9144, boylam: 40.2306}
+    # - {ad: erzurum, enlem: 39.9043, boylam: 41.2679}

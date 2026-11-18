@@ -1,0 +1,28 @@
+[project]
+name = "webtufe"
+version = "0.1.0"
+description = "Web'den toplanan fiyatlarla günlük tüketici fiyat endeksi (Web TÜFE yöntemi)"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.31",
+    "pandas>=2.2",
+    "pyarrow>=15",
+    "duckdb>=1.0",
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+webtufe = "webtufe.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["webtufe*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

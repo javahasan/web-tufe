@@ -1,0 +1,217 @@
+# marketfiyati.org.tr ürünlerini TÜİK maddelerine eşleme kuralları
+#
+# Her kural:
+#   madde:    TÜİK 7'li madde kodu (data/referans/sepet_<yıl>.csv)
+#   sorgu:    toplama sırasında marketfiyati'de aranacak kelimeler
+#   kategori: marketfiyati ana kategorisi (ürünün main_category alanı); boşsa her kategori
+#   dahil:    ürün adında geçmesi gereken düzenli ifade (liste verilirse hepsi geçmeli)
+#   haric:    ürün adında geçmemesi gereken düzenli ifade
+#
+# Ürün adı ve ifadeler karşılaştırmadan önce küçük harfe çevrilir ve Türkçe
+# karakterler katlanır (ç->c, ğ->g, ı->i, ö->o, ş->s, ü->u). Kurallar YUKARIDAN
+# AŞAĞI denenir, ilk uyan kural kazanır; özel kurallar genel kurallardan önce gelir.
+
+kurallar:
+  # ---------------- 01 GIDA ----------------
+  # Tahıllar
+  - {madde: "0111121", sorgu: [pirinç], kategori: [Bakliyat], dahil: "pirinc", haric: "unu|gevrek|patlak|sut|cips|kraker|nisasta|eriste|makarna"}
+  - {madde: "0111192", sorgu: [bulgur], kategori: [Bakliyat], dahil: "bulgur"}
+  - {madde: "0111211", sorgu: [un, buğday unu], kategori: [Un ve İrmik], dahil: "\\bun\\b|\\bunu\\b", haric: "misir|pirinc|galeta|glutensiz|nohut|mercimek|badem|hindistan|yulaf|cavdar|irmik|nisasta|karabugday|kestane|keciboynuzu|kinoa|patates|kirmizi|siyez|tapyoka|tapioka"}
+  - {madde: "0111399", sorgu: [simit], kategori: [Ekmek ve Unlu Mamüller], dahil: "simit"}
+  - {madde: "0111311", sorgu: [ekmek], kategori: [Ekmek ve Unlu Mamüller], dahil: "ekme[kg]|somun|baget|bazlama|lavas|tortilla|\\buno\\b", haric: "galeta|kitir|kraker|grissini|kirintisi|yufka|gevrek|etimek|wasa"}
+  - {madde: "0111392", sorgu: [poğaça, açma, kek, kruvasan], kategori: [Ekmek ve Unlu Mamüller], dahil: "pogaca|acma|kruvasan"}
+  - {madde: "0111392", sorgu: [kek, kruvasan], kategori: [Kek], dahil: "."}
+  - {madde: "0111394", sorgu: [kraker], kategori: [Bisküvi ve Kraker], dahil: "kraker"}
+  - {madde: "0111393", sorgu: [bisküvi, kurabiye], kategori: [Bisküvi ve Kraker], dahil: "."}
+  - {madde: "0111396", sorgu: [gofret], kategori: [Gofret], dahil: "."}
+  - {madde: "0111398", sorgu: [baklava], kategori: [Tatlılar, Hazır Yemekler], dahil: "baklava"}
+  - {madde: "0111401", sorgu: [mısır gevreği, gevrek, granola, müsli], kategori: [Kahvaltılık Gevrek Bar ve Granola], dahil: ".", haric: "\\bbar\\b|barlar|\\bbar "}
+  - {madde: "0111502", sorgu: [şehriye], kategori: [Mantı Makarna ve Erişte], dahil: "sehriye"}
+  - {madde: "0111501", sorgu: [makarna, spagetti], kategori: [Mantı Makarna ve Erişte], dahil: ".", haric: "sehriye|manti|eriste|kuskus|noodle"}
+
+  # Et ve et ürünleri
+  - {madde: "0112590", sorgu: [nugget, şinitzel, tavuk], kategori: [Beyaz Et], dahil: "nugget|s[c]?h?nitzel|kroket|pane|citir|burger|doner|kofte|kebap|kebab|hazir"}
+  - {madde: "0112246", sorgu: [tavuk, piliç], kategori: [Beyaz Et], dahil: "tavuk|pilic", haric: "hindi|bildircin|ordek|sosis|salam|marine|soslu"}
+  - {madde: "0112593", sorgu: [köfte, döner, kavurma], kategori: [Kırmızı Et], dahil: "kofte|kebap|kebab|doner|burger"}
+  - {madde: "0112593", sorgu: [kavurma], kategori: [Şarküteri], dahil: "kavurma"}
+  - {madde: "0112230", sorgu: [kuzu], kategori: [Kırmızı Et], dahil: "kuzu|koyun"}
+  - {madde: "0112214", sorgu: [dana, kıyma, kuşbaşı, antrikot], kategori: [Kırmızı Et], dahil: "dana|antrikot|bonfile|biftek|kiyma|kusbasi|nuar|tranc|haslamalik|kontrfile|sokum|rosto|kaburga|incik", haric: "kuzu|koyun|marine"}
+  - {madde: "0112401", sorgu: [ciğer, sakatat, işkembe], kategori: [Sakatat], dahil: "."}
+  - {madde: "0112392", sorgu: [salam], kategori: [Şarküteri], dahil: ["salam", "tavuk|hindi|pilic|beyaz et"]}
+  - {madde: "0112312", sorgu: [salam], kategori: [Şarküteri], dahil: "salam"}
+  - {madde: "0112311", sorgu: [sucuk], kategori: [Şarküteri], dahil: "sucu[kg]", haric: "tavuk|hindi|pilic"}
+  - {madde: "0112511", sorgu: [sosis], kategori: [Şarküteri], dahil: "sosis"}
+
+  # Balık
+  - {madde: "0113315", sorgu: [ton balığı, sardalya, konserve balık], kategori: [Deniz Ürünleri], dahil: "\\bton\\b|sardalya|uskumru|lakerda|konserve"}
+  - {madde: "0113121", sorgu: [somon], kategori: [Taze Deniz Ürünleri, Deniz Ürünleri], dahil: "somon", haric: "fume|tutsu|dilim|konserve"}
+  - {madde: "0113151", sorgu: [palamut], kategori: [Taze Deniz Ürünleri, Deniz Ürünleri], dahil: "palamut"}
+  - {madde: "0113191", sorgu: [balık, levrek, çipura, hamsi], kategori: [Taze Deniz Ürünleri], dahil: ".", haric: "somon|palamut|karides|midye|kalamar|ahtapot|istakoz|yengec"}
+
+  # Süt ürünleri ve yumurta
+  - {madde: "0114703", sorgu: [süt, aromalı süt], kategori: [Süt], dahil: "aromali|cikolata|kakao|cilek|muz|vanilya|kahveli|ballı|balli"}
+  - {madde: "0114201", sorgu: [süt, yarım yağlı süt], kategori: [Süt], dahil: "yarim yagli|az yagli|%1[,.]5|light", haric: "laktozsuz|protein"}
+  - {madde: "0114111", sorgu: [süt, uht süt, günlük süt], kategori: [Süt], dahil: "sut", haric: "laktozsuz|protein|keci|bitkisel|badem|yulaf|soya|hindistan|bebek|devam|kefir|yagsiz"}
+  - {madde: "0114331", sorgu: [krema, kaymak], kategori: [Diğer Süt Ürünleri], dahil: "krema|kayma[kg]", haric: "bitkisel"}
+  - {madde: "0114503", sorgu: [tulum peyniri], kategori: [Peynir], dahil: "tulum"}
+  - {madde: "0114502", sorgu: [kaşar], kategori: [Peynir], dahil: "kasar"}
+  - {madde: "0114504", sorgu: [labne, krem peynir], kategori: [Peynir], dahil: "labne|krem peynir|surulebilir|ucgen|peynir kremasi|philadelphia"}
+  - {madde: "0114505", sorgu: [örgü peyniri, çeçil, hellim, lor, yöresel peynir], kategori: [Peynir], dahil: "orgu|cecil|tel peynir|dil peynir|hellim|otlu|mihalic|kolot|golot|civil|cokelek|\\blor\\b|gravyer|divle|abaza|mengen"}
+  - {madde: "0114501", sorgu: [beyaz peynir, peynir], kategori: [Peynir], dahil: "beyaz|ezine|tam yagli|inek peynir|koyun peynir|keci peynir|klasik peynir|yarim yagli peynir|az yagli peynir", haric: "kasar|cheddar|parmesan|gouda|mozzarella|rokfor|tost|burgu|cubuk"}
+  - {madde: "0114601", sorgu: [yoğurt], kategori: [Yoğurt], dahil: ".", haric: "mayasi|biskuvi"}
+  - {madde: "0114605", sorgu: [ayran], kategori: [Ayran ve Kefir], dahil: "ayran"}
+  - {madde: "0119904", sorgu: [puding, jöle, krem şanti, toz tatlı], kategori: [Pasta Malzemeleri], dahil: "puding|jole|krem santi|karisim|tatli|kek|kremasi|keskul|supangle|sutlac|muhallebi"}
+  - {madde: "0119904", sorgu: [puding, toz tatlı], kategori: [Tatlılar], dahil: "\\btoz\\b|karisim|hazir tatli tozu"}
+  - {madde: "0114701", sorgu: [sütlaç, puding, kazandibi, muhallebi], kategori: [Tatlılar, Diğer Süt Ürünleri], dahil: "sutlac|kazandibi|tavuk gogsu|keskul|supangle|muhallebi|trilece|puding|profiterol|magnolia|firin sutlac"}
+  - {madde: "0114811", sorgu: [yumurta], kategori: [Yumurta], dahil: ".", haric: "bildircin"}
+
+  # Yağlar
+  - {madde: "0115112", sorgu: [ayçiçek yağı], kategori: [Sıvı Yağlar], dahil: "aycicek"}
+  - {madde: "0115131", sorgu: [zeytinyağı], kategori: [Sıvı Yağlar], dahil: "zeytinyag|zeytin yag|sizma|riviera"}
+  - {madde: "0115211", sorgu: [tereyağı], kategori: [Tereyağı ve Margarin], dahil: "tereyag"}
+  - {madde: "0115301", sorgu: [margarin], kategori: [Tereyağı ve Margarin], dahil: "."}
+
+  # Meyveler (taze)
+  - {madde: "0116121", sorgu: [muz], kategori: [Meyve], dahil: "\\bmuz", haric: "kurusu|cips"}
+  - {madde: "0116221", sorgu: [limon], kategori: [Meyve], dahil: "limon"}
+  - {madde: "0116231", sorgu: [portakal], kategori: [Meyve], dahil: "portakal"}
+  - {madde: "0116241", sorgu: [mandalina], kategori: [Meyve], dahil: "mandalina"}
+  - {madde: "0116311", sorgu: [elma], kategori: [Meyve], dahil: "elma", haric: "kurusu|cips|suyu"}
+  - {madde: "0116321", sorgu: [armut, ayva], kategori: [Meyve], dahil: "armut|ayva"}
+  - {madde: "0116351", sorgu: [şeftali, nektarin], kategori: [Meyve], dahil: "seftali|nektarin"}
+  - {madde: "0116451", sorgu: [çilek], kategori: [Meyve], dahil: "cilek"}
+  - {madde: "0116511", sorgu: [üzüm], kategori: [Meyve], dahil: "uzum", haric: "kuru"}
+  - {madde: "0116521", sorgu: [kivi], kategori: [Meyve], dahil: "kivi"}
+  - {madde: "0116531", sorgu: [kavun], kategori: [Meyve], dahil: "kavun"}
+  - {madde: "0116541", sorgu: [karpuz], kategori: [Meyve], dahil: "karpuz"}
+  - {madde: "0116591", sorgu: [nar], kategori: [Meyve], dahil: "\\bnar\\b", haric: "eksi"}
+
+  # Kuru meyve ve kuruyemiş
+  - {madde: "0116711", sorgu: [kuru üzüm], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "uzum"}
+  - {madde: "0116791", sorgu: [hurma], kategori: [Kuruyemiş ve Kuru Meyve, Meyve], dahil: "hurma"}
+  - {madde: "0116793", sorgu: [kuru kayısı], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "kayisi"}
+  - {madde: "0116891", sorgu: [kabak çekirdeği], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "kabak cekirdeg"}
+  - {madde: "0116898", sorgu: [ay çekirdeği], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "cekirdek|cekirdegi"}
+  - {madde: "0116854", sorgu: [antep fıstığı], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "antep|boz ic"}
+  - {madde: "0116886", sorgu: [yer fıstığı], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "fisti[kg]", haric: "ezme|antep"}
+  - {madde: "0116811", sorgu: [badem], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "badem", haric: "ezme|cikolata|draje|kaplama"}
+  - {madde: "0116843", sorgu: [fındık], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "findik", haric: "ezme|cikolata|draje|kaplama"}
+  - {madde: "0116862", sorgu: [ceviz], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "ceviz"}
+  - {madde: "0116897", sorgu: [leblebi], kategori: [Kuruyemiş ve Kuru Meyve], dahil: "leblebi"}
+
+  # Sebzeler (taze)
+  - {madde: "0119401", sorgu: [maydanoz, dereotu, nane, roka, taze soğan], kategori: [Sebze], dahil: "maydanoz|dereotu|\\bnane|roka|\\btere\\b|feslegen|reyhan|semizotu|taze sogan|yesil sogan|kisnis"}
+  - {madde: "0117123", sorgu: [lahana], kategori: [Sebze], dahil: "lahana"}
+  - {madde: "0117131", sorgu: [karnabahar], kategori: [Sebze], dahil: "karnabahar"}
+  - {madde: "0117141", sorgu: [marul, kıvırcık, iceberg], kategori: [Sebze], dahil: "marul|iceberg|kivircik|gobek|lolo|lollo"}
+  - {madde: "0117151", sorgu: [ıspanak], kategori: [Sebze], dahil: "ispana[kg]"}
+  - {madde: "0117211", sorgu: [çarliston biber], kategori: [Sebze], dahil: "carliston"}
+  - {madde: "0117215", sorgu: [biber], kategori: [Sebze], dahil: "biber"}
+  - {madde: "0117222", sorgu: [salatalık], kategori: [Sebze], dahil: "salatalik|hiyar|kornison"}
+  - {madde: "0117234", sorgu: [patlıcan], kategori: [Sebze], dahil: "patlican"}
+  - {madde: "0117241", sorgu: [domates], kategori: [Sebze], dahil: "domates", haric: "kurutulmus|\\bkuru"}
+  - {madde: "0117253", sorgu: [kabak], kategori: [Sebze], dahil: "kaba[kg]", haric: "cekirdek|bal kabag|balkabag|tatlisi"}
+  - {madde: "0117312", sorgu: [taze fasulye, börülce], kategori: [Sebze], dahil: "fasulye|borulce", haric: "kuru"}
+  - {madde: "0117410", sorgu: [havuç], kategori: [Sebze], dahil: "havuc"}
+  - {madde: "0117416", sorgu: [turp], kategori: [Sebze], dahil: "turp"}
+  - {madde: "0117421", sorgu: [sarımsak], kategori: [Sebze], dahil: "sarimsa[kg]"}
+  - {madde: "0117431", sorgu: [soğan], kategori: [Sebze], dahil: "sogan", haric: "taze|yesil"}
+  - {madde: "0117445", sorgu: [pırasa], kategori: [Sebze], dahil: "pirasa"}
+  - {madde: "0117452", sorgu: [mantar], kategori: [Sebze], dahil: "mantar", haric: "istiridye|shiitake|kanlica|porcini|truf"}
+  - {madde: "0117511", sorgu: [patates], kategori: [Sebze], dahil: "patates", haric: "tatli patates|cips|dondurulmus|parmak"}
+  - {madde: "0117476", sorgu: [zeytin], kategori: [Zeytin], dahil: ".", haric: "ezme|yag"}
+
+  # Kuru baklagiller
+  - {madde: "0117611", sorgu: [kuru fasulye], kategori: [Bakliyat], dahil: "fasulye", haric: "mas|barbunya|borulce"}
+  - {madde: "0117632", sorgu: [nohut], kategori: [Bakliyat], dahil: "nohut", haric: "unu|leblebi"}
+  - {madde: "0117643", sorgu: [mercimek], kategori: [Bakliyat], dahil: "mercimek", haric: "unu|cips|kraker|makarna"}
+
+  # İşlenmiş sebze
+  - {madde: "0117995", sorgu: [salça], kategori: [Salça], dahil: "."}
+  - {madde: "0117992", sorgu: [turşu], kategori: [Turşu], dahil: ".", haric: "suyu"}
+  - {madde: "0117923", sorgu: [konserve, bezelye konserve, mısır konserve], kategori: [Konserve], dahil: ".", haric: "meyve|ananas|seftali|armut|kayisi|visne|kiraz|hazir|yemegi|pilav|corba|kavurma|etli|sarma|dolma|kompost"}
+  - {madde: "0117998", sorgu: [cips], kategori: [Cips], dahil: "."}
+
+  # Şeker ve şekerli ürünler
+  - {madde: "0118122", sorgu: [küp şeker, kesme şeker], kategori: [Şeker ve Tatlandırıcılar], dahil: "\\bkup\\b|kesme"}
+  - {madde: "0118121", sorgu: [toz şeker], kategori: [Şeker ve Tatlandırıcılar], dahil: "seker", haric: "esmer|tatlandirici|stevia|pudra|sakarin|hindistan|meyve sekeri|fruktoz|agave|ksilitol|eritritol"}
+  - {madde: "0118391", sorgu: [reçel, marmelat], kategori: [Bal ve Reçel], dahil: "recel|marmelat"}
+  - {madde: "0118313", sorgu: [bal], kategori: [Bal ve Reçel], dahil: "\\bbal\\b|bali\\b|petek"}
+  - {madde: "0118397", sorgu: [pekmez], kategori: [Helva Tahin ve Pekmez], dahil: "pekmez", haric: "tahin"}
+  - {madde: "0118916", sorgu: [helva], kategori: [Helva Tahin ve Pekmez], dahil: "helva", haric: "yaz helva|irmik|un helva"}
+  - {madde: "0118408", sorgu: [tahin], kategori: [Helva Tahin ve Pekmez], dahil: "tahin", haric: "helva|pekmez"}
+  - {madde: "0118593", sorgu: [krem çikolata, kakaolu fındık kreması], kategori: [Sürülebilir Ürünler ve Kahvaltılık Soslar], dahil: "kakao|cikolata|nutella|nucita|sarelle"}
+  - {madde: "0118401", sorgu: [fındık ezmesi, fıstık ezmesi], kategori: [Sürülebilir Ürünler ve Kahvaltılık Soslar], dahil: ["findik|fistik|fistig|badem|kaju|ceviz", "ezme|krema"], haric: "kakao|cikolata|biskuvi"}
+  - {madde: "0118512", sorgu: [çikolata], kategori: [Çikolata], dahil: "."}
+  - {madde: "0118601", sorgu: [dondurma], kategori: [Dondurmalar], dahil: "."}
+  - {madde: "0118991", sorgu: [lokum], kategori: [Sakız ve Şekerleme], dahil: "lokum"}
+  - {madde: "0118994", sorgu: [sakız], kategori: [Sakız ve Şekerleme], dahil: "sakiz|vivident|falim"}
+  - {madde: "0118995", sorgu: [şeker, şekerleme], kategori: [Sakız ve Şekerleme], dahil: "."}
+
+  # Hazır gıdalar, soslar, baharat
+  - {madde: "0119145", sorgu: [pizza], kategori: [Hazır Yemekler], dahil: "pizza"}
+  - {madde: "0119192", sorgu: [börek, poğaça], kategori: [Hazır Yemekler], dahil: "bore[kg]|sigara|gozleme|pisi|pacanga|pogaca"}
+  - {madde: "0119195", sorgu: [hazır yemek, mantı, noodle], kategori: [Hazır Yemekler], dahil: ".", haric: "dondurulmus (meyve|sebze)|bezelye|brokoli|ispanak|patates|bamya|fasulye|cilek|bogurtlen|ahududu|visne|misir|karisik sebze|garnitur|enginar"}
+  - {madde: "0119161", sorgu: [çorba, tarhana], kategori: [Hazır Gıda Karışımları], dahil: "corba|tarhana"}
+  - {madde: "0119212", sorgu: [devam sütü, bebek sütü], kategori: [Bebek Mamaları], dahil: "devam|formul|bebek sut|aptamil|bebelac|\\bsma\\b|nutricia|novalac|humana|\\bnan\\b|biomil|milupa", haric: "biskuvi|kavanoz|kasik|pure|tahilli|meyveli|kraker|pirinc unu|cubuk|atistirma|gofret"}
+  - {madde: "0119311", sorgu: [tuz], kategori: [Tuz Baharat ve Harçlar], dahil: "tuz"}
+  - {madde: "0119402", sorgu: [baharat, karabiber, pul biber, kekik, kimyon], kategori: [Tuz Baharat ve Harçlar], dahil: ".", haric: "harc|bulyon|tuz"}
+  - {madde: "0119393", sorgu: [sirke], kategori: [Ketçap Mayonez Sos ve Sirkeler], dahil: "sirke"}
+  - {madde: "0119396", sorgu: [ketçap], kategori: [Ketçap Mayonez Sos ve Sirkeler], dahil: "ketcap|ketchup"}
+  - {madde: "0119397", sorgu: [mayonez], kategori: [Ketçap Mayonez Sos ve Sirkeler], dahil: "mayonez"}
+  - {madde: "0119902", sorgu: [kabartma tozu, maya, karbonat], kategori: [Pasta Malzemeleri], dahil: "kabartma|\\bmaya\\b|karbonat"}
+
+  # ---------------- 01 ALKOLSÜZ İÇECEKLER ----------------
+  - {madde: "0121001", sorgu: [meyve suyu], kategori: [Meyve Suyu], dahil: "."}
+  - {madde: "0122012", sorgu: [hazır kahve, granül kahve, 3ü1 arada], kategori: [Kahve], dahil: "granul|3 ?u ?1|2 ?si ?1|hazir|instant|nescafe|gold|stick", haric: "kremasi|creamer|kapsul|filtre|turk kahve"}
+  - {madde: "0122011", sorgu: [kahve, türk kahvesi, filtre kahve], kategori: [Kahve], dahil: ".", haric: "kremasi|creamer"}
+  - {madde: "0123021", sorgu: [çay, dökme çay, demlik poşet çay], kategori: [Çay ve Bitki Çayları], dahil: ".", haric: "bitki|meyve|ihlamur|adacayi|kusburnu|papatya|rezene|nane|limon|zencefil|tarcin|elma|ekinezya|melisa|hibiskus|kis cayi|form|zayiflama|detoks|detox"}
+  - {madde: "0123034", sorgu: [soğuk çay, ice tea], kategori: [Gazsız İçecekler], dahil: "soguk cay|ice ?tea|fuse ?tea|icetea"}
+  - {madde: "0125001", sorgu: [su, damacana], kategori: [Su], dahil: "."}
+  - {madde: "0125002", sorgu: [maden suyu, soda], kategori: [Maden Suyu], dahil: "."}
+  - {madde: "0126003", sorgu: [kola], kategori: [Gazlı İçecekler], dahil: "kola|cola|pepsi", haric: "enerji"}
+  - {madde: "0126002", sorgu: [gazoz, meyveli gazoz], kategori: [Gazlı İçecekler], dahil: "gazoz|sprite|7 ?up|fanta|yedig|meyveli|portakal|limon|elma|mandalina", haric: "kola|cola|tonik|enerji|malt|soda|maden"}
+
+  # ---------------- 05 EV EŞYASI (sarf) ----------------
+  - {madde: "0552201", sorgu: [pil], kategori: [Ev & Yaşam], dahil: "\\bpil\\b|piller|alkalin"}
+  - {madde: "0552203", sorgu: [ampul], kategori: [Ev & Yaşam], dahil: "ampul"}
+  - {madde: "0561101", sorgu: [çamaşır deterjanı, yumuşatıcı, sıvı deterjan], kategori: [Çamaşır Temizlik Ürünleri], dahil: "."}
+  - {madde: "0561102", sorgu: [bulaşık deterjanı, bulaşık makinesi tableti], kategori: [Bulaşık Temizlik Ürünleri], dahil: "."}
+  - {madde: "0561198", sorgu: [yüzey temizlik havlusu], kategori: [Islak Mendiller, Genel Temizlik Ürünleri, Diğer Temizlik], dahil: "yuzey.*(havlu|mendil)|temizlik (havlusu|mendili)"}
+  - {madde: "0561103", sorgu: [çamaşır suyu, yüzey temizleyici, kireç çözücü], kategori: [Genel Temizlik Ürünleri], dahil: "."}
+  - {madde: "0561106", sorgu: [temizlik bezi, sünger], kategori: [Diğer Temizlik], dahil: "\\bbez|sunger|mikrofiber|bulasik teli"}
+  - {madde: "0561915", sorgu: [çöp torbası, eldiven], kategori: [Diğer Temizlik], dahil: "cop|eldiven"}
+  - {madde: "0561902", sorgu: [streç film, alüminyum folyo, buzdolabı poşeti], kategori: [Mutfak Sarf Malzemeleri], dahil: "strec|folyo|buzdolabi|saklama|kilitli|firin torba|pisirme kagid|yagli kagit"}
+  - {madde: "0561915", sorgu: [çöp torbası, kullan at], kategori: [Mutfak Sarf Malzemeleri], dahil: "."}
+  - {madde: "0561903", sorgu: [kağıt havlu], kategori: [Kağıt Havlu], dahil: "."}
+  - {madde: "0561903", sorgu: [peçete], kategori: [Kağıt Peçete ve Mendiller], dahil: "pecete"}
+
+  # ---------------- 09 EVCİL HAYVAN, KIRTASİYE ----------------
+  - {madde: "0932201", sorgu: [kedi maması, köpek maması], kategori: [Pet Shop], dahil: "mama|yem|odul|kraker|kemik|kuru gida|yas gida|pate|konserve"}
+  - {madde: "0932204", sorgu: [kedi kumu], kategori: [Pet Shop], dahil: "."}
+  - {madde: "0974001", sorgu: [defter], kategori: [Oyuncak Hobi Ve Kırtasiye], dahil: "defter"}
+  - {madde: "0974004", sorgu: [boya kalemi, pastel boya, suluboya], kategori: [Oyuncak Hobi Ve Kırtasiye], dahil: "boya|pastel|guaj|keceli"}
+  - {madde: "0974003", sorgu: [kalem, tükenmez kalem], kategori: [Oyuncak Hobi Ve Kırtasiye], dahil: "kalem", haric: "kalemtras|kalemlik"}
+  - {madde: "0974005", sorgu: [fotokopi kağıdı, a4], kategori: [Oyuncak Hobi Ve Kırtasiye], dahil: "fotokopi|\\ba4\\b|resim kagid|kagit"}
+  - {madde: "0974009", sorgu: [silgi, yapıştırıcı, makas], kategori: [Oyuncak Hobi Ve Kırtasiye], dahil: "silgi|kalemtras|yapistirici|makas|cetvel|\\bbant\\b|tutkal|zimba|dosya|klasor|kalemlik"}
+  - {madde: "0921204", sorgu: [oyuncak, oyun hamuru, puzzle], kategori: [Oyuncak Hobi Ve Kırtasiye], dahil: "oyuncak|puzzle|yapboz|oyun hamuru|lego|figur|pelus"}
+
+  # ---------------- 13 KİŞİSEL BAKIM ----------------
+  - {madde: "1312026", sorgu: [tuvalet kağıdı], kategori: [Tuvalet Kağıtları], dahil: "."}
+  - {madde: "1312027", sorgu: [kağıt mendil, ıslak mendil], kategori: [Kağıt Peçete ve Mendiller, Islak Mendiller], dahil: "."}
+  - {madde: "1312002", sorgu: [diş fırçası], kategori: [Ağız Bakım], dahil: "firca"}
+  - {madde: "1312016", sorgu: [diş macunu], kategori: [Ağız Bakım], dahil: "macun"}
+  - {madde: "1312022", sorgu: [ağız bakım suyu, diş ipi], kategori: [Ağız Bakım], dahil: "."}
+  - {madde: "1312001", sorgu: [tıraş bıçağı], kategori: [Tıraş Ürünleri], dahil: "bicag|bicak|jilet|yedek|kartus"}
+  - {madde: "1312022", sorgu: [tıraş köpüğü], kategori: [Tıraş Ürünleri], dahil: "."}
+  - {madde: "1312017", sorgu: [sıvı sabun, el sabunu, sabun], kategori: [Duş Banyo ve Sabun], dahil: "sabun", haric: "dus|banyo|kopug|vucut|arap"}
+  - {madde: "1312018", sorgu: [duş jeli, banyo köpüğü], kategori: [Duş Banyo ve Sabun], dahil: ".", haric: "\\blif"}
+  - {madde: "1312021", sorgu: [kolonya], kategori: [Parfüm ve Deodorant], dahil: "kolonya"}
+  - {madde: "1312020", sorgu: [deodorant, roll-on], kategori: [Parfüm ve Deodorant], dahil: "deodorant|\\bdeo\\b|roll|antiperspirant|sprey|stick"}
+  - {madde: "1312019", sorgu: [parfüm], kategori: [Parfüm ve Deodorant], dahil: "."}
+  - {madde: "1312024", sorgu: [güneş kremi], kategori: [Cilt Bakımı], dahil: "gunes|\\bspf"}
+  - {madde: "1312022", sorgu: [yüz kremi, el kremi, losyon, pamuk], kategori: [Cilt Bakımı, Kişisel Aksesuarlar, Ağda ve Epilasyon], dahil: "."}
+  - {madde: "1312023", sorgu: [makyaj, ruj, maskara, oje], kategori: [Makyaj], dahil: "."}
+  - {madde: "1312025", sorgu: [şampuan, saç kremi, saç boyası], kategori: [Saç Bakım], dahil: "."}
+  - {madde: "1312030", sorgu: [hijyenik ped, günlük ped], kategori: [Hijyenik Ped], dahil: "."}
+  - {madde: "1329129", sorgu: [bebek bezi, külot bez], kategori: [Bebek Gereçleri], dahil: "\\bbez|kulot", haric: "islak|mendil|alt acma|krem"}

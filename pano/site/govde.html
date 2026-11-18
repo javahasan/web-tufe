@@ -1,0 +1,624 @@
+<div class="wt wt-site" lang="tr" data-read>
+
+  <!-- ============================================================ MANŞET BANDI -->
+  <div class="wt-bant" id="manset-bandi" role="region" aria-label="Günün manşetleri">
+    <div class="wt-ic wt-bant-ic">
+      <span class="wt-bant-etiket">Günün manşetleri</span>
+      <div class="wt-bant-pencere">
+        <div class="wt-bant-iz" data-draw="manset-bandi" data-source="mansetler"></div>
+      </div>
+      <button type="button" class="wt-bant-dugme" id="bant-dugme" aria-pressed="false" aria-label="Manşet bandını durdur veya oynat">
+        <span class="wt-bant-durdur">❚❚ Durdur</span>
+        <span class="wt-bant-oynat" hidden>▶ Oynat</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================ ÜST MENÜ -->
+  <header class="wt-ustbar" id="ust-bar">
+    <div class="wt-ic wt-ustbar-ic">
+      <a class="wt-marka" href="#genel-bakis" data-git="genel-bakis" aria-label="Web Fiyat Endeksi, genel bakışa dön">
+        <svg class="wt-logo" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="1" y="1" width="30" height="30" rx="8"></rect>
+          <polyline points="7,22 13,16 17,19 25,10"></polyline>
+          <circle cx="25" cy="10" r="2.2"></circle>
+        </svg>
+        <span class="wt-marka-metin">
+          <span class="wt-marka-ad">Web Fiyat Endeksi</span>
+          <span class="wt-marka-alt">Günlük tüketici fiyatları</span>
+        </span>
+      </a>
+      <nav class="wt-menu" id="ana-menu" aria-label="Ana menü">
+        <button type="button" data-sayfa="genel-bakis" class="wt-secili" aria-current="page">Genel Bakış</button>
+        <button type="button" data-sayfa="gruplar" aria-current="false">Gruplar</button>
+        <button type="button" data-sayfa="cekirdek" aria-current="false">Çekirdek Göstergeler</button>
+        <button type="button" data-sayfa="maddeler" aria-current="false">Maddeler</button>
+        <button type="button" data-sayfa="araclar" aria-current="false">Araçlar</button>
+        <button type="button" data-sayfa="veri" aria-current="false">Veri ve Yöntem</button>
+        <span class="wt-menu-cizgi" aria-hidden="true"></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wt-durum" id="durum-seridi">
+    <div class="wt-ic wt-durum-ic">
+      <span class="wt-durum-oge"><span class="wt-nokta wt-nokta-uyari" aria-hidden="true"></span><strong>Sentetik veri ile üretildi; gerçek enflasyonu göstermez.</strong></span>
+      <span class="wt-durum-oge">Son veri: <b data-draw="alan" data-source="ozet" data-field="son_gun" data-row="0" data-bicim="tarih">—</b></span>
+      <span class="wt-durum-oge"><span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span>: <span data-draw="rozet" data-source="ozet" data-field="durum" data-row="0">—</span></span>
+      <span class="wt-durum-oge">31.12.2024 = 100 · TÜİK 2026 sepeti</span>
+    </div>
+  </div>
+
+  <main class="wt-sayfalar">
+
+    <!-- ============================================================ GENEL BAKIŞ -->
+    <section class="wt-sayfa" id="genel-bakis" aria-labelledby="b-genel-bakis">
+      <div class="wt-hero-band">
+        <div class="wt-ic wt-hero">
+          <div class="wt-hero-sol">
+            <h1 class="wt-hero-ust" id="b-genel-bakis">Yıllık enflasyon · <span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span></h1>
+            <p class="wt-hero-deger" data-draw="alan" data-source="ozet" data-field="yillik_degisim" data-row="0" data-bicim="yuzde">—</p>
+            <p class="wt-hero-fark"><span class="wt-hap" data-draw="alan" data-source="ozet" data-field="yillik_fark" data-row="0" data-bicim="puan" data-renk="dusuk-iyi">—</span> puan, önceki aya göre</p>
+            <div class="wt-hero-iz" data-draw="kpi-iz" data-source="aylik" data-alan="yillik_degisim" data-tur="cizgi"></div>
+            <p class="wt-hero-cumle" id="ozet-cumle">
+              <span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span> ayında genel endeks aylık
+              <b data-draw="alan" data-source="ozet" data-field="aylik_degisim" data-row="0" data-bicim="yuzde">—</b>
+              <span data-draw="yon" data-source="ozet" data-field="aylik_degisim" data-row="0" data-artan="arttı" data-azalan="azaldı" data-sabit="değişmedi">—</span>;
+              yıllık değişim önceki aya göre
+              <b data-draw="alan" data-source="ozet" data-field="yillik_fark" data-row="0" data-bicim="puan-mutlak">—</b> puan
+              <span data-draw="yon" data-source="ozet" data-field="yillik_fark" data-row="0" data-artan="yükseldi" data-azalan="geriledi" data-sabit="aynı kaldı">—</span>.
+              Bu ayın verisi <span data-draw="alan" data-source="ozet" data-field="durum" data-row="0" data-bicim="durum-metin">—</span>.
+            </p>
+          </div>
+          <dl class="wt-hero-sag" id="ozet-istatistikler">
+            <div class="wt-istat" id="istat-aylik">
+              <dt>Aylık değişim · <span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span></dt>
+              <dd><span class="wt-istat-deger" data-draw="alan" data-source="ozet" data-field="aylik_degisim" data-row="0" data-bicim="yuzde">—</span>
+                <span class="wt-istat-not"><span data-draw="rozet" data-source="ozet" data-field="durum" data-row="0">—</span> <span data-draw="alan" data-source="ozet" data-field="gun" data-row="0" data-bicim="gun">—</span></span></dd>
+              <div class="wt-istat-iz" data-draw="kpi-iz" data-source="aylik" data-alan="aylik_degisim" data-tur="cubuk"></div>
+            </div>
+            <div class="wt-istat" id="istat-onceki">
+              <dt>Aylık değişim · <span data-draw="alan" data-source="ozet" data-field="onceki_ay" data-row="0" data-bicim="ay">—</span></dt>
+              <dd><span class="wt-istat-deger" data-draw="alan" data-source="ozet" data-field="onceki_aylik_degisim" data-row="0" data-bicim="yuzde">—</span>
+                <span class="wt-istat-not"><span data-draw="rozet" data-source="ozet" data-field="onceki_durum" data-row="0">—</span></span></dd>
+            </div>
+            <div class="wt-istat" id="istat-aralik">
+              <dt>Günlük yıllık değişim · <span data-draw="alan" data-source="gunluk_yillik" data-field="yil" data-row="0" data-bicim="duz">—</span> aralığı</dt>
+              <dd><span class="wt-istat-deger wt-aralik-deger"><span data-draw="alan" data-source="gunluk_yillik" data-field="en_dusuk" data-row="0" data-bicim="yuzde">—</span> – <span data-draw="alan" data-source="gunluk_yillik" data-field="en_yuksek" data-row="0" data-bicim="yuzde">—</span></span>
+                <span class="wt-istat-not">son: <span data-draw="alan" data-source="gunluk_yillik" data-field="son" data-row="0" data-bicim="yuzde">—</span></span></dd>
+            </div>
+            <div class="wt-istat" id="istat-gunluk">
+              <dt>Günlük endeks · <span data-draw="alan" data-source="ozet" data-field="son_gun" data-row="0" data-bicim="tarih">—</span></dt>
+              <dd><span class="wt-istat-deger" data-draw="alan" data-source="ozet" data-field="endeks" data-row="0" data-bicim="endeks">—</span>
+                <span class="wt-istat-not"><span data-draw="alan" data-source="ozet" data-field="gunluk_degisim" data-row="0" data-bicim="isaretli-yuzde">—</span> önceki güne göre</span></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="gunluk-seyir">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Günlük seyir</h2>
+              <p class="wt-not">Genel endeks her gün yeniden hesaplanır. Kümülatif görünüm, seçili aralığın başından bu yana değişimi gösterir.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-arac">
+              <div class="wt-dugmeler" role="group" aria-label="Zaman aralığı" id="aralik">
+                <button type="button" data-aralik="30">1A</button>
+                <button type="button" data-aralik="90">3A</button>
+                <button type="button" data-aralik="182">6A</button>
+                <button type="button" data-aralik="365">1Y</button>
+                <button type="button" data-aralik="yb">Yıl başı</button>
+                <button type="button" data-aralik="0" class="wt-secili">Tümü</button>
+              </div>
+              <div class="wt-dugmeler" role="group" aria-label="Görünüm" id="gorunum">
+                <button type="button" data-gorunum="endeks" class="wt-secili">Endeks</button>
+                <button type="button" data-gorunum="kumulatif">Kümülatif %</button>
+              </div>
+              <label class="wt-etiket" for="karsilastir">Karşılaştır</label>
+              <select class="dash-select" id="karsilastir" data-draw="karsilastir" data-source="gunluk" aria-label="Karşılaştırılacak seri"></select>
+            </div>
+            <div class="wt-lejant" data-draw="gunluk-lejant" data-source="gunluk">—</div>
+            <div class="wt-grafik" id="gunluk-grafik" data-draw="gunluk-grafik" data-source="gunluk">—</div>
+          </div>
+        </div>
+
+        <div class="wt-iki">
+          <div class="wt-bolum" id="aylik-seyir">
+            <div class="wt-bolum-bas">
+              <div>
+                <h2>Aylık değişim</h2>
+                <p class="wt-not">Ayın ilk 24 gününün geometrik ortalaması; soluk çubuk geçici ay.</p>
+              </div>
+            </div>
+            <div class="wt-panel">
+              <div class="wt-grafik wt-kisa" id="aylik-grafik" data-draw="aylik-grafik" data-source="aylik">—</div>
+            </div>
+          </div>
+          <div class="wt-bolum" id="gunluk-yillik">
+            <div class="wt-bolum-bas">
+              <div>
+                <h2>Günlük yıllık değişim</h2>
+                <p class="wt-not">Endeksin 365 gün önceki değerine göre; karşılaştırma seçimini izler.</p>
+              </div>
+            </div>
+            <div class="wt-panel">
+              <div class="wt-grafik wt-kisa" id="gunluk-yillik-grafik" data-draw="gunluk-yillik-grafik" data-source="gunluk">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="ana-grup-ozet">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Ana gruplarda yıllık değişim</h2>
+              <p class="wt-not"><span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span> · yüksekten düşüğe. Kesikli çizgi genel endeks. Ayrıntı Gruplar bölümünde.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-grafik" id="ana-grup-grafik" data-draw="ana-grup-grafik" data-source="ana_grup_tablosu">—</div>
+          </div>
+        </div>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <span></span>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="gruplar"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Gruplar →</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================ GRUPLAR -->
+    <section class="wt-sayfa" id="gruplar" aria-labelledby="b-gruplar" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Gruplar</p>
+          <h1 id="b-gruplar">Gruplar</h1>
+          <p class="wt-giris-metni">Enflasyonun harcama türlerine dağılımı: 13 ana grup, 43 harcama grubu ve ay ay değişimlerin ısı haritası.</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#ana-gruplar">Ana harcama grupları</a>
+            <a href="#harcama-gruplari">Harcama grupları</a>
+            <a href="#isi-haritasi">Isı haritası</a>
+          </nav>
+        </div>
+      </div>
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="ana-gruplar">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Ana harcama grupları</h2>
+              <p class="wt-not"><span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span> · Ağırlıklar TÜİK'in 2026 sepetinden. Çubuk yıllık değişimi, dikey çizgi genel endeksi gösterir.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-tablo-kap">
+              <table id="ana-grup-tablosu" data-source="ana_grup_tablosu" data-row-key="kod">
+                <thead>
+                  <tr>
+                    <th data-field="kod">Kod</th>
+                    <th data-field="ad">Grup</th>
+                    <th class="wt-say" data-field="agirlik">Ağırlık</th>
+                    <th class="wt-say" data-field="aylik_degisim">Aylık</th>
+                    <th class="wt-say" data-field="yillik_degisim">Yıllık</th>
+                    <th class="wt-cubuk-hucre"><span class="wt-etiket">Yıllık değişim</span></th>
+                  </tr>
+                </thead>
+                <tbody data-draw="ana-grup-satirlar"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="harcama-gruplari">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Harcama grupları</h2>
+              <p class="wt-not"><span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span> · COICOP 2018'in üç haneli düzeyi. Ağırlık, gruptaki maddelerin TÜİK 2026 ağırlıklarının toplamıdır.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-arac">
+              <label class="wt-etiket" for="hg-filtre">Ana grup</label>
+              <select class="dash-select" id="hg-filtre" data-draw="hg-filtre" data-source="aylik" aria-label="Ana gruba göre süz"></select>
+            </div>
+            <div class="wt-tablo-kap">
+              <table id="harcama-grup-tablosu" data-source="harcama_gruplari" data-row-key="kod">
+                <thead>
+                  <tr>
+                    <th data-field="kod">Kod</th>
+                    <th data-field="ad">Harcama grubu</th>
+                    <th class="wt-say" data-field="agirlik">Ağırlık</th>
+                    <th class="wt-say" data-field="aylik_degisim">Aylık</th>
+                    <th class="wt-say" data-field="yillik_degisim">Yıllık</th>
+                  </tr>
+                </thead>
+                <tbody data-draw="hg-satirlar"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="isi-haritasi">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Isı haritası</h2>
+              <p class="wt-not">Aylık değişimler; satırlar grup, sütunlar ay. Kırmızı tonlar artışı, yeşil tonlar düşüşü gösterir; renk koyulaştıkça değişim büyür.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-arac">
+              <div class="wt-dugmeler" role="group" aria-label="Isı haritası düzeyi" id="isi-duzey">
+                <button type="button" data-duzey="ana_grup" class="wt-secili">Ana gruplar</button>
+                <button type="button" data-duzey="grup">Harcama grupları</button>
+                <button type="button" data-duzey="ozel">Özel göstergeler</button>
+              </div>
+            </div>
+            <div class="wt-tablo-kap" data-draw="isi-haritasi" data-source="aylik">—</div>
+          </div>
+        </div>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="genel-bakis"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Genel Bakış</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="cekirdek"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Çekirdek Göstergeler →</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================ ÇEKİRDEK -->
+    <section class="wt-sayfa" id="cekirdek" aria-labelledby="b-cekirdek" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Çekirdek Göstergeler</p>
+          <h1 id="b-cekirdek">Çekirdek Göstergeler</h1>
+          <p class="wt-giris-metni">Oynak kalemleri dışarıda bırakan ölçüler, ana eğilim ve fiyat artışlarının sepete ne kadar yayıldığı.</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#ozel-gostergeler">Özel kapsamlı göstergeler</a>
+            <a href="#ana-egilim">Ana eğilim</a>
+            <a href="#yayginlik">Fiyat artış yaygınlığı</a>
+          </nav>
+        </div>
+      </div>
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="ozel-gostergeler">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Özel kapsamlı göstergeler</h2>
+              <p class="wt-not"><span data-draw="alan" data-source="ozet" data-field="ay" data-row="0" data-bicim="ay">—</span> · büyük rakam yıllık değişim, çizgi son 12 ayın yıllık değişimi. Tanımlar TÜİK'in göstergelerine yakındır; COICOP 2018 madde listesi yayımlanmadığı için yaklaşıktır.</p>
+            </div>
+          </div>
+          <div class="wt-gosterge-izgara" data-draw="ozel-kartlar" data-source="ozel_tablo"></div>
+        </div>
+
+        <div class="wt-bolum" id="ana-egilim">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Ana eğilim</h2>
+              <p class="wt-not">Medyan, maddelerin aylık değişimlerinin ağırlıklı ortancasıdır. Budanmış ortalama, en düşük ve en yüksek değişimli maddelerin ağırlıkça %10'arlık dilimleri çıkarılarak hesaplanır. Mevsimsel düzeltme uygulanmadı; sentetik veri bunun için kısa.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-mini-kartlar" id="ana-egilim-kartlar">
+              <div class="wt-mini"><span class="wt-etiket">Genel</span><span class="wt-mini-deger" data-draw="egilim-son" data-source="ana_egilim" data-field="genel">—</span></div>
+              <div class="wt-mini"><span class="wt-etiket">TÜFE B</span><span class="wt-mini-deger" data-draw="egilim-son" data-source="ana_egilim" data-field="b">—</span></div>
+              <div class="wt-mini"><span class="wt-etiket">TÜFE C</span><span class="wt-mini-deger" data-draw="egilim-son" data-source="ana_egilim" data-field="c">—</span></div>
+              <div class="wt-mini"><span class="wt-etiket">Medyan</span><span class="wt-mini-deger" data-draw="egilim-son" data-source="ana_egilim" data-field="medyan">—</span></div>
+              <div class="wt-mini"><span class="wt-etiket">Budanmış ortalama</span><span class="wt-mini-deger" data-draw="egilim-son" data-source="ana_egilim" data-field="budanmis">—</span></div>
+            </div>
+            <p class="wt-not"><span data-draw="egilim-ay" data-source="ana_egilim" data-field="ay">—</span> · aylık değişim</p>
+            <div class="wt-lejant" data-draw="egilim-lejant" data-source="ana_egilim">—</div>
+            <div class="wt-grafik" id="ana-egilim-grafik" data-draw="ana-egilim-grafik" data-source="ana_egilim">—</div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="yayginlik">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Fiyat artış yaygınlığı</h2>
+              <p class="wt-not">Her ay fiyatı artan maddelerin payı. Yükselen yaygınlık, fiyat artışlarının birkaç kalemle sınırlı kalmayıp sepete yayıldığını gösterir.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <p class="wt-cumle" id="yayginlik-cumle">
+              <span data-draw="yayginlik-son" data-source="yayginlik" data-field="ay" data-bicim="ay">—</span> · fiyatı artan maddelerin payı
+              <b data-draw="yayginlik-son" data-source="yayginlik" data-field="artan_oran" data-bicim="yuzde-1">—</b>, düşenlerin payı
+              <b data-draw="yayginlik-son" data-source="yayginlik" data-field="dusen_oran" data-bicim="yuzde-1">—</b>.
+              Sepet ağırlığıyla bakıldığında artan maddelerin payı <b data-draw="yayginlik-son" data-source="yayginlik" data-field="agirlikli_artan" data-bicim="yuzde-1">—</b>.
+            </p>
+            <div class="wt-grafik wt-kisa" id="yayginlik-grafik" data-draw="yayginlik-grafik" data-source="yayginlik">—</div>
+          </div>
+        </div>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="gruplar"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Gruplar</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="maddeler"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Maddeler →</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================ MADDELER -->
+    <section class="wt-sayfa" id="maddeler" aria-labelledby="b-maddeler" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Maddeler</p>
+          <h1 id="b-maddeler">Maddeler</h1>
+          <p class="wt-giris-metni">Sepetteki <span data-draw="alan" data-source="kapsam" data-field="toplam_madde" data-row="0" data-bicim="sayi">—</span> maddenin en çok artan ve düşenleri, ve her birinin ay ay seyri.</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#fiyat-hareketleri">Fiyat hareketleri</a>
+            <a href="#madde-gezgini">Madde gezgini</a>
+          </nav>
+        </div>
+      </div>
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="fiyat-hareketleri">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Fiyat hareketleri</h2>
+              <p class="wt-not">En çok artan ve düşen 10'ar kalem. Günlük değişim <span data-draw="alan" data-source="son_degisimler" data-field="tarih" data-row="0" data-bicim="tarih">—</span> gününe, aylık ve yıllık değişim <span data-draw="alan" data-source="son_degisimler" data-field="ay" data-row="0" data-bicim="ay">—</span> ayına aittir.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-arac">
+              <div class="wt-dugmeler" role="group" aria-label="Dönem" id="hareket-donem">
+                <button type="button" data-donem="gunluk">Günlük</button>
+                <button type="button" data-donem="aylik" class="wt-secili">Aylık</button>
+                <button type="button" data-donem="yillik">Yıllık</button>
+              </div>
+              <div class="wt-dugmeler" role="group" aria-label="Düzey" id="hareket-duzey">
+                <button type="button" data-duzey="madde" class="wt-secili">Maddeler</button>
+                <button type="button" data-duzey="grup">Harcama grupları</button>
+              </div>
+            </div>
+            <div class="wt-grafik" id="hareket-grafik" data-draw="hareket-grafik" data-source="son_degisimler">—</div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="madde-gezgini">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Madde gezgini</h2>
+              <p class="wt-not">Sepetteki herhangi bir maddenin aylık değişimleri.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-arac">
+              <label class="wt-etiket" for="madde-sec">Madde</label>
+              <select class="dash-select" id="madde-sec" data-draw="madde-sec" data-source="aylik" aria-label="Madde seçin"></select>
+            </div>
+            <p class="wt-cumle" data-draw="madde-ozet" data-source="aylik">—</p>
+            <div class="wt-grafik wt-kisa" id="madde-grafik" data-draw="madde-grafik" data-source="aylik">—</div>
+          </div>
+        </div>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="cekirdek"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Çekirdek Göstergeler</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="araclar"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Araçlar →</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================ ARAÇLAR -->
+    <section class="wt-sayfa" id="araclar" aria-labelledby="b-araclar" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Araçlar</p>
+          <h1 id="b-araclar">Araçlar</h1>
+          <p class="wt-giris-metni">Bir tutarın zaman içindeki karşılığını hesaplayın ya da kendi harcama dağılımınızla kişisel enflasyonunuzu görün.</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#hesaplayici">Enflasyon hesaplayıcı</a>
+            <a href="#kisisel-sepet">Kişisel sepet</a>
+          </nav>
+        </div>
+      </div>
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="hesaplayici">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Enflasyon hesaplayıcı</h2>
+              <p class="wt-not">Bir tutarın, genel endekse göre iki ay arasında ne kadara karşılık geldiğini hesaplar.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-arac">
+              <label class="wt-etiket" for="hesap-tutar">Tutar (₺)</label>
+              <input class="wt-girdi" id="hesap-tutar" type="number" min="0" step="any" value="1000" inputmode="decimal">
+              <label class="wt-etiket" for="hesap-bas">Başlangıç</label>
+              <select class="dash-select" id="hesap-bas" data-draw="hesap-bas" data-source="aylik" aria-label="Başlangıç ayı"></select>
+              <label class="wt-etiket" for="hesap-son">Bitiş</label>
+              <select class="dash-select" id="hesap-son" data-draw="hesap-son" data-source="aylik" aria-label="Bitiş ayı"></select>
+            </div>
+            <p class="wt-cumle wt-sonuc" data-draw="hesap-sonuc" data-source="aylik">—</p>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="kisisel-sepet">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Kişisel sepet</h2>
+              <p class="wt-not">Harcamanızın ana gruplara dağılımını girin; ana grupların değişimleri bu ağırlıklarla birleştirilir. Başlangıç değerleri TÜİK 2026 ağırlıklarıdır. Ağırlıkların toplamının 100 olması gerekmez. Hesap, grupların yıllık değişimlerinin ağırlıklı ortalamasıdır; bu yüzden TÜİK ağırlıklarıyla bile genel endeksten küçük bir fark çıkabilir.</p>
+            </div>
+            <button type="button" class="wt-dugme" id="kisisel-sifirla">TÜİK ağırlıklarına dön</button>
+          </div>
+          <div class="wt-panel">
+            <p class="wt-cumle wt-sonuc" data-draw="kisisel-sonuc" data-source="ana_grup_tablosu">—</p>
+            <div class="wt-tablo-kap">
+              <table data-source="ana_grup_tablosu" data-row-key="kod">
+                <thead>
+                  <tr>
+                    <th data-field="ad">Ana grup</th>
+                    <th class="wt-say" data-field="agirlik">TÜİK ağırlığı</th>
+                    <th class="wt-say">Sizin ağırlığınız</th>
+                    <th class="wt-say" data-field="yillik_degisim">Yıllık</th>
+                  </tr>
+                </thead>
+                <tbody data-draw="kisisel-satirlar"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="maddeler"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Maddeler</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="veri"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Veri ve Yöntem →</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================ VERİ VE YÖNTEM -->
+    <section class="wt-sayfa" id="veri" aria-labelledby="b-veri" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Veri ve Yöntem</p>
+          <h1 id="b-veri">Veri ve Yöntem</h1>
+          <p class="wt-giris-metni">Sepet ağırlıkları, fiyatların nasıl toplanıp temizlendiği, endeksin nasıl hesaplandığı ve yayın takvimi.</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#agirliklar">Ağırlıklar</a>
+            <a href="#veri-hatti">Veri hattı</a>
+            <a href="#takvim">Veri takvimi</a>
+            <a href="#yontem">Yöntem</a>
+            <a href="#sozluk">Sözlük</a>
+          </nav>
+        </div>
+      </div>
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="agirliklar">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Ağırlıklar</h2>
+              <p class="wt-not">TÜİK 2026 sepetinde ana grupların ağırlığı. İç çubuk, gerçek veride market eşleme kuralı yazılmış maddelerin payını gösterir.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-tablo-kap">
+              <table id="agirlik-tablosu" data-source="agirlik_ozet" data-row-key="kod">
+                <thead>
+                  <tr>
+                    <th data-field="ad">Ana grup</th>
+                    <th class="wt-say" data-field="madde">Madde</th>
+                    <th class="wt-say" data-field="agirlik">Ağırlık</th>
+                    <th class="wt-say" data-field="kapsanan_agirlik">Gerçek veride</th>
+                    <th class="wt-cubuk-hucre"><span class="wt-etiket">Ağırlık</span></th>
+                  </tr>
+                </thead>
+                <tbody data-draw="agirlik-satirlar"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="veri-hatti">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Veri hattı</h2>
+              <p class="wt-not">Her gün kaç fiyat gözleminin endekse girdiği. Önceki fiyatının 2,5 katını aşan veya 2,5'te birinin altına düşen fiyatlar hatalı sayılıp ayıklanır.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <p class="wt-cumle" id="veri-hatti-cumle">
+              <b data-draw="alan" data-source="gozlem_ozet" data-field="gun" data-row="0" data-bicim="sayi">—</b> günde, günde ortalama
+              <b data-draw="alan" data-source="gozlem_ozet" data-field="ortalama_gozlem" data-row="0" data-bicim="sayi">—</b> fiyat gözlemi;
+              toplam <b data-draw="alan" data-source="gozlem_ozet" data-field="toplam_aykiri" data-row="0" data-bicim="sayi">—</b> hatalı fiyat ayıklandı.
+              Toplama yapılmayan <b data-draw="alan" data-source="gozlem_ozet" data-field="eksik_gun" data-row="0" data-bicim="sayi">—</b> gün
+              (<span data-draw="alan" data-source="gozlem_ozet" data-field="eksik_gunler" data-row="0" data-bicim="tarih-listesi">—</span>) endeksi kırmadı; ürünler bir sonraki gün son fiyatlarıyla eşleşti.
+            </p>
+            <div class="wt-grafik wt-kisa" id="gozlem-grafik" data-draw="gozlem-grafik" data-source="gozlem">—</div>
+          </div>
+        </div>
+
+        <div class="wt-iki">
+          <div class="wt-bolum" id="takvim">
+            <div class="wt-bolum-bas">
+              <div>
+                <h2>Veri takvimi</h2>
+                <p class="wt-not">Aylık rakam ayın 24'ünde kesinleşir. TÜİK tarihi, ayın 3'ünü hafta sonunda pazartesiye kaydırarak tahmin edilir; resmi takvim TÜİK'tedir.</p>
+              </div>
+            </div>
+            <div class="wt-panel">
+              <ul class="wt-liste" data-draw="takvim" data-source="ozet"></ul>
+            </div>
+          </div>
+
+          <div class="wt-bolum" id="yontem">
+            <div class="wt-bolum-bas">
+              <div>
+                <h2>Yöntem</h2>
+                <p class="wt-not">Web TÜFE'nin yayımladığı yöntem aynen uygulandı.</p>
+              </div>
+            </div>
+            <div class="wt-panel">
+              <ol class="wt-adimlar">
+                <li><b>Sepet.</b> TÜİK 2026 sepetindeki <b data-draw="alan" data-source="kapsam" data-field="toplam_madde" data-row="0" data-bicim="sayi">—</b> madde ve <b data-draw="alan" data-source="kapsam" data-field="alt_sinif" data-row="0" data-bicim="sayi">—</b> alt sınıf ağırlığı; alt sınıf ağırlığı maddelere eşit bölünür.</li>
+                <li><b>Gözlem birimi.</b> Bir ürünün bir zincirde ve bir konumdaki fiyatı; şube fiyatlarının medyanı.</li>
+                <li><b>Madde endeksi.</b> Fiyat oranlarının (en çok 7 gün öncesine göre) geometrik ortalaması.</li>
+                <li><b>Genel endeks.</b> Zincirleme Laspeyres; ağırlıklar her Ocak yenilenir, 31 Aralık bağlantı günüdür.</li>
+                <li><b>Aylık endeks.</b> Ayın ilk 24 gününün geometrik ortalaması; 24'ünde kesinleşir.</li>
+              </ol>
+              <p class="wt-not">Sentetik veri: her madde için 3 ürün, 2 zincir, 2 konum; yapışkan fiyatlar, indirimler, mevsimsellik, dönemsel zamlar, hatalı fiyatlar ve eksik günler. 2025 için de 2026 ağırlıkları kullanıldı.</p>
+              <p class="wt-not">Gerçek veri: 12 Kasım 2026'dan beri marketfiyati.org.tr'den İstanbul (Anadolu yakası), Ankara ve İzmir'de her gün toplanıyor. Market eşleme kuralı yazılmış <b data-draw="alan" data-source="kapsam" data-field="madde" data-row="0" data-bicim="sayi">—</b> madde; sepet ağırlığındaki payları <b data-draw="alan" data-source="kapsam" data-field="agirlik" data-row="0" data-bicim="yuzde">—</b>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="sozluk">
+          <details class="wt-panel wt-sozluk">
+            <summary>Sözlük: sayfadaki endeks terimleri</summary>
+            <dl>
+              <dt>Madde</dt><dd>TÜİK sepetindeki en ayrıntılı kalem (ör. domates, kira, otel ücreti). 2026 sepetinde 7 haneli kodla tanımlanır.</dd>
+              <dt>Alt sınıf, harcama grubu, ana grup</dt><dd>COICOP 2018 sınıflamasının beş, üç ve iki haneli düzeyleri. TÜİK ağırlıkları alt sınıf düzeyinde yayımlar.</dd>
+              <dt>Ağırlık</dt><dd>Bir kalemin hanehalkı tüketim harcamasındaki payı. Yıl içinde sabittir, her Ocak yenilenir.</dd>
+              <dt>Gözlem birimi</dt><dd>Bir ürünün bir zincirde ve bir konumdaki fiyatı. Endeks, aynı birimin fiyatlarını günden güne karşılaştırır.</dd>
+              <dt>Geometrik ortalama (Jevons)</dt><dd>Madde içindeki fiyat oranlarının çarpımının kökü. Tek bir ürünün aşırı hareketinin etkisini sınırlar.</dd>
+              <dt>Laspeyres endeksi</dt><dd>Sabit ağırlıklı fiyat endeksi; TÜİK ve Eurostat'ın kullandığı biçim.</dd>
+              <dt>Zincirleme</dt><dd>Ağırlıklar değiştiğinde seriyi kırmadan yeni ağırlıklara geçmek. Bağlantı günü 31 Aralık'tır.</dd>
+              <dt>Geçici, kesin</dt><dd>Aylık rakam ayın ilk 24 gününden hesaplanır; 24'ü geçilince kesinleşir, öncesi geçicidir.</dd>
+              <dt>Yıllık değişim</dt><dd>Aylık endeksin bir yıl önceki aya göre değişimi. Günlük yıllık değişim, günlük endeksin 365 gün öncesine göre değişimidir.</dd>
+              <dt>Özel kapsamlı göstergeler</dt><dd>Oynak kalemleri dışarıda bırakan çekirdek ölçüler. B: işlenmemiş gıda, enerji, alkol-tütün ve altın hariç. C: enerji, gıda, alkol-tütün ve altın hariç. D: işlenmemiş gıda, alkol-tütün ve altın hariç. E: alkol ve tütün hariç.</dd>
+              <dt>Medyan</dt><dd>Maddelerin aylık değişimleri sıralandığında ağırlıkça ortadaki değer.</dd>
+              <dt>Budanmış ortalama</dt><dd>En uçtaki değişimler (burada ağırlıkça alt ve üst %10) çıkarıldıktan sonra kalanların ağırlıklı ortalaması.</dd>
+              <dt>Yaygınlık</dt><dd>Fiyatı artan maddelerin payı. Ağırlıklı yaygınlık, bu maddelerin sepet ağırlığındaki payıdır.</dd>
+              <dt>Kapsam</dt><dd>Fiyatı web'den derlenebilen maddelerin sepet ağırlığındaki payı. Kapsanmayan maddelerin ağırlığı diğerlerine dağıtılır.</dd>
+              <dt>Aykırı fiyat</dt><dd>Önceki fiyatının 2,5 katını aşan veya 2,5'te birinin altına düşen gözlem; hata kabul edilip endekse alınmaz.</dd>
+            </dl>
+          </details>
+        </div>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="araclar"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Araçlar</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="genel-bakis"><span class="wt-gecis-yon">Başa dön</span><span class="wt-gecis-ad">Genel Bakış ↑</span></button>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================ ALT BİLGİ -->
+  <footer class="wt-altbilgi" id="alt-bilgi">
+    <div class="wt-ic wt-altbilgi-ic">
+      <div class="wt-altbilgi-marka">
+        <span class="wt-marka-ad">Web Fiyat Endeksi</span>
+        <p>Web'den toplanan fiyatlarla, TÜİK sepeti ve Web TÜFE yöntemiyle hesaplanan günlük tüketici fiyat endeksi. Bu sürümdeki fiyatlar sentetiktir.</p>
+      </div>
+      <nav class="wt-altbilgi-menu" aria-label="Alt menü">
+        <span class="wt-altbilgi-baslik">Bölümler</span>
+        <a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a>
+        <a href="#gruplar" data-git="gruplar">Gruplar</a>
+        <a href="#cekirdek" data-git="cekirdek">Çekirdek Göstergeler</a>
+        <a href="#maddeler" data-git="maddeler">Maddeler</a>
+        <a href="#araclar" data-git="araclar">Araçlar</a>
+        <a href="#veri" data-git="veri">Veri ve Yöntem</a>
+      </nav>
+      <div class="wt-altbilgi-not">
+        <span class="wt-altbilgi-baslik">Veri</span>
+        <p>Sepet ve ağırlıklar: TÜİK 2026 TÜFE sepeti.</p>
+        <p>Yöntem: Web TÜFE (zincirleme Laspeyres, Jevons, ayın ilk 24 günü).</p>
+        <p>Son veri: <span data-draw="alan" data-source="ozet" data-field="son_gun" data-row="0" data-bicim="tarih">—</span></p>
+      </div>
+    </div>
+    <div class="wt-ic wt-altbilgi-son">Fiyatlar sentetiktir ve gerçek enflasyonu göstermez. Endeks motorunun çıktılarını göstermek için üretilmiştir.</div>
+  </footer>
+</div>

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.DS_Store
+logs/
+# Sentetik deneme verisi büyük; scripts/sentetik_veri.py ile yeniden üretilir
+data/sentetik/
+# Panoya yükleme durumu yalnızca bu bilgisayarda tutulur
+data/cikti/pano_durum.json
+data/ham/**/*.tmp

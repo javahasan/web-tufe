@@ -1,0 +1,38 @@
+# Özel kapsamlı göstergeler (Web TÜFE / TÜİK tanımlarına göre)
+#
+# Her gösterge madde kodu ÖNEKLERİYLE tanımlanır:
+#   dahil: bu öneklerden biriyle başlayan maddeler (boşsa tüm maddeler)
+#   haric: bu öneklerden biriyle başlayan maddeler çıkarılır
+# Kümeler aşağıdaki "kumeler" bölümünde bir kez tanımlanıp adla kullanılır.
+#
+# DİKKAT: TÜİK özel kapsamlı göstergelerin madde listesini COICOP 2018 için
+# yayımlamadı. Aşağıdaki kümeler TÜİK/Eurostat tanımlarına göre yaklaşıktır;
+# TÜİK'in TT06 tablosuyla karşılaştırılarak iyileştirilmeli.
+
+kumeler:
+  enerji: ["0451", "0452", "0453", "0454", "0455", "07221", "07222", "07223"]
+  alkol_tutun: ["02"]
+  altin: ["1321101"]
+  gida_alkolsuz: ["01"]
+  # "!" ile başlayan önek kümeden çıkarılır (sofralık zeytin işlenmiş üründür)
+  taze_meyve_sebze: ["01161", "01162", "01163", "01164", "01165", "01166", "01171", "01172", "01173", "01174", "01175", "0119401", "!0117476"]
+  diger_islenmemis_gida: ["01122", "01124", "01131", "01148", "01176", "01111"]
+  giyim: ["03"]
+  hizmet: ["0314", "0411", "0432", "0441", "0533", "0562", "062", "063", "064", "0723", "0724",
+           "073", "074", "083", "0835", "0839", "0945", "0946", "0947", "096", "098",
+           "10", "11", "12", "1313", "1330", "1390"]
+
+gostergeler:
+  - {kod: MALLAR, ad: "Mallar", haric: [hizmet]}
+  - {kod: HIZMET, ad: "Hizmet", dahil: [hizmet]}
+  - {kod: ENERJI, ad: "Enerji", dahil: [enerji]}
+  - {kod: GIDA, ad: "Gıda ve alkolsüz içecekler", dahil: [gida_alkolsuz]}
+  - {kod: TAZE_MS, ad: "Taze meyve ve sebze", dahil: [taze_meyve_sebze]}
+  - {kod: ISLENMEMIS_GIDA, ad: "İşlenmemiş gıda", dahil: [taze_meyve_sebze, diger_islenmemis_gida]}
+  - {kod: ISLENMIS_GIDA, ad: "İşlenmiş gıda", dahil: [gida_alkolsuz], haric: [taze_meyve_sebze, diger_islenmemis_gida]}
+  - {kod: TEMEL_MALLAR, ad: "Temel mallar", haric: [hizmet, enerji, gida_alkolsuz, alkol_tutun, altin]}
+  - {kod: TUFE_B, ad: "B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç", haric: [taze_meyve_sebze, diger_islenmemis_gida, enerji, alkol_tutun, altin]}
+  - {kod: TUFE_C, ad: "C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç", haric: [enerji, gida_alkolsuz, alkol_tutun, altin]}
+  - {kod: TUFE_D, ad: "D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç", haric: [taze_meyve_sebze, diger_islenmemis_gida, alkol_tutun, altin]}
+  - {kod: TUFE_E, ad: "E: Alkollü içecekler ve tütün hariç", haric: [alkol_tutun]}
+  - {kod: MEVSIMLIK_HARIC, ad: "Mevsimlik ürünler hariç", haric: [taze_meyve_sebze, giyim]}
