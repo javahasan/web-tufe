@@ -85,8 +85,13 @@ bilgisayarda, `data/cikti/pano_durum.json` dosyasında tutulur. Görev Mac ve Cl
 açıkken çalışır; Mac kapalı olduğu günler pano güncellenmez ama veri toplanmaya devam eder.
 
 **Yerelde çalıştırma.** `scripts/gunluk.sh` aynı adımları bir Mac'te çalıştırır (önceden launchd ile
-her gün 09:00'da çalışıyordu). GitHub ile aynı gün iki kez toplama yapılmaması için yerel iş kapalı
-tutulmalı.
+her gün 09:00'da çalışıyordu). GitHub ile aynı gün iki kez toplama yapılmaması için yerel iş
+18.11.2026'dan beri kapalı. GitHub'a erişilemezse yeniden açmak için:
+
+```bash
+launchctl enable gui/$(id -u)/local.webtufe.gunluk
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.webtufe.gunluk.plist
+```
 
 ## Sentetik veri ve pano
 
