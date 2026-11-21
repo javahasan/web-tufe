@@ -1,14 +1,15 @@
 anahtar,tarih,urun,deger,deger2,deger3,birim,zincir,zincir2,konum,onceki_tarih
-gozlem,2026-11-20,14828 ürün,39363.0,7.0,3.0,,,,,
-en_pahali,2026-11-20,Polonez Dana Baton Sucuk 1 Kg,3149.0,,,,CarrefourSA,,İstanbul Anadolu,
-zincir_farki,2026-11-20,Peros Amber Konsantre Yumuşatıcı 960 Ml,99.94,85.0,169.95,,A101'de,Migros'ta,,
-birim_fiyat,2026-11-20,Domatesin,84.47,24.9,14.0,kilosu,,,,
-birim_fiyat,2026-11-20,Patatesin,39.92,35.0,6.0,kilosu,,,,
-birim_fiyat,2026-11-20,Kuru soğanın,54.9,29.9,11.0,kilosu,,,,
-birim_fiyat,2026-11-20,Dana etinin,825.0,550.0,29.0,kilosu,,,,
-birim_fiyat,2026-11-20,Tavuk etinin,199.25,65.0,138.0,kilosu,,,,
-birim_fiyat,2026-11-20,Beyaz peynirin,528.57,179.0,174.0,kilosu,,,,
-birim_fiyat,2026-11-20,Sütün,77.5,32.5,91.0,litresi,,,,
-birim_fiyat,2026-11-20,Ayçiçek yağının,117.74,85.8,52.0,litresi,,,,
-birim_fiyat,2026-11-20,Yumurtanın,9.99,4.57,68.0,tanesi,,,,
-en_cok_ucuzlayan,2026-11-20,Yerli Muz 1 Kg,-0.04,119.95,119.9,,CarrefourSA'da,,Ankara,2026-11-19
+gozlem,2026-11-21,14837 ürün,40372.0,7.0,3.0,,,,,
+en_pahali,2026-11-21,Polonez Dana Baton Sucuk 1 Kg,3149.0,,,,CarrefourSA,,İstanbul Anadolu,
+zincir_farki,2026-11-21,Blendax Isırgan Otlu Şampuan 500 Ml,99.94,87.5,174.95,,A101'de,Migros'ta,,
+birim_fiyat,2026-11-21,Domatesin,84.47,24.9,14.0,kilosu,,,,
+birim_fiyat,2026-11-21,Patatesin,39.92,29.5,6.0,kilosu,,,,
+birim_fiyat,2026-11-21,Kuru soğanın,54.9,29.9,11.0,kilosu,,,,
+birim_fiyat,2026-11-21,Dana etinin,842.5,550.0,30.0,kilosu,,,,
+birim_fiyat,2026-11-21,Tavuk etinin,199.5,65.0,141.0,kilosu,,,,
+birim_fiyat,2026-11-21,Beyaz peynirin,528.16,179.0,172.0,kilosu,,,,
+birim_fiyat,2026-11-21,Sütün,77.5,32.5,90.0,litresi,,,,
+birim_fiyat,2026-11-21,Ayçiçek yağının,117.0,85.8,52.0,litresi,,,,
+birim_fiyat,2026-11-21,Yumurtanın,9.96,4.57,70.0,tanesi,,,,
+en_cok_zamlanan,2026-11-21,Ülker Hanımeller Çokodamla Kurabiye 82 Gr,25.0,20.0,25.0,,ŞOK'ta,,3 şehirde,2026-11-20
+en_cok_ucuzlayan,2026-11-21,Patates 1 Kg,-15.71,35.0,29.5,,ŞOK'ta,,3 şehirde,2026-11-20
