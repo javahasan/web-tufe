@@ -1,163 +1,190 @@
 tarih,seri_kodu,endeks,kapsam,seri_adi,duzey,gunluk_degisim
 2026-11-12,TUFE,100.0,0.27654087617492573,Genel endeks,genel,
-2026-11-17,TUFE,100.40653491185647,0.27654087617492573,Genel endeks,genel,0.40653491185647095
-2026-11-18,TUFE,100.16126467787332,0.27710194564495944,Genel endeks,genel,-0.24427716203777594
-2026-11-19,TUFE,99.90289486147604,0.27710194564495944,Genel endeks,genel,-0.25795382798751154
-2026-11-20,TUFE,99.54615858860421,0.27612103469990057,Genel endeks,genel,-0.3570830188319052
-2026-11-21,TUFE,99.4338650241687,0.27612103469990057,Genel endeks,genel,-0.11280552261146992
+2026-11-17,TUFE,100.40657607242179,0.27654087617492573,Genel endeks,genel,0.4065760724217826
+2026-11-18,TUFE,100.16132970181815,0.27710194564495944,Genel endeks,genel,-0.2442532951494547
+2026-11-19,TUFE,99.90311288439524,0.27710194564495944,Genel endeks,genel,-0.2578009079867605
+2026-11-20,TUFE,99.54640753663475,0.27612103469990057,Genel endeks,genel,-0.35705128445122636
+2026-11-21,TUFE,99.4339897403226,0.27612103469990057,Genel endeks,genel,-0.11293003845544991
+2026-11-22,TUFE,99.42537636392252,0.27612103469990057,Genel endeks,genel,-0.008662406509651888
 2026-11-12,01,100.0,0.9977047116308243,Gıda ve alkolsüz içecekler,ana_grup,
-2026-11-17,01,100.38190114998304,0.9977047116308243,Gıda ve alkolsüz içecekler,ana_grup,0.3819011499830438
-2026-11-18,01,100.25437761715676,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.12703837182336253
-2026-11-19,01,100.02367534991004,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.23011690135638085
-2026-11-20,01,99.65683548105389,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.36675303879091237
-2026-11-21,01,99.61835809593006,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.03860988053462355
+2026-11-17,01,100.38194782228918,0.9977047116308243,Gıda ve alkolsüz içecekler,ana_grup,0.3819478222891748
+2026-11-18,01,100.25445134101211,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.12701136413767466
+2026-11-19,01,100.02392251354497,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.22994373255608158
+2026-11-20,01,99.6571175740793,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.3667172114910855
+2026-11-21,01,99.61849985760452,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.0387505854221315
+2026-11-22,01,99.6059043811004,1.0,Gıda ve alkolsüz içecekler,ana_grup,-0.012643712284488018
 2026-11-12,02,,0.0,"Alkollü içecekler, tütün ve tütün ürünleri",ana_grup,
 2026-11-17,02,,0.0,"Alkollü içecekler, tütün ve tütün ürünleri",ana_grup,
 2026-11-18,02,,0.0,"Alkollü içecekler, tütün ve tütün ürünleri",ana_grup,
 2026-11-19,02,,0.0,"Alkollü içecekler, tütün ve tütün ürünleri",ana_grup,
 2026-11-20,02,,0.0,"Alkollü içecekler, tütün ve tütün ürünleri",ana_grup,
 2026-11-21,02,,0.0,"Alkollü içecekler, tütün ve tütün ürünleri",ana_grup,
+2026-11-22,02,,0.0,"Alkollü içecekler, tütün ve tütün ürünleri",ana_grup,
 2026-11-12,03,,0.0,Giyim ve ayakkabı,ana_grup,
 2026-11-17,03,,0.0,Giyim ve ayakkabı,ana_grup,
 2026-11-18,03,,0.0,Giyim ve ayakkabı,ana_grup,
 2026-11-19,03,,0.0,Giyim ve ayakkabı,ana_grup,
 2026-11-20,03,,0.0,Giyim ve ayakkabı,ana_grup,
 2026-11-21,03,,0.0,Giyim ve ayakkabı,ana_grup,
+2026-11-22,03,,0.0,Giyim ve ayakkabı,ana_grup,
 2026-11-12,04,,0.0,"Konut, su, elektrik, gaz ve diğer yakıtlar",ana_grup,
 2026-11-17,04,,0.0,"Konut, su, elektrik, gaz ve diğer yakıtlar",ana_grup,
 2026-11-18,04,,0.0,"Konut, su, elektrik, gaz ve diğer yakıtlar",ana_grup,
 2026-11-19,04,,0.0,"Konut, su, elektrik, gaz ve diğer yakıtlar",ana_grup,
 2026-11-20,04,,0.0,"Konut, su, elektrik, gaz ve diğer yakıtlar",ana_grup,
 2026-11-21,04,,0.0,"Konut, su, elektrik, gaz ve diğer yakıtlar",ana_grup,
+2026-11-22,04,,0.0,"Konut, su, elektrik, gaz ve diğer yakıtlar",ana_grup,
 2026-11-12,05,100.0,0.15351187773468622,"Mobilya, mefruşat ve evde kullanılan ekipmanlar ile rutin ev bakım ve onarımı",ana_grup,
 2026-11-17,05,99.59545262177478,0.15351187773468622,"Mobilya, mefruşat ve evde kullanılan ekipmanlar ile rutin ev bakım ve onarımı",ana_grup,-0.40454737822521736
 2026-11-18,05,99.22493775933236,0.15351187773468622,"Mobilya, mefruşat ve evde kullanılan ekipmanlar ile rutin ev bakım ve onarımı",ana_grup,-0.3720198590285939
 2026-11-19,05,97.86175058853135,0.15351187773468622,"Mobilya, mefruşat ve evde kullanılan ekipmanlar ile rutin ev bakım ve onarımı",ana_grup,-1.3738352490655026
 2026-11-20,05,97.46810664117282,0.15351187773468622,"Mobilya, mefruşat ve evde kullanılan ekipmanlar ile rutin ev bakım ve onarımı",ana_grup,-0.4022449475828749
 2026-11-21,05,97.00296264285946,0.15351187773468622,"Mobilya, mefruşat ve evde kullanılan ekipmanlar ile rutin ev bakım ve onarımı",ana_grup,-0.47722687383862095
+2026-11-22,05,97.04705933849621,0.15351187773468622,"Mobilya, mefruşat ve evde kullanılan ekipmanlar ile rutin ev bakım ve onarımı",ana_grup,0.045459122520941087
 2026-11-12,06,,0.0,Sağlık,ana_grup,
 2026-11-17,06,,0.0,Sağlık,ana_grup,
 2026-11-18,06,,0.0,Sağlık,ana_grup,
 2026-11-19,06,,0.0,Sağlık,ana_grup,
 2026-11-20,06,,0.0,Sağlık,ana_grup,
 2026-11-21,06,,0.0,Sağlık,ana_grup,
+2026-11-22,06,,0.0,Sağlık,ana_grup,
 2026-11-12,07,,0.0,Ulaştırma,ana_grup,
 2026-11-17,07,,0.0,Ulaştırma,ana_grup,
 2026-11-18,07,,0.0,Ulaştırma,ana_grup,
 2026-11-19,07,,0.0,Ulaştırma,ana_grup,
 2026-11-20,07,,0.0,Ulaştırma,ana_grup,
 2026-11-21,07,,0.0,Ulaştırma,ana_grup,
+2026-11-22,07,,0.0,Ulaştırma,ana_grup,
 2026-11-12,08,,0.0,Bilgi ve iletişim,ana_grup,
 2026-11-17,08,,0.0,Bilgi ve iletişim,ana_grup,
 2026-11-18,08,,0.0,Bilgi ve iletişim,ana_grup,
 2026-11-19,08,,0.0,Bilgi ve iletişim,ana_grup,
 2026-11-20,08,,0.0,Bilgi ve iletişim,ana_grup,
 2026-11-21,08,,0.0,Bilgi ve iletişim,ana_grup,
+2026-11-22,08,,0.0,Bilgi ve iletişim,ana_grup,
 2026-11-12,09,100.0,0.16591125505184437,"Eğlence, dinlence, spor ve kültür",ana_grup,
 2026-11-17,09,102.23853740703275,0.16591125505184437,"Eğlence, dinlence, spor ve kültür",ana_grup,2.238537407032748
 2026-11-18,09,102.23853740703275,0.16591125505184437,"Eğlence, dinlence, spor ve kültür",ana_grup,0.0
 2026-11-19,09,102.72989237680153,0.16591125505184437,"Eğlence, dinlence, spor ve kültür",ana_grup,0.4805966343323087
 2026-11-20,09,102.72989237680153,0.14330024252992027,"Eğlence, dinlence, spor ve kültür",ana_grup,0.0
 2026-11-21,09,102.72989237680153,0.14330024252992027,"Eğlence, dinlence, spor ve kültür",ana_grup,0.0
+2026-11-22,09,102.72989237680153,0.14330024252992027,"Eğlence, dinlence, spor ve kültür",ana_grup,0.0
 2026-11-12,10,,0.0,Eğitim hizmetleri,ana_grup,
 2026-11-17,10,,0.0,Eğitim hizmetleri,ana_grup,
 2026-11-18,10,,0.0,Eğitim hizmetleri,ana_grup,
 2026-11-19,10,,0.0,Eğitim hizmetleri,ana_grup,
 2026-11-20,10,,0.0,Eğitim hizmetleri,ana_grup,
 2026-11-21,10,,0.0,Eğitim hizmetleri,ana_grup,
+2026-11-22,10,,0.0,Eğitim hizmetleri,ana_grup,
 2026-11-12,11,,0.0,Lokantalar ve konaklama hizmetleri,ana_grup,
 2026-11-17,11,,0.0,Lokantalar ve konaklama hizmetleri,ana_grup,
 2026-11-18,11,,0.0,Lokantalar ve konaklama hizmetleri,ana_grup,
 2026-11-19,11,,0.0,Lokantalar ve konaklama hizmetleri,ana_grup,
 2026-11-20,11,,0.0,Lokantalar ve konaklama hizmetleri,ana_grup,
 2026-11-21,11,,0.0,Lokantalar ve konaklama hizmetleri,ana_grup,
+2026-11-22,11,,0.0,Lokantalar ve konaklama hizmetleri,ana_grup,
 2026-11-12,12,,0.0,Sigorta ve finansal hizmetler,ana_grup,
 2026-11-17,12,,0.0,Sigorta ve finansal hizmetler,ana_grup,
 2026-11-18,12,,0.0,Sigorta ve finansal hizmetler,ana_grup,
 2026-11-19,12,,0.0,Sigorta ve finansal hizmetler,ana_grup,
 2026-11-20,12,,0.0,Sigorta ve finansal hizmetler,ana_grup,
 2026-11-21,12,,0.0,Sigorta ve finansal hizmetler,ana_grup,
+2026-11-22,12,,0.0,Sigorta ve finansal hizmetler,ana_grup,
 2026-11-12,13,100.0,0.296029584651021,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup,
 2026-11-17,13,100.60824604327259,0.296029584651021,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup,0.6082460432725867
 2026-11-18,13,98.18098315659229,0.296029584651021,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup,-2.412588413117056
 2026-11-19,13,98.01833795647796,0.296029584651021,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup,-0.16565855717183275
 2026-11-20,13,97.71431016709595,0.296029584651021,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup,-0.3101743976897553
 2026-11-21,13,96.51558234642555,0.296029584651021,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup,-1.2267679305318913
+2026-11-22,13,96.52794294958072,0.296029584651021,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup,0.012806847199864357
 2026-11-12,MALLAR,100.0,0.4536295000928384,Mallar,ozel,
-2026-11-17,MALLAR,100.40653491185647,0.4536295000928384,Mallar,ozel,0.40653491185647095
-2026-11-18,MALLAR,100.16126467787332,0.4545498619096128,Mallar,ozel,-0.24427716203777594
-2026-11-19,MALLAR,99.90289486147604,0.4545498619096128,Mallar,ozel,-0.25795382798751154
-2026-11-20,MALLAR,99.54615858860421,0.45294080451528684,Mallar,ozel,-0.3570830188319052
-2026-11-21,MALLAR,99.4338650241687,0.45294080451528684,Mallar,ozel,-0.11280552261146992
+2026-11-17,MALLAR,100.40657607242179,0.4536295000928384,Mallar,ozel,0.4065760724217826
+2026-11-18,MALLAR,100.16132970181815,0.4545498619096128,Mallar,ozel,-0.2442532951494547
+2026-11-19,MALLAR,99.90311288439524,0.4545498619096128,Mallar,ozel,-0.2578009079867605
+2026-11-20,MALLAR,99.54640753663475,0.45294080451528684,Mallar,ozel,-0.35705128445122636
+2026-11-21,MALLAR,99.4339897403226,0.45294080451528684,Mallar,ozel,-0.11293003845544991
+2026-11-22,MALLAR,99.42537636392252,0.45294080451528684,Mallar,ozel,-0.008662406509651888
 2026-11-12,HIZMET,,0.0,Hizmet,ozel,
 2026-11-17,HIZMET,,0.0,Hizmet,ozel,
 2026-11-18,HIZMET,,0.0,Hizmet,ozel,
 2026-11-19,HIZMET,,0.0,Hizmet,ozel,
 2026-11-20,HIZMET,,0.0,Hizmet,ozel,
 2026-11-21,HIZMET,,0.0,Hizmet,ozel,
+2026-11-22,HIZMET,,0.0,Hizmet,ozel,
 2026-11-12,ENERJI,,0.0,Enerji,ozel,
 2026-11-17,ENERJI,,0.0,Enerji,ozel,
 2026-11-18,ENERJI,,0.0,Enerji,ozel,
 2026-11-19,ENERJI,,0.0,Enerji,ozel,
 2026-11-20,ENERJI,,0.0,Enerji,ozel,
 2026-11-21,ENERJI,,0.0,Enerji,ozel,
+2026-11-22,ENERJI,,0.0,Enerji,ozel,
 2026-11-12,GIDA,100.0,0.9977047116308243,Gıda ve alkolsüz içecekler,ozel,
-2026-11-17,GIDA,100.38190114998304,0.9977047116308243,Gıda ve alkolsüz içecekler,ozel,0.3819011499830438
-2026-11-18,GIDA,100.25437761715676,1.0,Gıda ve alkolsüz içecekler,ozel,-0.12703837182336253
-2026-11-19,GIDA,100.02367534991004,1.0,Gıda ve alkolsüz içecekler,ozel,-0.23011690135638085
-2026-11-20,GIDA,99.65683548105389,1.0,Gıda ve alkolsüz içecekler,ozel,-0.36675303879091237
-2026-11-21,GIDA,99.61835809593006,1.0,Gıda ve alkolsüz içecekler,ozel,-0.03860988053462355
+2026-11-17,GIDA,100.38194782228918,0.9977047116308243,Gıda ve alkolsüz içecekler,ozel,0.3819478222891748
+2026-11-18,GIDA,100.25445134101211,1.0,Gıda ve alkolsüz içecekler,ozel,-0.12701136413767466
+2026-11-19,GIDA,100.02392251354497,1.0,Gıda ve alkolsüz içecekler,ozel,-0.22994373255608158
+2026-11-20,GIDA,99.6571175740793,1.0,Gıda ve alkolsüz içecekler,ozel,-0.3667172114910855
+2026-11-21,GIDA,99.61849985760452,1.0,Gıda ve alkolsüz içecekler,ozel,-0.0387505854221315
+2026-11-22,GIDA,99.6059043811004,1.0,Gıda ve alkolsüz içecekler,ozel,-0.012643712284488018
 2026-11-12,TAZE_MS,100.0,0.9866537107846702,Taze meyve ve sebze,ozel,
 2026-11-17,TAZE_MS,100.70316115873163,0.9866537107846702,Taze meyve ve sebze,ozel,0.7031611587316355
 2026-11-18,TAZE_MS,100.8762852469151,1.0,Taze meyve ve sebze,ozel,0.17191524694104565
 2026-11-19,TAZE_MS,99.95280123150611,1.0,Taze meyve ve sebze,ozel,-0.9154619573357392
 2026-11-20,TAZE_MS,99.78593946731598,1.0,Taze meyve ve sebze,ozel,-0.16694055807765507
 2026-11-21,TAZE_MS,98.15043875457688,1.0,Taze meyve ve sebze,ozel,-1.639009184530249
+2026-11-22,TAZE_MS,98.03846109152595,1.0,Taze meyve ve sebze,ozel,-0.11408778653647644
 2026-11-12,ISLENMEMIS_GIDA,100.0,0.9941461544587392,İşlenmemiş gıda,ozel,
 2026-11-17,ISLENMEMIS_GIDA,100.28747476151996,0.9941461544587392,İşlenmemiş gıda,ozel,0.2874747615199569
 2026-11-18,ISLENMEMIS_GIDA,100.79877406969275,1.0,İşlenmemiş gıda,ozel,0.509833665060011
 2026-11-19,ISLENMEMIS_GIDA,100.04670587806065,1.0,İşlenmemiş gıda,ozel,-0.7461084706368748
 2026-11-20,ISLENMEMIS_GIDA,98.61154560849312,1.0,İşlenmemiş gıda,ozel,-1.4344902782873592
 2026-11-21,ISLENMEMIS_GIDA,98.0874230279816,1.0,İşlenmemiş gıda,ozel,-0.5315022467981434
+2026-11-22,ISLENMEMIS_GIDA,98.06670680706635,1.0,İşlenmemiş gıda,ozel,-0.021120160236376417
 2026-11-12,ISLENMIS_GIDA,100.0,1.0000000000000002,İşlenmiş gıda,ozel,
-2026-11-17,ISLENMIS_GIDA,100.44245014299287,1.0000000000000002,İşlenmiş gıda,ozel,0.44245014299286733
-2026-11-18,ISLENMIS_GIDA,99.90288246811622,1.0000000000000002,İşlenmiş gıda,ozel,-0.5371908730905206
-2026-11-19,ISLENMIS_GIDA,100.00846400479793,1.0000000000000002,İşlenmiş gıda,ozel,0.10568417454361878
-2026-11-20,ISLENMIS_GIDA,100.33069649637537,1.0000000000000002,İşlenmiş gıda,ozel,0.32220522011214836
-2026-11-21,ISLENMIS_GIDA,100.60546285432345,1.0000000000000002,İşlenmiş gıda,ozel,0.27386071017458935
+2026-11-17,ISLENMIS_GIDA,100.44252674296207,1.0000000000000002,İşlenmiş gıda,ozel,0.4425267429620794
+2026-11-18,ISLENMIS_GIDA,99.90300356802823,1.0000000000000002,İşlenmiş gıda,ozel,-0.5371461595291338
+2026-11-19,ISLENMIS_GIDA,100.0088704140731,1.0000000000000002,İşlenmiş gıda,ozel,0.10596963280766758
+2026-11-20,ISLENMIS_GIDA,100.33116036468424,1.0000000000000002,İşlenmiş gıda,ozel,0.3222613646936878
+2026-11-21,ISLENMIS_GIDA,100.60569587681097,1.0000000000000002,İşlenmiş gıda,ozel,0.2736293601398154
+2026-11-22,ISLENMIS_GIDA,100.59833832379506,1.0000000000000002,İşlenmiş gıda,ozel,-0.007313256920282729
 2026-11-12,TEMEL_MALLAR,100.0,0.12027964516401352,Temel mallar,ozel,
 2026-11-17,TEMEL_MALLAR,100.59049486125431,0.12027964516401352,Temel mallar,ozel,0.5904948612543093
 2026-11-18,TEMEL_MALLAR,99.46389317748576,0.12027964516401352,Temel mallar,ozel,-1.119988210936318
 2026-11-19,TEMEL_MALLAR,98.99843236859971,0.12027964516401352,Temel mallar,ozel,-0.4679696259782151
 2026-11-20,TEMEL_MALLAR,98.71958647689938,0.11666693720117396,Temel mallar,ozel,-0.28166697697000753
 2026-11-21,TEMEL_MALLAR,98.03746102793389,0.11666693720117396,Temel mallar,ozel,-0.6909727575946767
+2026-11-22,TEMEL_MALLAR,98.05958374229796,0.11666693720117396,Temel mallar,ozel,0.022565572519028798
 2026-11-12,TUFE_B,100.0,0.22363541519363472,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,
-2026-11-17,TUFE_B,100.46912427226246,0.22363541519363472,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.46912427226246667
-2026-11-18,TUFE_B,99.82378706218941,0.22363541519363472,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,-0.6423239126920666
-2026-11-19,TUFE_B,99.82648038021038,0.22363541519363472,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.002698072373563676
-2026-11-20,TUFE_B,100.04311158008896,0.22242515532701168,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.2170077509028534
-2026-11-21,TUFE_B,100.1497759306299,0.22242515532701168,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.10661838567020965
+2026-11-17,TUFE_B,100.46918707074313,0.22363541519363472,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.4691870707431267
+2026-11-18,TUFE_B,99.82388634278394,0.22363541519363472,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,-0.642287199462277
+2026-11-19,TUFE_B,99.82681356422177,0.22363541519363472,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.0029323857696494926
+2026-11-20,TUFE_B,100.04349212320662,0.22242515532701168,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.2170544678814723
+2026-11-21,TUFE_B,100.1499661873408,0.22242515532701168,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,0.10642777643452561
+2026-11-22,TUFE_B,100.14778753105068,0.22242515532701168,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel,-0.002175393934766845
 2026-11-12,TUFE_C,100.0,0.04933981352837697,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel,
 2026-11-17,TUFE_C,100.59049486125431,0.04933981352837697,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel,0.5904948612543093
 2026-11-18,TUFE_C,99.46389317748576,0.04933981352837697,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel,-1.119988210936318
 2026-11-19,TUFE_C,98.99843236859971,0.04933981352837697,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel,-0.4679696259782151
 2026-11-20,TUFE_C,98.71958647689938,0.04785784758995136,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel,-0.28166697697000753
 2026-11-21,TUFE_C,98.03746102793389,0.04785784758995136,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel,-0.6909727575946767
+2026-11-22,TUFE_C,98.05958374229796,0.04785784758995136,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel,0.022565572519028798
 2026-11-12,TUFE_D,100.0,0.20730088973182162,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,
-2026-11-17,TUFE_D,100.46912427226246,0.20730088973182162,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.46912427226246667
-2026-11-18,TUFE_D,99.82378706218941,0.20730088973182162,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,-0.6423239126920666
-2026-11-19,TUFE_D,99.82648038021038,0.20730088973182162,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.002698072373563676
-2026-11-20,TUFE_D,100.04311158008896,0.20617902829972043,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.2170077509028534
-2026-11-21,TUFE_D,100.1497759306299,0.20617902829972043,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.10661838567020965
+2026-11-17,TUFE_D,100.46918707074313,0.20730088973182162,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.4691870707431267
+2026-11-18,TUFE_D,99.82388634278394,0.20730088973182162,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,-0.642287199462277
+2026-11-19,TUFE_D,99.82681356422177,0.20730088973182162,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.0029323857696494926
+2026-11-20,TUFE_D,100.04349212320662,0.20617902829972043,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.2170544678814723
+2026-11-21,TUFE_D,100.1499661873408,0.20617902829972043,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,0.10642777643452561
+2026-11-22,TUFE_D,100.14778753105068,0.20617902829972043,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel,-0.002175393934766845
 2026-11-12,TUFE_E,100.0,0.2843751265363456,E: Alkollü içecekler ve tütün hariç,ozel,
-2026-11-17,TUFE_E,100.40653491185647,0.2843751265363456,E: Alkollü içecekler ve tütün hariç,ozel,0.40653491185647095
-2026-11-18,TUFE_E,100.16126467787332,0.2849520907947346,E: Alkollü içecekler ve tütün hariç,ozel,-0.24427716203777594
-2026-11-19,TUFE_E,99.90289486147604,0.2849520907947346,E: Alkollü içecekler ve tütün hariç,ozel,-0.25795382798751154
-2026-11-20,TUFE_E,99.54615858860421,0.2839433911841007,E: Alkollü içecekler ve tütün hariç,ozel,-0.3570830188319052
-2026-11-21,TUFE_E,99.4338650241687,0.2839433911841007,E: Alkollü içecekler ve tütün hariç,ozel,-0.11280552261146992
+2026-11-17,TUFE_E,100.40657607242179,0.2843751265363456,E: Alkollü içecekler ve tütün hariç,ozel,0.4065760724217826
+2026-11-18,TUFE_E,100.16132970181815,0.2849520907947346,E: Alkollü içecekler ve tütün hariç,ozel,-0.2442532951494547
+2026-11-19,TUFE_E,99.90311288439524,0.2849520907947346,E: Alkollü içecekler ve tütün hariç,ozel,-0.2578009079867605
+2026-11-20,TUFE_E,99.54640753663475,0.2839433911841007,E: Alkollü içecekler ve tütün hariç,ozel,-0.35705128445122636
+2026-11-21,TUFE_E,99.4339897403226,0.2839433911841007,E: Alkollü içecekler ve tütün hariç,ozel,-0.11293003845544991
+2026-11-22,TUFE_E,99.42537636392252,0.2839433911841007,E: Alkollü içecekler ve tütün hariç,ozel,-0.008662406509651888
 2026-11-12,MEVSIMLIK_HARIC,100.0,0.26744399817424586,Mevsimlik ürünler hariç,ozel,
-2026-11-17,MEVSIMLIK_HARIC,100.35419331970523,0.26744399817424586,Mevsimlik ürünler hariç,ozel,0.3541933197052316
-2026-11-18,MEVSIMLIK_HARIC,100.03409607756421,0.26744399817424586,Mevsimlik ürünler hariç,ozel,-0.3189674806325815
-2026-11-19,MEVSIMLIK_HARIC,99.89467745853884,0.26744399817424586,Mevsimlik ürünler hariç,ozel,-0.13937109894738287
-2026-11-20,MEVSIMLIK_HARIC,99.5038408352891,0.2663279603098168,Mevsimlik ürünler hariç,ozel,-0.3912486963201345
-2026-11-21,MEVSIMLIK_HARIC,99.66510533278705,0.2663279603098168,Mevsimlik ürünler hariç,ozel,0.16206861578831333
+2026-11-17,MEVSIMLIK_HARIC,100.35424174331466,0.26744399817424586,Mevsimlik ürünler hariç,ozel,0.35424174331466496
+2026-11-18,MEVSIMLIK_HARIC,100.03417263235796,0.26744399817424586,Mevsimlik ürünler hariç,ozel,-0.31893929483853833
+2026-11-19,MEVSIMLIK_HARIC,99.8949343751436,0.26744399817424586,Mevsimlik ürünler hariç,ozel,-0.13919069209087365
+2026-11-20,MEVSIMLIK_HARIC,99.50413423191576,0.2663279603098168,Mevsimlik ürünler hariç,ozel,-0.39121117168989805
+2026-11-21,MEVSIMLIK_HARIC,99.6652521834896,0.2663279603098168,Mevsimlik ürünler hariç,ozel,0.1619208616983947
+2026-11-22,MEVSIMLIK_HARIC,99.67520235778922,0.2663279603098168,Mevsimlik ürünler hariç,ozel,0.009983594163087695
