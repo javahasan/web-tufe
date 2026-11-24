@@ -63,9 +63,7 @@ jobs:
           print(open("data/ham/epdk/sekiz_firma.csv").read())
           EOF
           rm -rf data/ham/epdk
-          webtufe mobilite topla
-          webtufe mobilite hesapla
-          tail -3 data/cikti/mobilite/haftalik.csv
+          curl -s -m 20 -o /dev/null -w "İBB trafik servisi: HTTP %{http_code}\n" https://api.ibb.gov.tr/tkmservices/api/TrafficData/v1/TrafficIndexHistory/1/H || echo "İBB trafik servisine erişilemedi"
 
       - name: Yeni yılın TÜİK sepeti
         if: inputs.mod != 'erisim_testi'
@@ -88,16 +86,8 @@ jobs:
         timeout-minutes: 100
         run: webtufe akaryakit
 
-      # İstanbul trafik indeksi (İBB): saatlik ve 5 dakikalık seri; zorunlu ve isteğe bağlı
-      # hareketlilik göstergeleri data/cikti/mobilite/ altına yazılır.
-      - name: Trafik hareketliliği (İBB)
-        id: mobilite
-        if: inputs.mod != 'erisim_testi'
-        continue-on-error: true
-        timeout-minutes: 15
-        run: |
-          webtufe mobilite topla
-          webtufe mobilite hesapla
+      # İstanbul trafik indeksi (webtufe mobilite) burada toplanmaz: api.ibb.gov.tr GitHub
+      # sunucularından erişilemiyor (24.11.2026 erişim testinde bağlantı zaman aşımı).
 
       - name: Endeksi hesapla
         if: inputs.mod != 'erisim_testi'
@@ -121,15 +111,12 @@ jobs:
           git push
 
       - name: Toplama hatasını bildir
-        if: steps.topla.outcome == 'failure' || steps.akaryakit.outcome == 'failure' || steps.mobilite.outcome == 'failure'
+        if: steps.topla.outcome == 'failure' || steps.akaryakit.outcome == 'failure'
         run: |
           if [ "${{ steps.topla.outcome }}" = "failure" ]; then
             echo "::error::Market fiyatı toplama tamamlanamadı (bazı şehirler eksik olabilir). Ayrıntı 'Fiyatları topla' adımında."
           fi
           if [ "${{ steps.akaryakit.outcome }}" = "failure" ]; then
             echo "::error::Akaryakıt fiyatı toplama tamamlanamadı (bazı iller eksik olabilir). Ayrıntı 'Akaryakıt fiyatları (EPDK)' adımında."
-          fi
-          if [ "${{ steps.mobilite.outcome }}" = "failure" ]; then
-            echo "::error::Trafik hareketliliği toplanamadı ya da hesaplanamadı. Ayrıntı 'Trafik hareketliliği (İBB)' adımında."
           fi
           exit 1
