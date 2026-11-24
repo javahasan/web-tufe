@@ -111,7 +111,7 @@ def komut_mansetler(a):
 
 def komut_pano(a):
     from .eslestirme import kurallari_yukle
-    from .pano import madde_endeksleri_yaz, madde_fiyatlari, pano_yaz
+    from .pano import akaryakit_pano_yaz, madde_endeksleri_yaz, madde_fiyatlari, mobilite_pano_yaz, pano_yaz
 
     if not (CIKTI / "gunluk.parquet").exists():
         raise SystemExit("Önce: webtufe hesapla")
@@ -138,6 +138,8 @@ def komut_pano(a):
         adlar = pd.concat(sepetler.values()).drop_duplicates("madde_kodu", keep="last").set_index("madde_kodu")["madde_adi"]
         madde_fiyatlari(_ham_desen(), _esleme(), adlar).to_csv(gecici / "madde_fiyatlari.csv", index=False)
         yazilan.append(gecici / "madde_fiyatlari.csv")
+        yazilan += mobilite_pano_yaz(gecici, HAM / "ibb_trafik" / "saatlik.csv", CIKTI / "mobilite")
+        yazilan += akaryakit_pano_yaz(gecici, HAM / "epdk")
         for y in yazilan:
             os.replace(y, pano / y.name)
             print(f"  {y.name:<22}{(pano / y.name).stat().st_size / 1024:>8.0f} KB")

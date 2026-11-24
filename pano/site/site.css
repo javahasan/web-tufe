@@ -125,3 +125,24 @@
 .wt-ikili { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: var(--cds-gap-md); }
 .wt-panel-baslik { margin: 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); }
 #resmi .wt-grafik { min-height: 240px; }
+
+/* İzleme bölümleri (hareketlilik, akaryakıt) */
+.wt-izleme-durum { font-size: 13px; line-height: 1.6; color: var(--color-fg-muted); margin: 0 0 16px; }
+.wt-izleme-durum b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); font-variant-numeric: tabular-nums; }
+.wt-canli { display: inline-block; vertical-align: middle; margin: -2px 8px 0 0; width: 9px; height: 9px; border-radius: 50%; background: var(--color-border-line); box-shadow: 0 0 0 0 transparent; flex: none; }
+.wt-canli.wt-canli-acik { background: var(--color-ok); }
+.wt-canli.wt-canli-eski { background: var(--color-warn); }
+@media (prefers-reduced-motion: no-preference) {
+  .wt-canli.wt-canli-acik { animation: wt-nabiz 2.4s ease-out infinite; }
+  @keyframes wt-nabiz { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-ok) 55%, transparent); } 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+}
+.wt-kart-vurgu { border-color: color-mix(in srgb, var(--wt-vurgu) 45%, var(--color-border-line)); background: color-mix(in srgb, var(--wt-vurgu) 5%, var(--color-panel)); }
+.wt-kart-deger.wt-iyi { color: var(--color-ok); }
+.wt-kart-deger.wt-kotu { color: var(--color-bad); }
+.wt-detay { margin: 8px 0 24px; font-size: 14px; color: var(--color-fg-muted); max-width: 80ch; }
+.wt-detay summary { cursor: pointer; color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.wt-detay p { line-height: 1.6; }
+.wt-il-tablo td.wt-say, .wt-il-tablo th.wt-say { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.wt-il-cubuk { display: inline-block; vertical-align: middle; width: 56px; height: 6px; border-radius: 3px; background: var(--cds-chart-grid, var(--color-border-line)); margin-right: 8px; position: relative; overflow: hidden; }
+.wt-il-cubuk i { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--wt-vurgu); }
+.wt-bos-durum { color: var(--color-fg-muted); font-size: 14px; padding: 18px 4px; }

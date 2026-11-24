@@ -87,7 +87,9 @@ jobs:
         run: webtufe akaryakit
 
       # İstanbul trafik indeksi (webtufe mobilite) burada toplanmaz: api.ibb.gov.tr GitHub
-      # sunucularından erişilemiyor (24.11.2026 erişim testinde bağlantı zaman aşımı).
+      # sunucularından erişilemiyor (24.11.2026 erişim testinde bağlantı zaman aşımı). Mac'teki
+      # günlük görevde toplanıp scripts/trafik_gonder.sh ile ayrı commit'lerle gönderilir; bu iş
+      # data/ham/ibb_trafik ve data/cikti/mobilite klasörlerine dokunmaz.
 
       - name: Endeksi hesapla
         if: inputs.mod != 'erisim_testi'

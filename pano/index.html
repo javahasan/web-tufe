@@ -1168,6 +1168,7 @@
     const s = gunlukSeriler('yillik_degisim');
     if (!s) { bosYaz(el, dash.data('gunluk').status); return; }
     s.forEach((x) => { x.noktalar = x.noktalar.filter((d) => d.v != null); });
+    if (!s.some((x) => x.noktalar.length)) { bosYaz(el, 'ok', 'Günlük yıllık değişim için en az bir yıllık veri gerekiyor; ilk değerler Kasım 2027’de.'); return; }
     wt.cizgi(el, s, {
       yukseklik: 240,
       etiket: 'Genel endeksin günlük yıllık değişimi, yüzde',
@@ -1181,6 +1182,7 @@
     const a = dash.data('aylik');
     if (a.status !== 'ok') { bosYaz(el, a.status); return; }
     const rows = a.data.filter((r) => r.seri_kodu === 'TUFE').sort((x, y) => (x.ay < y.ay ? -1 : 1));
+    if (!rows.some((r) => r.aylik_degisim !== null && r.aylik_degisim !== '')) { bosYaz(el, 'ok', 'Aylık değişim ilk tam aydan sonra görünür: Aralık 2026 verisiyle (geçici), 24 Aralık’ta kesinleşir.'); return; }
     wt.cubuk(el, aylikSatirlar(rows), { yukseklik: 230, etiket: 'Genel endeksin aylık değişimi, yüzde' });
   });
 

@@ -140,3 +140,142 @@ def madde_fiyatlari(ham_desen: str, esleme: pd.DataFrame, adlar: pd.Series,
     s["_s"] = (s["zincir"] != "tum").astype(int)
     s = s.sort_values(["madde_kodu", "_s", "zincir", "tarih"]).drop(columns="_s")
     return s[["tarih", "madde_kodu", "madde_adi", "zincir", "birim", "ortanca_birim_fiyat", "urun_sayisi", "gozlem"]]
+
+
+# ------------------------------------------------------------------ izleme bölümleri (hareketlilik, akaryakıt)
+
+MOBILITE_SAATLIK_GUN = 21
+MOBILITE_GUNLUK_GUN = 120
+MOBILITE_SUTUNLAR = {
+    "mobilite_saatlik.csv": ["zaman", "tarih", "saat", "indeks", "normal"],
+    "mobilite_gunluk.csv": ["tarih", "gun_tipi", "pencere", "tur", "deger", "yillik_degisim", "kisa_sapma", "temiz",
+                            "okul_tatili", "resmi_tatil"],
+}
+AKARYAKIT_SUTUNLAR = {
+    "akaryakit_ulke.csv": ["tarih", "yakit", "fiyat"],
+    "akaryakit_il.csv": ["tarih", "il_kodu", "il_adi", "yakit", "ortanca", "en_dusuk", "en_yuksek", "firma",
+                         "once_tarih", "once_ortanca", "degisim"],
+}
+# Panoda gösterilen yakıtlar: EPDK adı -> kısa ad
+YAKITLAR = {"Kurşunsuz Benzin 95 Oktan": "Benzin", "Motorin": "Motorin"}
+# İl ortancasına yalnızca son bu kadar gün içinde güncellenmiş firma fiyatları girer
+GUNCEL_FIYAT_GUN = 45
+
+
+def _bos_yaz(yol: Path, sutunlar: list[str]) -> Path:
+    pd.DataFrame(columns=sutunlar).to_csv(yol, index=False)
+    return yol
+
+
+def mobilite_pano_yaz(pano: Path, saatlik_yol: Path, mobilite_dizin: Path) -> list[Path]:
+    """Hareketlilik izleme dosyaları. Kaynak yoksa yalnızca başlıklar yazılır (pano 'bekleniyor' der)."""
+    pano.mkdir(parents=True, exist_ok=True)
+    yazilan = []
+    yol = pano / "mobilite_saatlik.csv"
+    if saatlik_yol.exists():
+        s = pd.read_csv(saatlik_yol, dtype={"zaman": str})
+        z = pd.to_datetime(s["zaman"])
+        s = s.assign(t=z, tarih=z.dt.strftime("%Y-%m-%d"), saat=z.dt.hour, gun=z.dt.day_of_week)
+        son = z.max().normalize()
+        # "normal": aynı haftanın günü ve saatinin önceki 8 haftadaki ortancası
+        tablo = s.set_index("t")["indeks"]
+        normal = []
+        pencere = s[s["t"] >= son - pd.Timedelta(days=MOBILITE_SAATLIK_GUN - 1)]
+        for t in pencere["t"]:
+            once = [t - pd.Timedelta(weeks=k) for k in range(1, 9)]
+            v = tablo.reindex(once).dropna()
+            normal.append(round(float(v.median()), 1) if len(v) >= 4 else None)
+        pencere = pencere.assign(normal=normal)
+        pencere[MOBILITE_SUTUNLAR["mobilite_saatlik.csv"]].to_csv(yol, index=False)
+    else:
+        _bos_yaz(yol, MOBILITE_SUTUNLAR["mobilite_saatlik.csv"])
+    yazilan.append(yol)
+
+    yol = pano / "mobilite_gunluk.csv"
+    kaynak = mobilite_dizin / "pencereler.csv"
+    if kaynak.exists():
+        p = pd.read_csv(kaynak, dtype={"tarih": str})
+        sinir = (pd.Timestamp(p["tarih"].max()) - pd.Timedelta(days=MOBILITE_GUNLUK_GUN)).strftime("%Y-%m-%d")
+        p[p["tarih"] > sinir][MOBILITE_SUTUNLAR["mobilite_gunluk.csv"]].to_csv(yol, index=False)
+    else:
+        _bos_yaz(yol, MOBILITE_SUTUNLAR["mobilite_gunluk.csv"])
+    yazilan.append(yol)
+
+    yol = pano / "mobilite_haftalik.csv"
+    kaynak = mobilite_dizin / "haftalik.csv"
+    if kaynak.exists() and kaynak.stat().st_size > 0:
+        pd.read_csv(kaynak).to_csv(yol, index=False)
+    else:
+        _bos_yaz(yol, ["hafta", "hafta_basi", "temiz_gun"])
+    yazilan.append(yol)
+    return yazilan
+
+
+def _son_parquet(dizin: Path) -> tuple[str, Path] | None:
+    gunler = sorted(p for p in dizin.glob("tarih=*/iller.parquet"))
+    return (gunler[-1].parent.name.split("=", 1)[1], gunler[-1]) if gunler else None
+
+
+def _il_ortancalari(akaryakit: pd.DataFrame | None, lpg: pd.DataFrame | None, tarih: str) -> pd.DataFrame:
+    parcalar = []
+    if akaryakit is not None and not akaryakit.empty:
+        a = akaryakit[akaryakit["yakit_tipi"].isin(YAKITLAR)]
+        sinir = (pd.Timestamp(tarih) - pd.Timedelta(days=GUNCEL_FIYAT_GUN)).strftime("%Y-%m-%d")
+        a = a[a["gecerlilik_tarihi"].isna() | (a["gecerlilik_tarihi"] >= sinir)]
+        parcalar.append(a.assign(yakit=a["yakit_tipi"].map(YAKITLAR))[["il_kodu", "il_adi", "yakit", "firma", "fiyat"]])
+    if lpg is not None and not lpg.empty:
+        o = lpg[lpg["urun"] == "Otogaz"]
+        parcalar.append(o.assign(yakit="Otogaz")[["il_kodu", "il_adi", "yakit", "firma", "fiyat"]])
+    if not parcalar:
+        return pd.DataFrame(columns=["il_kodu", "il_adi", "yakit", "ortanca", "en_dusuk", "en_yuksek", "firma"])
+    d = pd.concat(parcalar).dropna(subset=["fiyat"])
+    return d.groupby(["il_kodu", "il_adi", "yakit"]).agg(
+        ortanca=("fiyat", "median"), en_dusuk=("fiyat", "min"), en_yuksek=("fiyat", "max"),
+        firma=("firma", "nunique")).reset_index()
+
+
+def akaryakit_pano_yaz(pano: Path, epdk_dizin: Path) -> list[Path]:
+    """Akaryakıt izleme dosyaları: 8 firma ülke ortalaması ve son günün il ortancaları (30 gün önceyle)."""
+    pano.mkdir(parents=True, exist_ok=True)
+    yazilan = []
+    yol = pano / "akaryakit_ulke.csv"
+    kaynak = epdk_dizin / "sekiz_firma.csv"
+    if kaynak.exists():
+        s = pd.read_csv(kaynak, dtype={"tarih": str})
+        s = s[s["yakit_tipi"].isin(YAKITLAR)].assign(yakit=lambda x: x["yakit_tipi"].map(YAKITLAR))
+        s.assign(fiyat=s["fiyat"].round(3))[["tarih", "yakit", "fiyat"]].sort_values(["yakit", "tarih"]).to_csv(yol, index=False)
+    else:
+        _bos_yaz(yol, AKARYAKIT_SUTUNLAR["akaryakit_ulke.csv"])
+    yazilan.append(yol)
+
+    yol = pano / "akaryakit_il.csv"
+    son_a, son_l = _son_parquet(epdk_dizin / "akaryakit_il"), _son_parquet(epdk_dizin / "lpg_il")
+    if not son_a and not son_l:
+        _bos_yaz(yol, AKARYAKIT_SUTUNLAR["akaryakit_il.csv"])
+        yazilan.append(yol)
+        return yazilan
+    tarih = max(x[0] for x in (son_a, son_l) if x)
+    oku = lambda x: pd.read_parquet(x[1]) if x and x[0] == tarih else None   # noqa: E731
+    simdi = _il_ortancalari(oku(son_a), oku(son_l), tarih)
+    # Karşılaştırma: 30 gün önceki ya da ondan önceki en yakın toplama günü
+    hedef = (pd.Timestamp(tarih) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
+    def once_gun(dizin):
+        g = sorted(p for p in dizin.glob("tarih=*/iller.parquet") if p.parent.name.split("=", 1)[1] <= hedef)
+        return (g[-1].parent.name.split("=", 1)[1], g[-1]) if g else None
+    oa, ol = once_gun(epdk_dizin / "akaryakit_il"), once_gun(epdk_dizin / "lpg_il")
+    once = _il_ortancalari(pd.read_parquet(oa[1]) if oa else None, pd.read_parquet(ol[1]) if ol else None,
+                           max(x[0] for x in (oa, ol) if x) if (oa or ol) else tarih) if (oa or ol) else None
+    simdi["tarih"] = tarih
+    if once is not None and not once.empty:
+        once_tarih = max(x[0] for x in (oa, ol) if x)
+        simdi = simdi.merge(once[["il_kodu", "yakit", "ortanca"]].rename(columns={"ortanca": "once_ortanca"}),
+                            on=["il_kodu", "yakit"], how="left")
+        simdi["once_tarih"] = once_tarih
+        simdi["degisim"] = ((simdi["ortanca"] / simdi["once_ortanca"] - 1) * 100).round(2)
+    else:
+        simdi = simdi.assign(once_tarih=None, once_ortanca=None, degisim=None)
+    for c in ["ortanca", "en_dusuk", "en_yuksek", "once_ortanca"]:
+        simdi[c] = pd.to_numeric(simdi[c], errors="coerce").round(2)
+    simdi[AKARYAKIT_SUTUNLAR["akaryakit_il.csv"]].sort_values(["yakit", "il_kodu"]).to_csv(yol, index=False)
+    yazilan.append(yol)
+    return yazilan

@@ -36,6 +36,8 @@
         <button type="button" data-sayfa="araclar" aria-current="false">Araçlar</button>
         <button type="button" data-sayfa="veri" aria-current="false">Veri ve Yöntem</button>
         <button type="button" data-sayfa="resmi" aria-current="false">Resmi Göstergeler</button>
+        <button type="button" data-sayfa="hareketlilik" aria-current="false">Hareketlilik</button>
+        <button type="button" data-sayfa="akaryakit" aria-current="false">Akaryakıt</button>
         <span class="wt-menu-cizgi" aria-hidden="true"></span>
       </nav>
       <a class="wt-menu-dis" href="https://claude.ai/artifact/M8R7pxhtN7ZyJqceRbzt8X" target="_blank" rel="noopener">Analiz Masası ↗</a>
@@ -707,6 +709,203 @@
 
         <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
           <button type="button" class="wt-gecis-kart" data-git="veri"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Veri ve Yöntem</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="hareketlilik"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Hareketlilik →</span></button>
+        </nav>
+      </div>
+    </section>
+    <!-- ============================================================ HAREKETLİLİK (İBB trafik indeksi) -->
+    <section class="wt-sayfa" id="hareketlilik" aria-labelledby="b-hareketlilik" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Hareketlilik</p>
+          <h1 id="b-hareketlilik">Hareketlilik</h1>
+          <p class="wt-giris-metni">İstanbul trafik indeksinden zorunlu ve isteğe bağlı hareketlilik. İşe ve okula gidiş saatleri tüketimle karıştırılmasın diye ayrı izlenir; tüketimle ilişkili sinyal hafta sonu gündüz ve akşam saatlerindedir.</p>
+          <p class="wt-izleme-durum" id="hareketlilik-durum"><span class="wt-canli" data-draw="izleme-nabiz" data-source="mobilite_saatlik" data-alan="zaman" data-esik-saat="30" aria-hidden="true"></span>Son ölçüm: <b data-draw="alan" data-source="mobilite_ozet" data-field="son_zaman" data-row="0" data-bicim="zaman">—</b> · Kaynak: İBB Açık Veri, trafik indeksi (0–99, tıkanıklık) · Yalnızca İstanbul</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#hareketlilik-ozet">Son hafta</a>
+            <a href="#hareketlilik-saatlik">Son 21 gün</a>
+            <a href="#hareketlilik-haftalik">Haftalık eğilim</a>
+            <a href="#hareketlilik-pencereler">Saat pencereleri</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="hareketlilik-ozet">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Son tam hafta · <span data-draw="alan" data-source="mobilite_ozet" data-field="hafta_basi" data-row="0" data-bicim="tarih">—</span> – <span data-draw="alan" data-source="mobilite_ozet" data-field="hafta_sonu" data-row="0" data-bicim="tarih">—</span></h2>
+              <p class="wt-not">Değişimler geçen yılın aynı haftasına göre; tatil, arife, bayram çevresi ve okul durumu eşleştirilerek. Ara tatil gibi geçen yıl karşılığı olmayan haftalarda iş günü pencereleri boş kalır.</p>
+            </div>
+          </div>
+          <div class="wt-kartlar">
+            <div class="wt-kart wt-kart-vurgu" id="hareketlilik-kart-istege">
+              <span class="wt-kart-ad">İsteğe bağlı hareketlilik, yıllık</span>
+              <span class="wt-kart-deger" data-draw="alan-renkli" data-source="mobilite_ozet" data-field="istege_bagli" data-row="0">—</span>
+              <span class="wt-kart-alt">hafta sonu gündüz ve akşam, iş günü akşamı</span>
+            </div>
+            <div class="wt-kart" id="hareketlilik-kart-hafta-sonu">
+              <span class="wt-kart-ad">Hafta sonu gündüz (11–19), yıllık</span>
+              <span class="wt-kart-deger" data-draw="alan-renkli" data-source="mobilite_ozet" data-field="hafta_sonu_gunduz" data-row="0">—</span>
+              <span class="wt-kart-alt">alışveriş ve gezi; en temiz sinyal</span>
+            </div>
+            <div class="wt-kart" id="hareketlilik-kart-zorunlu">
+              <span class="wt-kart-ad">Zorunlu hareketlilik (iş günü 06–09), yıllık</span>
+              <span class="wt-kart-deger" data-draw="alan-renkli" data-source="mobilite_ozet" data-field="zorunlu" data-row="0">—</span>
+              <span class="wt-kart-alt">işe ve okula gidiş; tüketim göstergesi değil</span>
+            </div>
+            <div class="wt-kart" id="hareketlilik-kart-son">
+              <span class="wt-kart-ad">Son saatlik ölçüm</span>
+              <span class="wt-kart-deger"><span data-draw="alan" data-source="mobilite_ozet" data-field="son_indeks" data-row="0" data-bicim="sayi">—</span></span>
+              <span class="wt-kart-alt">normali <span data-draw="alan" data-source="mobilite_ozet" data-field="son_normal" data-row="0" data-bicim="sayi">—</span> (aynı gün ve saat, önceki 8 hafta)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="hareketlilik-saatlik">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Son 21 gün: saatlik trafik indeksi</h2>
+              <p class="wt-not">Gri çizgi aynı gün ve saatin önceki 8 haftadaki ortancası. Hafta içi iki zirve işe gidiş ve dönüştür; hafta sonu öğleden sonraki plato isteğe bağlı hareketliliktir.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-grafik" id="hareketlilik-saatlik-grafik" data-draw="mobilite-saatlik-grafik" data-source="mobilite_saatlik">—</div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="hareketlilik-haftalik">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Haftalık eğilim: geçen yıla göre değişim</h2>
+              <p class="wt-not">İsteğe bağlı ve zorunlu hareketlilik ayrı çizilir. İkisi birlikte düşüyorsa genel bir etki (hava, tatil göçü), yalnızca isteğe bağlı düşüyorsa tüketim tarafında bir zayıflama olabilir.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-grafik" id="hareketlilik-haftalik-grafik" data-draw="mobilite-haftalik-grafik" data-source="mobilite_haftalik">—</div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="hareketlilik-pencereler">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Saat pencereleri: son 10 hafta</h2>
+              <p class="wt-not">Her hücre o pencerenin haftalık ortalamasının geçen yılın aynı haftasına göre yüzde değişimi. Yeşil daha fazla, kırmızı daha az hareketlilik. Akşam pencerelerinde indeks düşük olduğu için yüzdeler daha oynaktır.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-tablo-kap" data-draw="mobilite-isi" data-source="mobilite_haftalik">—</div>
+          </div>
+        </div>
+
+        <details class="wt-detay">
+          <summary>Yöntem ve sınırlar</summary>
+          <p>Kaynak, İBB'nin trafik indeksi web servisidir (İBB Açık Veri Lisansı). İndeks İstanbul geneli tıkanıklık ölçüsüdür, araç sayısı değildir; akşam zirvesinde tavana yaklaştığı için o saatlerdeki talep artışını tam göstermez. Pencereler: zorunlu iş günü 06–09; karma iş günü 16–19; isteğe bağlı iş günü 20–23, hafta sonu 11–19 ve 20–23. Haftalık isteğe bağlı değer, bu üç pencerenin eşit ağırlıklı ortalamasıdır. Yağmur ve kar tıkanıklığı artırıp isteğe bağlı yolculuğu azaltır; hava düzeltmesi henüz yok. Servis GitHub sunucularından erişilemediği için veri bu bilgisayardan toplanır.</p>
+        </details>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="resmi"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Resmi Göstergeler</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="akaryakit"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Akaryakıt →</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================ AKARYAKIT (EPDK) -->
+    <section class="wt-sayfa" id="akaryakit" aria-labelledby="b-akaryakit" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Akaryakıt</p>
+          <h1 id="b-akaryakit">Akaryakıt</h1>
+          <p class="wt-giris-metni">Benzin, motorin ve otogaz fiyatları: en büyük 8 dağıtım firmasının ülke ortalaması ve 81 ilde firmaların bildirdiği bayi satış fiyatlarının ortancası. Kaynak EPDK; fiyatlar pompa fiyatına çok yakındır ama birebir aynı olmayabilir. Şimdilik Web TÜFE endeksine girmez.</p>
+          <p class="wt-izleme-durum" id="akaryakit-durum"><span class="wt-canli" data-draw="izleme-nabiz" data-source="akaryakit_ulke" data-alan="tarih" data-esik-saat="60" aria-hidden="true"></span>Ülke ortalaması: <b data-draw="alan" data-source="akaryakit_ozet" data-field="tarih_ulke" data-row="0" data-bicim="tarih">—</b> · İl fiyatları: <b data-draw="alan" data-source="akaryakit_ozet" data-field="il_tarih" data-row="0" data-bicim="tarih">—</b> · Kaynak: EPDK web servisleri</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#akaryakit-ozet">Son fiyatlar</a>
+            <a href="#akaryakit-seyir">Ülke ortalaması</a>
+            <a href="#akaryakit-iller">İller</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="akaryakit-ozet">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Son fiyatlar</h2>
+              <p class="wt-not">Benzin ve motorin: 8 firma ülke ortalaması, litre fiyatı ve 30 gün önceye göre değişim. Otogaz: il ortancalarının ortancası.</p>
+            </div>
+          </div>
+          <div class="wt-kartlar">
+            <div class="wt-kart" id="akaryakit-kart-benzin">
+              <span class="wt-kart-ad">Benzin (95 oktan), ülke ortalaması</span>
+              <span class="wt-kart-deger"><span data-draw="alan" data-source="akaryakit_ozet" data-field="benzin" data-row="0" data-bicim="kur">—</span></span>
+              <span class="wt-kart-alt"><span data-draw="alan" data-source="akaryakit_ozet" data-field="benzin_30g" data-row="0" data-bicim="isaretli-yuzde">—</span> son 30 günde</span>
+            </div>
+            <div class="wt-kart" id="akaryakit-kart-motorin">
+              <span class="wt-kart-ad">Motorin, ülke ortalaması</span>
+              <span class="wt-kart-deger"><span data-draw="alan" data-source="akaryakit_ozet" data-field="motorin" data-row="0" data-bicim="kur">—</span></span>
+              <span class="wt-kart-alt"><span data-draw="alan" data-source="akaryakit_ozet" data-field="motorin_30g" data-row="0" data-bicim="isaretli-yuzde">—</span> son 30 günde</span>
+            </div>
+            <div class="wt-kart" id="akaryakit-kart-otogaz">
+              <span class="wt-kart-ad">Otogaz, il ortancası</span>
+              <span class="wt-kart-deger"><span data-draw="alan" data-source="akaryakit_ozet" data-field="otogaz" data-row="0" data-bicim="kur">—</span></span>
+              <span class="wt-kart-alt"><span data-draw="alan" data-source="akaryakit_ozet" data-field="otogaz_il" data-row="0" data-bicim="sayi">—</span> il</span>
+            </div>
+            <div class="wt-kart" id="akaryakit-kart-fark">
+              <span class="wt-kart-ad">Benzinde iller arası fark</span>
+              <span class="wt-kart-deger"><span data-draw="alan" data-source="akaryakit_ozet" data-field="benzin_fark" data-row="0" data-bicim="kur">—</span></span>
+              <span class="wt-kart-alt">en pahalı <span data-draw="alan" data-source="akaryakit_ozet" data-field="pahali_il" data-row="0" data-bicim="duz">—</span>, en ucuz <span data-draw="alan" data-source="akaryakit_ozet" data-field="ucuz_il" data-row="0" data-bicim="duz">—</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="akaryakit-seyir">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Ülke ortalaması, 2023'ten bu yana</h2>
+              <p class="wt-not">En yüksek işlem hacimli 8 dağıtım firmasının günlük ortalama bayi satış fiyatı, TL/litre.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-grafik" id="akaryakit-seyir-grafik" data-draw="akaryakit-seyir-grafik" data-source="akaryakit_ulke">—</div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="akaryakit-iller">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>İllere göre son fiyatlar</h2>
+              <p class="wt-not">Her ilde son 45 gün içinde fiyat bildiren firmaların ortancası, TL/litre. İstanbul Anadolu ve Avrupa yakası ayrı. Çubuk, fiyatın iller arasındaki konumunu gösterir.</p>
+            </div>
+            <select class="dash-select" id="akaryakit-sira" aria-label="Sıralama">
+              <option value="benzin">Benzine göre (pahalıdan)</option>
+              <option value="motorin">Motorine göre (pahalıdan)</option>
+              <option value="otogaz">Otogaza göre (pahalıdan)</option>
+              <option value="il">İl adına göre</option>
+            </select>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-tablo-kap">
+              <table class="wt-il-tablo" data-source="akaryakit_il_tablo" data-row-key="il_kodu">
+                <thead>
+                  <tr>
+                    <th data-field="il_adi">İl</th>
+                    <th class="wt-say" data-field="benzin">Benzin</th>
+                    <th class="wt-say" data-field="motorin">Motorin</th>
+                    <th class="wt-say" data-field="otogaz">Otogaz</th>
+                    <th class="wt-say" data-field="benzin_degisim">Benzin, 30 gün</th>
+                    <th class="wt-say" data-field="firma">Firma</th>
+                  </tr>
+                </thead>
+                <tbody data-draw="akaryakit-il-satirlar"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="hareketlilik"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Hareketlilik</span></button>
           <button type="button" class="wt-gecis-kart wt-sonraki" data-git="genel-bakis"><span class="wt-gecis-yon">Başa dön</span><span class="wt-gecis-ad">Genel Bakış ↑</span></button>
         </nav>
       </div>
@@ -729,6 +928,8 @@
         <a href="#araclar" data-git="araclar">Araçlar</a>
         <a href="#veri" data-git="veri">Veri ve Yöntem</a>
         <a href="#resmi" data-git="resmi">Resmi Göstergeler</a>
+        <a href="#hareketlilik" data-git="hareketlilik">Hareketlilik</a>
+        <a href="#akaryakit" data-git="akaryakit">Akaryakıt</a>
         <a href="https://claude.ai/artifact/M8R7pxhtN7ZyJqceRbzt8X" target="_blank" rel="noopener">Analiz Masası ↗</a>
       </nav>
       <div class="wt-altbilgi-not">

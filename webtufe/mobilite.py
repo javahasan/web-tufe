@@ -146,7 +146,7 @@ def haftalik_ozet(p: pd.DataFrame, gunler: pd.DataFrame) -> pd.DataFrame:
     aynı türdeki pencerelerin eşit ağırlıklı ortalaması (iş günü penceresi 5 gün, hafta sonu 2 gün
     olduğu için gün sayısıyla ağırlıklandırılmaz)."""
     d = p.merge(gunler[["temiz"]], left_on="tarih", right_index=True)
-    d = d[d["temiz"] & d["tur"].isin(["zorunlu", "karma", "istege_bagli"])].copy()
+    d = d[d["temiz"] & d["tur"].isin(["zorunlu", "karma", "istege_bagli", "istege_bagli_zayif"])].copy()
     if d.empty:
         return pd.DataFrame()
     t = pd.to_datetime(d["tarih"])

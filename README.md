@@ -157,6 +157,14 @@ haftanın aynı günleri) hesaplanır. Baz günleri resmi tatil, arife ve bayram
 durumu aynı olmalıdır; ara tatil haftası gibi karşılığı olmayan günlerde baz boş kalır.
 `data/cikti/mobilite/pencereler.csv` günlük, `haftalik.csv` haftalık özettir (pencereler eşit ağırlıklı).
 
+**Toplama yeri:** `api.ibb.gov.tr` GitHub sunucularından erişilemiyor (24.11.2026 erişim testinde
+bağlantı zaman aşımı), bu yüzden trafik indeksi GitHub'da değil, bu bilgisayardaki günlük Claude
+görevinde (`webtufe mobilite topla` ve `hesapla`) toplanır. Servis son 800 günü verdiği için Mac'in
+kapalı olduğu günler sonradan dolar. Görev her çalışmada `scripts/trafik_gonder.sh` ile yalnızca
+`data/ham/ibb_trafik` ve `data/cikti/mobilite` klasörlerini commit'leyip GitHub'a gönderir
+("Trafik verisi: <son saat>" commit'leri); gönderemezse kendi commit'ini geri alır ve bir sonraki
+çalışmada yeniden dener. GitHub'daki günlük iş bu klasörlere dokunmaz.
+
 Sınırlar: indeks tıkanıklıktır, araç sayısı değil; akşam zirvesinde tavana yaklaşır. Gece
 pencerelerinde indeks düşük olduğu için yüzde değişimler oynaktır. Kısa vadeli sapma mevsim
 geçişlerinde (ör. Eylül'de şehre dönüş) yanıltır; yıllık değişim esas alınmalı. Yağmur ve kar için
@@ -177,6 +185,13 @@ hava düzeltmesi henüz yok. Yalnızca İstanbul.
   beklentisi, EVDS bağlayıcısının `get_series_data` aracıyla her açılışta canlı okunur (sayfayı açan
   kişinin kendi EVDS bağlantısıyla). Sorguların bitiş tarihi 31.12.2027; 2028'den önce uzatılmalı.
   Analiz Masası da aynı bağlayıcıyla (`evds_kesfet`, `evds_seri_verisi` araçları) resmi seri okur.
+- **İzleme bölümleri** (panoda "Hareketlilik" ve "Akaryakıt"): canlılık noktası son verinin
+  yaşını gösterir (yeşil güncel, turuncu eski, gri bekleniyor). Hareketlilik: son tam haftanın
+  isteğe bağlı, hafta sonu gündüz ve zorunlu hareketliliği (yıllık değişim), son 21 günün saatlik
+  indeksi ve normali, haftalık eğilim ve saat pencereleri ısı tablosu. Akaryakıt: 8 firma ülke
+  ortalaması (2023'ten), 81 ilin benzin, motorin ve otogaz ortancası. Dosyalar `webtufe pano` ile
+  üretilir (`mobilite_*.csv`, `akaryakit_*.csv`); veri yokken başlıklarıyla yazılır ve sayfa
+  "bekleniyor" der.
 - **Ayrım kuralı:** Web TÜFE ile resmi seriler (TÜİK TÜFE dahil, EVDS'den) hiçbir yerde tek seride
   birleştirilmez, zincirlenmez ya da ortalanmaz. Aynı grafiğe düşerlerse ayrı panellerde, kendi
   ölçekleriyle çizilir; her raporda kaynak tablosu ve uyarılar yer alır.

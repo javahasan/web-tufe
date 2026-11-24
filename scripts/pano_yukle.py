@@ -45,6 +45,11 @@ HEDEFLER = {
     "pano:aylik": (PANO, PANO_DIZIN / "aylik.csv"),
     "pano:son_degisimler": (PANO, PANO_DIZIN / "son_degisimler.csv"),
     "pano:gozlem": (PANO, PANO_DIZIN / "gozlem.csv"),
+    "pano:mobilite_saatlik": (PANO, PANO_DIZIN / "mobilite_saatlik.csv"),
+    "pano:mobilite_gunluk": (PANO, PANO_DIZIN / "mobilite_gunluk.csv"),
+    "pano:mobilite_haftalik": (PANO, PANO_DIZIN / "mobilite_haftalik.csv"),
+    "pano:akaryakit_ulke": (PANO, PANO_DIZIN / "akaryakit_ulke.csv"),
+    "pano:akaryakit_il": (PANO, PANO_DIZIN / "akaryakit_il.csv"),
     "analiz:gunluk": (ANALIZ, PANO_DIZIN / "gunluk.csv"),
     "analiz:aylik": (ANALIZ, PANO_DIZIN / "aylik.csv"),
     "analiz:son_degisimler": (ANALIZ, PANO_DIZIN / "son_degisimler.csv"),
@@ -52,8 +57,16 @@ HEDEFLER = {
     "analiz:madde_fiyatlari": (ANALIZ, PANO_DIZIN / "madde_fiyatlari.csv"),
     "analiz:agirliklar": (ANALIZ, PANO_DIZIN / "agirliklar.csv"),
 }
-# Tarih sütunu olmayan dosyaların günü, onlarla birlikte üretilen gunluk.csv'den okunur.
-TARIHSIZ = {"aylik.csv", "agirliklar.csv"}
+# Bir dosyanın "sürümü" (yüklenenden yeni mi?) hangi dosyanın hangi sütununun en büyük değeri.
+# Tarih sütunu olmayan dosyalar, birlikte üretildikleri dosyaya bakar. Trafik dosyaları saatlik
+# güncellendiği için son ölçüm saatini kullanır; böylece 15:30'daki görev de yeni saatleri yükler.
+SURUM = {
+    "aylik.csv": ("gunluk.csv", "tarih"),
+    "agirliklar.csv": ("gunluk.csv", "tarih"),
+    "mobilite_saatlik.csv": ("mobilite_saatlik.csv", "zaman"),
+    "mobilite_gunluk.csv": ("mobilite_saatlik.csv", "zaman"),
+    "mobilite_haftalik.csv": ("mobilite_saatlik.csv", "zaman"),
+}
 
 
 def _bugun() -> str:
@@ -73,13 +86,14 @@ def _kayitlar() -> dict:
 
 
 def _dosya_tarihi(yol: Path) -> str | None:
-    kaynak = PANO_DIZIN / "gunluk.csv" if yol.name in TARIHSIZ else yol
+    ad, sutun = SURUM.get(yol.name, (yol.name, "tarih"))
+    kaynak = yol.parent / ad
     if not yol.exists() or not kaynak.exists():
         return None
-    df = pd.read_csv(kaynak)
-    if df.empty or "tarih" not in df:
+    df = pd.read_csv(kaynak, dtype=str)
+    if df.empty or sutun not in df or df[sutun].dropna().empty:
         return None
-    return str(df["tarih"].max())
+    return str(df[sutun].dropna().max())
 
 
 def durum() -> dict:
