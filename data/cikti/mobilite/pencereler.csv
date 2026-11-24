@@ -2644,7 +2644,7 @@ tarih,pencere,tur,deger,yillik_baz,yillik_baz_gun,kisa_baz,kisa_baz_gun,yillik_d
 2026-11-20,karma_aksam,karma,73.75,,1,,0,,,is_gunu,False,False,False,True,True
 2026-11-20,zorunlu_sabah,zorunlu,33.75,,1,,0,,,is_gunu,False,False,False,True,True
 2026-11-21,hafta_sonu_gece,istege_bagli,53.75,51.25,3,40.5,8,4.88,32.72,cumartesi,False,False,False,False,True
-2026-11-21,hafta_sonu_gunduz,istege_bagli,62.444,67.778,3,58.5555,8,-7.87,6.64,cumartesi,False,False,False,False,True
+2026-11-21,hafta_sonu_gunduz,istege_bagli,62.889,67.778,3,58.5555,8,-7.21,7.4,cumartesi,False,False,False,False,True
 2026-11-22,hafta_sonu_gece,istege_bagli,36.5,32.0,3,34.0,8,14.06,7.35,pazar,False,False,False,False,True
 2026-11-22,hafta_sonu_gunduz,istege_bagli,49.0,52.444,3,46.0,8,-6.57,6.52,pazar,False,False,False,False,True
 2026-11-23,is_gunu_gece,istege_bagli,30.0,20.0,3,23.0,7,50.0,30.43,is_gunu,False,False,False,False,True
