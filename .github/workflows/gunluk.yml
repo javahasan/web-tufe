@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       mod:
-        description: "tam = toplama + hesap + kayıt; erisim_testi = siteye birkaç istek atar, kayıt yapmaz"
+        description: "tam = toplama + hesap + kayıt; erisim_testi = kaynaklara birkaç istek atar, kayıt yapmaz"
         type: choice
         options: [tam, erisim_testi]
         default: tam
@@ -53,6 +53,16 @@ jobs:
           print(f"{len(d)} satır, {d['zincir'].nunique()} zincir: {sorted(d['zincir'].unique())}")
           EOF
           rm -rf data/ham/marketfiyati/tarih=1900-01-01
+          webtufe akaryakit --il 6 341 --sekiz-firma-azami-gun 2
+          python - <<'EOF'
+          import glob
+          import pandas as pd
+          for y in sorted(glob.glob("data/ham/epdk/*_il/tarih=*/iller.parquet")):
+              d = pd.read_parquet(y)
+              print(f"{y}: {len(d)} satır, {d['il_kodu'].nunique()} il, {d['firma'].nunique()} firma")
+          print(open("data/ham/epdk/sekiz_firma.csv").read())
+          EOF
+          rm -rf data/ham/epdk
 
       - name: Yeni yılın TÜİK sepeti
         if: inputs.mod != 'erisim_testi'
@@ -65,6 +75,15 @@ jobs:
         if: inputs.mod != 'erisim_testi'
         continue-on-error: true
         run: webtufe topla
+
+      # EPDK akaryakıt ve LPG fiyatları: 81 il (~15 dk); 8 firma ülke ortalamasının eksik günleri
+      # 2023 başından doldurulur (ilk çalışmada ~40 dk). Endekse girmez, yalnızca kaydedilir.
+      - name: Akaryakıt fiyatları (EPDK)
+        id: akaryakit
+        if: inputs.mod != 'erisim_testi'
+        continue-on-error: true
+        timeout-minutes: 100
+        run: webtufe akaryakit
 
       - name: Endeksi hesapla
         if: inputs.mod != 'erisim_testi'
@@ -88,7 +107,12 @@ jobs:
           git push
 
       - name: Toplama hatasını bildir
-        if: steps.topla.outcome == 'failure'
+        if: steps.topla.outcome == 'failure' || steps.akaryakit.outcome == 'failure'
         run: |
-          echo "::error::Fiyat toplama tamamlanamadı (bazı şehirler eksik olabilir). Ayrıntı 'Fiyatları topla' adımında."
+          if [ "${{ steps.topla.outcome }}" = "failure" ]; then
+            echo "::error::Market fiyatı toplama tamamlanamadı (bazı şehirler eksik olabilir). Ayrıntı 'Fiyatları topla' adımında."
+          fi
+          if [ "${{ steps.akaryakit.outcome }}" = "failure" ]; then
+            echo "::error::Akaryakıt fiyatı toplama tamamlanamadı (bazı iller eksik olabilir). Ayrıntı 'Akaryakıt fiyatları (EPDK)' adımında."
+          fi
           exit 1

@@ -8,6 +8,7 @@
   mansetler Gerçek fiyatlardan günün manşetleri
   pano      Pano ve Analiz Masası dosyaları (data/cikti/pano/)
   haftalik  Analiz Masası'nın haftalık görünümü için Web TÜFE verisi (JSON)
+  akaryakit EPDK akaryakıt ve LPG fiyatlarını topla (data/ham/epdk/)
 """
 
 from __future__ import annotations
@@ -154,6 +155,24 @@ def komut_haftalik(a):
           f"genel endeks {i['genel_endeks_son']} (haftalık {i['genel_haftalik_degisim_yuzde']}%) -> {a.cikti}")
 
 
+def komut_akaryakit(a):
+    from datetime import date
+
+    from .toplayicilar.epdk import ayarlari_yukle as epdk_ayar, topla as epdk_topla
+    ayar = epdk_ayar()
+    if a.sekiz_firma_azami_gun is not None:
+        ayar.sekiz_firma_azami_gun = a.sekiz_firma_azami_gun
+    sonuc = epdk_topla(ayar, gun=date.fromisoformat(a.tarih) if a.tarih else None,
+                       iller=[int(x) for x in a.il] if a.il else None, yeniden=a.yeniden,
+                       sekiz_firma=not a.sekiz_firma_yok)
+    print(f"Akaryakıt (il): {sonuc.get('akaryakit') or 'yazılmadı'}")
+    print(f"LPG (il): {sonuc.get('lpg') or 'yazılmadı'}")
+    if "sekiz_firma_gun" in sonuc:
+        print(f"8 firma bülteni: {sonuc['sekiz_firma_gun']} gün alındı")
+    if sonuc["basarisiz"]:
+        raise SystemExit(f"Eksik kalanlar: {sonuc['basarisiz']}")
+
+
 def komut_rapor(a):
     yol = CIKTI / "gunluk.parquet"
     if not yol.exists():
@@ -225,6 +244,14 @@ def main(argv=None):
 
     s = alt.add_parser("pano", help="pano ve Analiz Masası dosyaları")
     s.set_defaults(f=komut_pano)
+
+    s = alt.add_parser("akaryakit", help="EPDK akaryakıt ve LPG fiyatları")
+    s.add_argument("--tarih", help="YYYY-AA-GG (varsayılan bugün; il anlık görüntüsü her zaman günceldir)")
+    s.add_argument("--il", nargs="*", help="il trafik kodları (İstanbul: 341 Anadolu, 342 Avrupa)")
+    s.add_argument("--yeniden", action="store_true", help="o günün il dosyalarının üzerine yaz")
+    s.add_argument("--sekiz-firma-yok", action="store_true", help="8 firma bültenini doldurma")
+    s.add_argument("--sekiz-firma-azami-gun", type=int, help="bir çalışmada doldurulacak en çok gün")
+    s.set_defaults(f=komut_akaryakit)
 
     s = alt.add_parser("haftalik", help="haftalık görünüm verisi")
     s.add_argument("--cikti", required=True, help="yazılacak JSON dosyası")

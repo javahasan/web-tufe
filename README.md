@@ -13,6 +13,7 @@ güncellenen bir fiyat göstergesi ve deflatör elde etmek.
 | Ana gruplar, COICOP düzeyleri, özel göstergeler (B, C, D, E, mallar/hizmet…) | ✅ Var (özel göstergeler yaklaşık, bkz. aşağı) |
 | Market ürünleri → TÜİK maddesi eşleme kuralları | ✅ 164 madde, sepet ağırlığının %27,7'si (gıdanın tamamı) |
 | marketfiyati.org.tr toplayıcısı | ✅ 12.11.2026'da kullanıcı kararıyla açıldı; 3 şehir, istekler arası 2 sn, ilk gün toplanıyor |
+| Akaryakıt ve LPG fiyatları (EPDK) | ✅ 24.11.2026'dan beri her gün, 81 il; 8 firma ülke ortalaması 2023'ten. Endekse henüz girmiyor |
 | Diğer kaynaklar (giyim, enerji, ulaştırma, hizmetler…) | ⏳ Yapılacak |
 | Zamanlama (her gün otomatik) | ✅ GitHub Actions, her gün 09:17 (bkz. "Günlük otomatik çalışma") |
 | Pano ve Analiz Masası | ✅ Gerçek Web TÜFE verisi; resmi seriler TCMB EVDS bağlayıcısından canlı |
@@ -56,6 +57,7 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/webtufe rapor
 .venv/bin/webtufe mansetler          # gerçek fiyatlardan günün manşetleri: data/cikti/mansetler_gercek.csv
 .venv/bin/webtufe pano               # pano ve Analiz Masası dosyaları: data/cikti/pano/*.csv
+.venv/bin/webtufe akaryakit          # EPDK akaryakıt ve LPG fiyatları: data/ham/epdk/
 .venv/bin/webtufe haftalik --cikti x.json   # haftalık görünümün Web TÜFE verisi
 .venv/bin/python -m pytest           # testler
 ```
@@ -104,6 +106,27 @@ her gün 09:00'da çalışıyordu). GitHub ile aynı gün iki kez toplama yapıl
 launchctl enable gui/$(id -u)/local.webtufe.gunluk
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.webtufe.gunluk.plist
 ```
+
+## Akaryakıt fiyatları (EPDK)
+
+`webtufe akaryakit` (`webtufe/toplayicilar/epdk.py`), EPDK'nın herkese açık XML web servislerinden
+(epdk.gov.tr > Akaryakıt Fiyatları) üç veri toplar. GitHub'daki günlük iş bunu market
+toplamasından sonra çalıştırır; veri depoya kaydedilir ama **şimdilik Web TÜFE endeksine girmez**.
+
+| Dosya | İçerik | Tarihçe |
+|---|---|---|
+| `data/ham/epdk/akaryakit_il/tarih=…/iller.parquet` | 81 ilde (İstanbul Anadolu 341, Avrupa 342 ayrı) her dağıtım firmasının her yakıt türü için geçerli bayi satış fiyatı ve fiyatın geçerlilik tarihi | Her gün alınan anlık görüntü |
+| `data/ham/epdk/lpg_il/tarih=…/iller.parquet` | 81 ilde LPG firmalarının otogaz, tüplü ve dökme LPG fiyatları | Her gün |
+| `data/ham/epdk/sekiz_firma.csv` | En yüksek işlem hacimli 8 firmanın ülke ortalaması bayi satış fiyatı (benzin, motorin, gazyağı, fuel oil, kalorifer yakıtı) | 1.1.2023'ten; eksik günler her çalışmada doldurulur |
+
+- Fiyatlar, dağıtım şirketlerinin EPDK Bildirim Sistemi'ne yaptığı tavan/tavsiye bayi satış
+  fiyatı beyanlarıdır; istasyondaki pompa fiyatına çok yakındır ama birebir aynı olmayabilir.
+- İl servisi, fiyat bildirmeyi bırakmış firmaların yıllar önceki son fiyatlarını da döndürür;
+  geçerlilik tarihi bir yıldan eski satırlar kaydedilmez. Analizde yine de geçerlilik tarihine bakın.
+- Ayarlar `config/ayarlar.yaml` > `epdk`. İstekler arası 2 sn; servis art arda 5 kez hata verirse
+  toplama durur. Tüm iller yaklaşık 15 dakika sürer.
+- Opet de il ve ilçe bazında fiyat veriyor, ama kullanım koşulları içeriğin kopyalanmasını ve başka
+  platformda yayımlanmasını yasakladığı için kullanılmadı (depo herkese açık).
 
 ## Pano ve Analiz Masası
 
@@ -155,11 +178,12 @@ config/
 data/
   referans/sepet_<yıl>.csv       TÜİK sepeti ve ağırlıklar
   ham/<kaynak>/tarih=…/          ham fiyat gözlemleri (değiştirilmez)
+  ham/epdk/                      akaryakıt ve LPG fiyatları (EPDK)
   cikti/                         endeksler
   cikti/pano/                    sayfalara giden CSV'ler (depoya kaydedilmez)
 webtufe/
   tuik.py                        TÜİK veri portalı (JSON-stat, UserLang: tr)
-  toplayicilar/                  kaynak başına bir toplayıcı
+  toplayicilar/                  kaynak başına bir toplayıcı (marketfiyati, epdk)
   eslestirme.py, metin.py        eşleme ve Türkçe metin normalleştirme
   endeks.py                      madde endeksi, Laspeyres zincirleme, aylık
   gostergeler.py                 seriler ve özel göstergeler

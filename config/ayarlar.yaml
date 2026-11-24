@@ -50,3 +50,18 @@ toplama:
     # - {ad: trabzon, enlem: 41.0027, boylam: 39.7168}
     # - {ad: diyarbakir, enlem: 37.9144, boylam: 40.2306}
     # - {ad: erzurum, enlem: 39.9043, boylam: 41.2679}
+
+# EPDK akaryakıt ve LPG fiyatları (webtufe akaryakit). Kaynak, EPDK'nın herkese açık XML web
+# servisleri; fiyatlar dağıtıcıların bildirdiği bayi satış fiyatları. 24.11.2026'da kullanıcı
+# kararıyla eklendi: tüm iller, 8 firma ülke ortalaması 2023 başından, şimdilik endekse girmez.
+epdk:
+  istek_arasi_saniye: 2.0
+  zaman_asimi_saniye: 90
+  yeniden_deneme: 3
+  ardisik_hata_siniri: 5
+  # En yüksek hacimli 8 firmanın ülke ortalaması bu tarihten itibaren eksik günler doldurulur
+  sekiz_firma_baslangic: "2023-01-01"
+  # Bir çalışmada en çok kaç gün doldurulur (gün başına ~2,2 sn)
+  sekiz_firma_azami_gun: 1500
+  # İl trafik kodları ya da "hepsi" (81 il; İstanbul Anadolu 341, Avrupa 342 ayrı)
+  iller: hepsi
