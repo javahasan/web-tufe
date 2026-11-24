@@ -32,22 +32,26 @@
   dash.calc('ozet', {
     inputs: ['aylik', 'gunluk'],
     title: 'Özet: genel endeks',
-    description: 'Genel endeksin son ay ve son gün değerleri; yıllık değişimin önceki aya göre farkı.',
+    description: 'Genel endeksin son ay ve son gün değerleri; yıllık değişimin önceki aya göre farkı; baz gününden (= 100) bu yana değişim.',
     fn: (aylik, gunluk) => {
       const sayi = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
       const genel = aylik.filter((r) => r.seri_kodu === 'TUFE').sort((a, b) => (a.ay < b.ay ? -1 : 1));
       const g = gunluk.filter((r) => r.seri_kodu === 'TUFE').sort((a, b) => (a.tarih < b.tarih ? -1 : 1));
-      if (genel.length < 2 || !g.length) return [];
+      if (!genel.length || !g.length) return [];
       const son = genel[genel.length - 1];
-      const onceki = genel[genel.length - 2];
+      // Veri yeni başladığında önceki ay yoktur
+      const onceki = genel.length > 1 ? genel[genel.length - 2] : {};
       const sg = g[g.length - 1];
       const fark = sayi(son.yillik_degisim) == null || sayi(onceki.yillik_degisim) == null ? null
         : Math.round((sayi(son.yillik_degisim) - sayi(onceki.yillik_degisim)) * 100) / 100;
       return [{
         ay: son.ay, durum: son.kesin, gun: sayi(son.gun),
         aylik_degisim: sayi(son.aylik_degisim), yillik_degisim: sayi(son.yillik_degisim), yillik_fark: fark,
-        onceki_ay: onceki.ay, onceki_aylik_degisim: sayi(onceki.aylik_degisim), onceki_durum: onceki.kesin,
+        onceki_ay: onceki.ay ?? null, onceki_aylik_degisim: sayi(onceki.aylik_degisim), onceki_durum: onceki.kesin ?? null,
         son_gun: sg.tarih, endeks: sayi(sg.endeks), gunluk_degisim: sayi(sg.gunluk_degisim),
+        // Baz günü (ilk toplama günü) = 100; yıllık veri birikene kadar açılışta bu gösterilir
+        baz_tarihi: g[0].tarih, aylik_endeks: sayi(son.endeks),
+        baslangictan: sayi(sg.endeks) == null ? null : Math.round((sayi(sg.endeks) - 100) * 100) / 100,
       }];
     },
   });
@@ -293,8 +297,15 @@
     };
   }
 
-  function bosYaz(el, durum) {
+  function bosYaz(el, durum, mesaj) {
     el.replaceChildren();
+    if (mesaj && durum === 'ok') {
+      const p = document.createElement('p');
+      p.className = 'wt-bos';
+      p.textContent = mesaj;
+      el.append(p);
+      return;
+    }
     el.textContent = durum === 'error' ? 'Yüklenemedi' : '—';
   }
 
@@ -1115,6 +1126,7 @@
     if (d.status !== 'ok' || !d.data || !d.data.length) { bosYaz(el, d.status); return; }
     el.replaceChildren();
     const rows = d.data.filter((r) => r.yillik_degisim != null).sort((a, b) => b.yillik_degisim - a.yillik_degisim);
+    if (!rows.length) { bosYaz(el, 'ok', 'Yıllık değişim için en az bir yıllık veri gerekiyor; ilk değerler Kasım 2027’de.'); return; }
     const W = Math.max(280, Math.floor(el.clientWidth || 600));
     const satir = 26;
     const m = { ust: 20, alt: 24, sag: 58 };
@@ -1283,7 +1295,7 @@
   });
 
   // ================================================================ site: menü ve bölüm geçişleri
-  const SAYFALAR = ['genel-bakis', 'gruplar', 'cekirdek', 'maddeler', 'araclar', 'veri'];
+  const SAYFALAR = ['genel-bakis', 'gruplar', 'cekirdek', 'maddeler', 'araclar', 'veri', 'resmi'];
   const hareketAzalt = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   document.querySelectorAll('.wt-site').forEach((k) => k.style.setProperty('--wt-vurgu', dash.colors[0]));
 
@@ -1356,7 +1368,7 @@
   dash.calc('mansetler', {
     inputs: ['gercek_mansetler', 'ozet', 'son_degisimler', 'ana_grup_tablosu', 'yayginlik'],
     title: 'Günün manşetleri',
-    description: 'Manşet bandındaki cümleler: gerçek market fiyatlarından (en pahalı ürün, zincir farkı, temel gıdalar, günlük değişim) ve sentetik endeksten (yıllık enflasyon, en çok artan ve düşen kalemler, gruplar, yaygınlık) seçilen değerler.',
+    description: 'Manşet bandındaki cümleler: gerçek market fiyatlarından (en pahalı ürün, zincir farkı, temel gıdalar, günlük değişim) ve Web TÜFE endeksinden (genel endeks, aylık ve yıllık değişim, en çok artan ve düşen kalemler, gruplar, yaygınlık) seçilen değerler. Hesaplanamayan değerler (ör. bir yıllık veri olmadan yıllık değişim) banda girmez.',
     fn: (gercek, ozet, son_degisimler, ana_gruplar, yayginlik) => {
       const sayi = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
       const AYK = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
@@ -1382,9 +1394,19 @@
         }
       });
       const o = (ozet || [])[0];
+      const K = 'Web TÜFE';
       if (o) {
-        sentetikler.push({ kaynak: 'Sentetik', on: 'Yıllık enflasyon ', deger: o.yillik_degisim, bicim: 'yuzde', ara1: '; önceki aya göre ', deger2: o.yillik_fark, bicim2: 'puan', ara2: ' puan' });
-        sentetikler.push({ kaynak: 'Sentetik', on: o.ay ? 'Aylık değişim ' : '', deger: o.aylik_degisim, bicim: 'yuzde', ara1: o.durum === 'kesin' ? ' (kesin)' : ' (geçici)' });
+        if (o.yillik_degisim != null) {
+          sentetikler.push(o.yillik_fark != null
+            ? { kaynak: K, on: 'Yıllık enflasyon ', deger: o.yillik_degisim, bicim: 'yuzde', ara1: '; önceki aya göre ', deger2: o.yillik_fark, bicim2: 'puan', ara2: ' puan' }
+            : { kaynak: K, on: 'Yıllık enflasyon ', deger: o.yillik_degisim, bicim: 'yuzde' });
+        }
+        if (o.aylik_degisim != null) {
+          sentetikler.push({ kaynak: K, on: 'Aylık değişim ', deger: o.aylik_degisim, bicim: 'yuzde', ara1: o.durum === 'kesin' ? ' (kesin)' : ' (geçici)' });
+        }
+        if (o.endeks != null) {
+          sentetikler.push({ kaynak: K, on: 'Genel endeks (12 Kas 2026 = 100) ', deger: o.endeks, bicim: 'endeks', ara1: o.gunluk_degisim != null ? '; önceki toplamaya göre ' : '', deger2: o.gunluk_degisim, bicim2: 'isaretli' });
+        }
       }
       const maddeler = (son_degisimler || []).filter((r) => r.duzey === 'madde');
       const uc = (alan, buyuk) => {
@@ -1394,15 +1416,15 @@
       [['gunluk', true, 'Günün en çok artan maddesi: '], ['aylik', true, 'Ayın en çok artan maddesi: '],
         ['aylik', false, 'Ayın en çok düşen maddesi: '], ['yillik', true, 'Yılın en çok artan maddesi: ']].forEach(([alan, buyuk, metin]) => {
         const r = uc(alan, buyuk);
-        if (r) sentetikler.push({ kaynak: 'Sentetik', on: metin + r.seri_adi + ' ', deger: sayi(r[alan]), bicim: 'isaretli' });
+        if (r) sentetikler.push({ kaynak: K, on: metin + r.seri_adi + ' ', deger: sayi(r[alan]), bicim: 'isaretli' });
       });
       const g = (ana_gruplar || []).filter((r) => r.yillik_degisim != null).sort((a, b) => a.yillik_degisim - b.yillik_degisim);
       if (g.length) {
-        sentetikler.push({ kaynak: 'Sentetik', on: 'En yüksek yıllık enflasyon: ' + g[g.length - 1].ad + ' ', deger: g[g.length - 1].yillik_degisim, bicim: 'yuzde' });
-        sentetikler.push({ kaynak: 'Sentetik', on: 'En düşük yıllık enflasyon: ' + g[0].ad + ' ', deger: g[0].yillik_degisim, bicim: 'yuzde' });
+        sentetikler.push({ kaynak: K, on: 'En yüksek yıllık enflasyon: ' + g[g.length - 1].ad + ' ', deger: g[g.length - 1].yillik_degisim, bicim: 'yuzde' });
+        sentetikler.push({ kaynak: K, on: 'En düşük yıllık enflasyon: ' + g[0].ad + ' ', deger: g[0].yillik_degisim, bicim: 'yuzde' });
       }
       const y = (yayginlik || [])[(yayginlik || []).length - 1];
-      if (y) sentetikler.push({ kaynak: 'Sentetik', on: 'Fiyatı artan maddelerin payı ', deger: y.artan_oran, bicim: 'yuzde1' });
+      if (y && y.artan_oran != null) sentetikler.push({ kaynak: K, on: 'Fiyatı artan maddelerin payı ', deger: y.artan_oran, bicim: 'yuzde1' });
       const sonuc = [];
       for (let i = 0; i < Math.max(gercekler.length, sentetikler.length); i++) {
         if (sentetikler[i]) sonuc.push(sentetikler[i]);
@@ -1419,6 +1441,7 @@
     isaretli: (v) => wt.isaretli(v),
     puan: (v) => wt.puan(v),
     sayi: (v) => (v == null ? '—' : f0(v)),
+    endeks: (v) => (v == null ? '—' : f2(v)),
   };
 
   dash.draw('manset-bandi', (el) => {
@@ -1478,4 +1501,129 @@
       d.querySelectorAll('.wt-bant-oynat').forEach((x) => { x.hidden = !durdu; });
     });
   });
+
+  // ================================================================ veri yeniyken açılış
+  // Toplama 12.11.2026'da başladı. Yıllık ve aylık değişim olmadan açılış bölümü
+  // "başlangıçtan bu yana" görünümüne geçer; veri olmayan özet kutuları gizlenir.
+  dash.onData(() => {
+    const o = dash.data('ozet');
+    const r = o.status === 'ok' && Array.isArray(o.data) ? o.data[0] : null;
+    if (!r) return;
+    const gy = dash.data('gunluk_yillik');
+    const gizle = (sec, gizli) => document.querySelectorAll(sec).forEach((x) => { x.hidden = gizli; });
+    const yillikVar = r.yillik_degisim != null;
+    gizle('#hero-yillik', !yillikVar);
+    gizle('#hero-baslangic', yillikVar);
+    gizle('#istat-aylik', r.aylik_degisim == null);
+    gizle('#istat-ay-ortalama', r.aylik_degisim != null);
+    gizle('#istat-onceki', r.onceki_ay == null);
+    gizle('#istat-aralik', !(gy.status === 'ok' && Array.isArray(gy.data) && gy.data.length));
+  });
+
+  // ================================================================ resmi göstergeler (TCMB EVDS, canlı)
+  // Bu bölümün verileri EVDS bağlayıcısından gelir ve Web TÜFE verileriyle hiçbir hesapta
+  // birleştirilmez. get_series_data yanıtı markdown tablodur; yükleyici {tarih, deger} satırlarına çevirir.
+  const RESMI_KAYNAKLAR = ['resmi_tufe_yillik', 'resmi_gida_yillik', 'resmi_tufe_aylik', 'resmi_gida_aylik',
+    'resmi_usd', 'resmi_aofm', 'resmi_beklenti'];
+  RESMI_KAYNAKLAR.forEach((id) => dash.loader(id, {
+    description: 'EVDS yanıtındaki markdown tablosunu {tarih, deger} satırlarına çevirir: günlük tarih GG-AA-YYYY → YYYY-AA-GG, aylık tarih YYYY-A → YYYY-AA. Değeri boş satırlar (tatil, yayımlanmamış dönem) atlanır.',
+    fn: ({ answer }) => {
+      const metin = typeof answer === 'string' ? answer : (answer && typeof answer.result === 'string' ? answer.result : '');
+      const satirlar = metin.split('\n').filter((s) => s.trim().startsWith('|'));
+      if (satirlar.length < 3) throw new Error(metin.trim().slice(0, 300) || 'EVDS tablo döndürmedi.');
+      const hucre = (s) => s.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((x) => x.trim());
+      const tarih = (s) => {
+        let m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(s);
+        if (m) return m[3] + '-' + m[2] + '-' + m[1];
+        m = /^(\d{4})-(\d{1,2})$/.exec(s);
+        if (m) return m[1] + '-' + m[2].padStart(2, '0');
+        return s;
+      };
+      const rows = satirlar.slice(2).map(hucre).filter((h) => h[1] !== undefined && h[1] !== '')
+        .map((h) => ({ tarih: tarih(h[0]), deger: Number(h[1]) })).filter((r) => Number.isFinite(r.deger));
+      return { columns: ['tarih', 'deger'], rows };
+    },
+  }));
+
+  dash.calc('resmi_ozet', {
+    inputs: RESMI_KAYNAKLAR,
+    title: 'Resmi göstergeler: son değerler',
+    description: 'Her EVDS serisinin son yayımlanan değeri ve dönemi; ABD doları için son değerin 30 gün önceki (ya da ondan önceki son iş günü) kura göre yüzde değişimi.',
+    fn: (tufeYillik, gidaYillik, tufeAylik, gidaAylik, usd, aofm, beklenti) => {
+      const sirala = (l) => (Array.isArray(l) ? l.filter((r) => r && r.deger != null).slice().sort((a, b) => (a.tarih < b.tarih ? -1 : 1)) : []);
+      const son = (l) => { const s = sirala(l); return s.length ? s[s.length - 1] : null; };
+      const u = sirala(usd);
+      const uSon = u.length ? u[u.length - 1] : null;
+      let usd30 = null;
+      if (uSon) {
+        const sinir = new Date(Date.parse(uSon.tarih + 'T00:00:00Z') - 30 * 864e5).toISOString().slice(0, 10);
+        const once = u.filter((r) => r.tarih <= sinir);
+        if (once.length) usd30 = Math.round((uSon.deger / once[once.length - 1].deger - 1) * 10000) / 100;
+      }
+      const ty = son(tufeYillik), gy = son(gidaYillik), ta = son(tufeAylik), ga = son(gidaAylik), a = son(aofm), b = son(beklenti);
+      return [{
+        tufe_ay: ty ? ty.tarih : null, tufe_yillik: ty ? ty.deger : null, tufe_aylik: ta ? ta.deger : null,
+        gida_ay: gy ? gy.tarih : null, gida_yillik: gy ? gy.deger : null, gida_aylik: ga ? ga.deger : null,
+        usd: uSon ? uSon.deger : null, usd_tarih: uSon ? uSon.tarih : null, usd_30g: usd30,
+        aofm: a ? a.deger : null, aofm_tarih: a ? a.tarih : null,
+        beklenti: b ? b.deger : null, beklenti_ay: b ? b.tarih : null,
+      }];
+    },
+  });
+
+  BICIM.kur = (v) => (sayi(v) == null ? '—' : f2(sayi(v)) + ' TL');
+
+  const resmiTarih = (s) => {
+    const m = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(String(s || ''));
+    return m ? new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, m[3] ? Number(m[3]) : 1)) : null;
+  };
+  const resmiNoktalar = (id) => {
+    const d = dash.data(id);
+    if (d.status !== 'ok' || !Array.isArray(d.data) || !d.data.length) return null;
+    return d.data.map((r) => ({ t: resmiTarih(r.tarih), v: Number(r.deger) }))
+      .filter((p) => p.t && Number.isFinite(p.v)).sort((a, b) => a.t - b.t);
+  };
+  const ayBaslik = (t) => AY[t.getUTCMonth()] + ' ' + t.getUTCFullYear();
+  function resmiLejant(el, seriler) {
+    const l = document.createElement('div');
+    l.className = 'wt-lejant';
+    seriler.forEach((s) => {
+      const o = document.createElement('span');
+      const i = document.createElement('i');
+      i.style.cssText = 'display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle;background:' + s.renk;
+      o.append(i, document.createTextNode(s.ad));
+      l.append(o);
+    });
+    el.append(l);
+  }
+  function resmiCiz(el, kaynaklar, secenek) {
+    const seriler = kaynaklar.map(([id, ad, renk, kalin]) => ({ id, ad, renk, kalin, noktalar: resmiNoktalar(id) })).filter((s) => s.noktalar);
+    if (!seriler.length) {
+      const durum = dash.data(kaynaklar[0][0]).status;
+      bosYaz(el, durum);
+      return;
+    }
+    wt.cizgi(el, seriler, secenek);
+    if (seriler.length > 1) resmiLejant(el, seriler);
+  }
+
+  dash.draw('resmi-tufe-grafik', (el) => resmiCiz(el, [
+    ['resmi_tufe_yillik', 'TÜFE genel', dash.colors[0], 2.25],
+    ['resmi_gida_yillik', 'Gıda ve alkolsüz içecekler', dash.colors[2]],
+  ], {
+    yukseklik: 260, etiket: 'TÜİK TÜFE yıllık değişim, genel ve gıda, yüzde; kaynak TCMB EVDS',
+    yBicim: (v) => '%' + f0(v), ipBicim: (v) => wt.yuzde(v), ipBaslik: ayBaslik,
+  }));
+  dash.draw('resmi-usd-grafik', (el) => resmiCiz(el, [['resmi_usd', 'ABD doları', dash.colors[0]]], {
+    yukseklik: 240, etiket: 'TCMB ABD doları döviz alış kuru, TL; kaynak TCMB EVDS',
+    yBicim: (v) => f2(v), ipBicim: (v) => f2(v) + ' TL', ipBaslik: gunBaslik,
+  }));
+  dash.draw('resmi-aofm-grafik', (el) => resmiCiz(el, [['resmi_aofm', 'Fonlama maliyeti', dash.colors[1]]], {
+    yukseklik: 240, etiket: 'TCMB ağırlıklı ortalama fonlama maliyeti, yüzde; kaynak TCMB EVDS',
+    yBicim: (v) => '%' + f0(v), ipBicim: (v) => wt.yuzde(v), ipBaslik: gunBaslik,
+  }));
+  dash.draw('resmi-beklenti-grafik', (el) => resmiCiz(el, [['resmi_beklenti', '12 ay sonrası TÜFE beklentisi', dash.colors[0]]], {
+    yukseklik: 240, etiket: 'Piyasa Katılımcıları Anketi, 12 ay sonrası yıllık TÜFE beklentisi, yüzde; kaynak TCMB EVDS',
+    yBicim: (v) => '%' + f0(v), ipBicim: (v) => wt.yuzde(v), ipBaslik: ayBaslik,
+  }));
 })();

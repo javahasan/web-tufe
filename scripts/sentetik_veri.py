@@ -199,62 +199,10 @@ def main():
 
 
 def pano_yaz(sonuc: dict, sepet: pd.DataFrame):
-    pano = KOK / "pano"
-    pano.mkdir(parents=True, exist_ok=True)
-    tum = sonuc["gunluk"].copy()
-    tum["tarih"] = pd.to_datetime(tum["tarih"])
-    # Günlük yıllık değişim: endeksin 365 gün önceki değerine oranı
-    once = tum[["tarih", "seri_kodu", "endeks"]].copy()
-    once["tarih"] = once["tarih"] + pd.Timedelta(days=365)
-    tum = tum.merge(once.rename(columns={"endeks": "endeks_365"}), on=["tarih", "seri_kodu"], how="left")
-    tum["yillik_degisim"] = (tum["endeks"] / tum["endeks_365"] - 1) * 100
-
-    g = tum[tum["duzey"].isin(["genel", "ana_grup", "ozel"])].copy()
-    g["tarih"] = g["tarih"].dt.strftime("%Y-%m-%d")
-    for c in ["endeks", "gunluk_degisim", "yillik_degisim"]:
-        g[c] = g[c].round(3)
-    g["kapsam"] = (g["kapsam"] * 100).round(1)
-    g = g.sort_values(["seri_kodu", "tarih"])
-    g[["tarih", "seri_kodu", "seri_adi", "duzey", "endeks", "gunluk_degisim", "yillik_degisim", "kapsam"]].to_csv(
-        pano / "gunluk.csv", index=False)
-
-    a = sonuc["aylik"]
-    a = a[a["duzey"].isin(["genel", "ana_grup", "grup", "ozel", "madde"])].copy()
-    for c in ["endeks", "aylik_degisim", "yillik_degisim"]:
-        a[c] = a[c].round(3)
-    a["kesin"] = np.where(a["kesin"], "kesin", "geçici")
-    a[["ay", "seri_kodu", "seri_adi", "duzey", "endeks", "aylik_degisim", "yillik_degisim", "kesin", "gun"]].to_csv(
-        pano / "aylik.csv", index=False)
-
-    # Madde ve harcama grupları için son gün / son ay değişimleri (fiyat hareketleri)
-    son_tarih = tum["tarih"].max()
-    sg = tum[(tum["tarih"] == son_tarih) & tum["duzey"].isin(["madde", "grup"])][
-        ["seri_kodu", "seri_adi", "duzey", "gunluk_degisim"]]
-    son_ay = a["ay"].max()
-    sa = a[(a["ay"] == son_ay) & a["duzey"].isin(["madde", "grup"])][["seri_kodu", "aylik_degisim", "yillik_degisim"]]
-    sd = sg.merge(sa, on="seri_kodu", how="left")
-    sd["ana_grup_kodu"] = sd["seri_kodu"].str[:2]
-    sd["tarih"] = son_tarih.strftime("%Y-%m-%d")
-    sd["ay"] = son_ay
-    sd = sd.rename(columns={"gunluk_degisim": "gunluk", "aylik_degisim": "aylik", "yillik_degisim": "yillik"})
-    for c in ["gunluk", "aylik", "yillik"]:
-        sd[c] = sd[c].round(3)
-    sd.sort_values("seri_kodu")[["seri_kodu", "seri_adi", "duzey", "ana_grup_kodu", "tarih", "ay", "gunluk", "aylik", "yillik"]].to_csv(
-        pano / "son_degisimler.csv", index=False)
-
-    o = sonuc["madde_ozet"].groupby("tarih")[["n_birim", "n_eslesen", "n_aykiri"]].sum().reset_index()
-    o["tarih"] = pd.to_datetime(o["tarih"]).dt.strftime("%Y-%m-%d")
-    o.rename(columns={"n_birim": "gozlem", "n_eslesen": "eslesen", "n_aykiri": "aykiri"}).to_csv(
-        pano / "gozlem.csv", index=False)
-
     from webtufe.eslestirme import kurallari_yukle
-    kurallı = {k.madde for k in kurallari_yukle("marketfiyati")}
-    s = sepet[["madde_kodu", "madde_adi", "alt_sinif_kodu", "alt_sinif_agirlik", "grup_kodu", "grup_adi",
-               "ana_grup_kodu", "ana_grup_adi", "agirlik"]].copy()
-    s["agirlik"] = s["agirlik"].round(5)
-    s["market_kurali"] = np.where(s["madde_kodu"].isin(kurallı), "evet", "hayır")
-    s.to_csv(pano / "agirliklar.csv", index=False)
-    for f in sorted(pano.glob("*.csv")):
+    from webtufe.pano import pano_yaz as yaz
+    kurallar = {k.madde for k in kurallari_yukle("marketfiyati")}
+    for f in yaz(sonuc, sepet, KOK / "pano", kurallar):
         log.info("%s: %.0f KB", f.name, f.stat().st_size / 1024)
 
 

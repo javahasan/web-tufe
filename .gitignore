@@ -9,3 +9,8 @@ data/sentetik/
 # Panoya yükleme durumu yalnızca bu bilgisayarda tutulur
 data/cikti/pano_durum.json
 data/ham/**/*.tmp
+# Pano dosyaları her gün `webtufe pano` ile yeniden üretilir
+data/cikti/pano/
+.claude/
+pano/test/gercek_test.html
+pano/test/analiz_test.html

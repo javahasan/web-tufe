@@ -5,11 +5,15 @@
   esle      Ham ürünleri TÜİK maddelerine eşle, eşleşme raporu yaz
   hesapla   Günlük ve aylık endeksleri hesapla (data/cikti/)
   rapor     Son durumu özetle
+  mansetler Gerçek fiyatlardan günün manşetleri
+  pano      Pano ve Analiz Masası dosyaları (data/cikti/pano/)
+  haftalik  Analiz Masası'nın haftalık görünümü için Web TÜFE verisi (JSON)
 """
 
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 import logging
 import sys
 
@@ -103,6 +107,53 @@ def komut_mansetler(a):
         print(f"  {r['anahtar']:<18} {r['urun'] if pd.notna(r['urun']) else '':<60} {r['deger']}")
 
 
+def komut_pano(a):
+    from .eslestirme import kurallari_yukle
+    from .pano import madde_endeksleri_yaz, madde_fiyatlari, pano_yaz
+
+    if not (CIKTI / "gunluk.parquet").exists():
+        raise SystemExit("Önce: webtufe hesapla")
+    sonuc = {
+        "gunluk": pd.read_parquet(CIKTI / "gunluk.parquet"),
+        "aylik": pd.read_csv(CIKTI / "aylik.csv", dtype={"seri_kodu": str}),
+        "madde_ozet": pd.read_csv(CIKTI / "madde_gunluk_gozlem.csv", dtype={"madde_kodu": str}),
+    }
+    sepetler = _sepetler()
+    sepet = sepetler[max(sepetler)]
+    kurallar = {k.madde for k in kurallari_yukle(KAYNAK)}
+    import os
+    import shutil
+    import tempfile
+
+    pano = CIKTI / "pano"
+    pano.mkdir(parents=True, exist_ok=True)
+    # Dosyalar önce geçici klasöre yazılıp tek tek yerine taşınır: aynı anda çalışan bir görev
+    # (ör. yükleme) yarım yazılmış bir dosya okumaz.
+    gecici = Path(tempfile.mkdtemp(prefix=".pano-", dir=CIKTI))
+    try:
+        yazilan = pano_yaz(sonuc, sepet, gecici, kurallar)
+        yazilan.append(madde_endeksleri_yaz(sonuc["gunluk"], gecici))
+        adlar = pd.concat(sepetler.values()).drop_duplicates("madde_kodu", keep="last").set_index("madde_kodu")["madde_adi"]
+        madde_fiyatlari(_ham_desen(), _esleme(), adlar).to_csv(gecici / "madde_fiyatlari.csv", index=False)
+        yazilan.append(gecici / "madde_fiyatlari.csv")
+        for y in yazilan:
+            os.replace(y, pano / y.name)
+            print(f"  {y.name:<22}{(pano / y.name).stat().st_size / 1024:>8.0f} KB")
+    finally:
+        shutil.rmtree(gecici, ignore_errors=True)
+
+
+def komut_haftalik(a):
+    import json
+    from .haftalik import haftalik_veri
+    paket = haftalik_veri()
+    with open(a.cikti, "w", encoding="utf-8") as f:
+        json.dump(paket, f, ensure_ascii=False, indent=1)
+    i = paket["istatistik"]
+    print(f"{paket['hafta']}: {paket['baslangic']} – {paket['bitis']}, {len(paket['veriler'])} veri, "
+          f"genel endeks {i['genel_endeks_son']} (haftalık {i['genel_haftalik_degisim_yuzde']}%) -> {a.cikti}")
+
+
 def komut_rapor(a):
     yol = CIKTI / "gunluk.parquet"
     if not yol.exists():
@@ -171,6 +222,13 @@ def main(argv=None):
     s = alt.add_parser("mansetler", help="gerçek fiyatlardan günün manşetleri")
     s.add_argument("--tarih", help="YYYY-AA-GG (varsayılan son toplama günü)")
     s.set_defaults(f=komut_mansetler)
+
+    s = alt.add_parser("pano", help="pano ve Analiz Masası dosyaları")
+    s.set_defaults(f=komut_pano)
+
+    s = alt.add_parser("haftalik", help="haftalık görünüm verisi")
+    s.add_argument("--cikti", required=True, help="yazılacak JSON dosyası")
+    s.set_defaults(f=komut_haftalik)
 
     a = p.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if a.ayrintili_log else logging.INFO,

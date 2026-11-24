@@ -15,6 +15,7 @@ güncellenen bir fiyat göstergesi ve deflatör elde etmek.
 | marketfiyati.org.tr toplayıcısı | ✅ 12.11.2026'da kullanıcı kararıyla açıldı; 3 şehir, istekler arası 2 sn, ilk gün toplanıyor |
 | Diğer kaynaklar (giyim, enerji, ulaştırma, hizmetler…) | ⏳ Yapılacak |
 | Zamanlama (her gün otomatik) | ✅ GitHub Actions, her gün 09:17 (bkz. "Günlük otomatik çalışma") |
+| Pano ve Analiz Masası | ✅ Gerçek Web TÜFE verisi; resmi seriler TCMB EVDS bağlayıcısından canlı |
 
 **Kaynak notu.** İlk denemede (12.11.2026) saniyede ~2 istekle toplarken marketfiyati.org.tr
 sunucusu istemcimizi yaklaşık 1 dakika sonra geçici olarak engelledi. Sitenin kullanım koşulları
@@ -54,6 +55,8 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/webtufe hesapla            # data/cikti/gunluk.parquet, aylik.csv
 .venv/bin/webtufe rapor
 .venv/bin/webtufe mansetler          # gerçek fiyatlardan günün manşetleri: data/cikti/mansetler_gercek.csv
+.venv/bin/webtufe pano               # pano ve Analiz Masası dosyaları: data/cikti/pano/*.csv
+.venv/bin/webtufe haftalik --cikti x.json   # haftalık görünümün Web TÜFE verisi
 .venv/bin/python -m pytest           # testler
 ```
 
@@ -76,13 +79,22 @@ GitHub zamanlanmış işleri yoğun saatlerde bir saate kadar geciktirebilir. İ
 - Herkese açık depolarda GitHub, 60 gün hiç etkinlik olmazsa zamanlanmış işleri kapatır. Günlük
   veri kayıtları etkinlik sayılır.
 
-**Panodaki manşetler.** Pano bir Claude artifact'i olduğundan GitHub onu doğrudan güncelleyemez.
-Claude uygulamasındaki zamanlanmış görev **"webtufe-pano-mansetleri"** her gün 11:30'da (yetişmezse
-15:30'da) önce `git pull` ile GitHub'daki son veriyi alır, sonra `data/cikti/mansetler_gercek.csv`
-dosyasını panoya yükler. Görev `scripts/pano_manset.py durum` ile dosyanın o günün toplamasından
-geldiğini ve daha önce yüklenmediğini kontrol eder; yüklenen dosyanın kimliği yalnızca bu
-bilgisayarda, `data/cikti/pano_durum.json` dosyasında tutulur. Görev Mac ve Claude uygulaması
-açıkken çalışır; Mac kapalı olduğu günler pano güncellenmez ama veri toplanmaya devam eder.
+**Pano ve Analiz Masası.** İkisi de Claude artifact'i olduğundan GitHub onları doğrudan
+güncelleyemez. Claude uygulamasındaki zamanlanmış görev **"webtufe-pano-mansetleri"** her gün
+11:30'da ve 15:30'da önce `scripts/git_guncelle.sh` ile GitHub'daki son veriyi alır (`git pull`
+kilitle çalışır; Mac uyandığında kaçırılan görevler aynı anda başlayabildiği için), `webtufe pano` ile
+sayfa dosyalarını üretir ve `scripts/pano_yukle.py durum` çıktısındaki dosyaları iki sayfaya yükler.
+Bir dosya, verisi en son yüklenenden daha yeniyse yüklenir; GitHub zamanlanmış toplamayı saatlerce
+(Kasım 2026'da 8-11 saat) geciktirebildiği için "bugünün verisi" şartı yoktur:
+panoda ilgili veri kaynağını yeni dosyaya bağlar, Analiz Masası'nda `veri/guncel` belgesini yazar.
+`data/cikti/pano/` depoya kaydedilmez; yüklenen dosyaların kimlikleri yalnızca bu bilgisayarda,
+`data/cikti/pano_durum.json` dosyasında tutulur. Görevler Mac ve Claude uygulaması açıkken
+çalışır; Mac kapalı olduğu günler sayfalar güncellenmez ama veri toplanmaya devam eder.
+
+**Haftalık görünüm.** Zamanlanmış görev **"webtufe-haftalik-gorunum"** her pazartesi 12:30'da
+(yetişmezse salı) `webtufe haftalik` ile haftanın Web TÜFE verisini hazırlar, EVDS bağlıysa resmi
+göstergeleri ayrı veri olarak ekler, yorumu yazar ve Analiz Masası'nın `haftalik` koleksiyonuna
+kaydeder. Rapordaki grafikler yalnızca bu verilerden çizilir.
 
 **Yerelde çalıştırma.** `scripts/gunluk.sh` aynı adımları bir Mac'te çalıştırır (önceden launchd ile
 her gün 09:00'da çalışıyordu). GitHub ile aynı gün iki kez toplama yapılmaması için yerel iş
@@ -93,7 +105,28 @@ launchctl enable gui/$(id -u)/local.webtufe.gunluk
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.webtufe.gunluk.plist
 ```
 
-## Sentetik veri ve pano
+## Pano ve Analiz Masası
+
+- **Pano** (Web Fiyat Endeksi): 18.11.2026'dan beri gerçek Web TÜFE verisini gösterir. Bir yıllık
+  veri birikene kadar açılışta yıllık enflasyon yerine "başlangıçtan bu yana" değişim görünür;
+  aylık değişime dayanan göstergeler ilk tam aydan (Aralık 2026) sonra dolar.
+- **Analiz Masası** (`pano/analiz/index.html`, ayrı artifact): Haftalık Görünüm, Soru Sor ve
+  Raporlarım bölümleri. Soru Sor, soruyu soran kişinin Claude hesabıyla yanıtlanır; Claude, sayfanın
+  Web TÜFE araçlarıyla (ve EVDS bağlıysa EVDS araçlarıyla) veri okur, grafikli kısa yanıt ya da
+  whitepaper yazar. Grafikler yalnızca araçların döndürdüğü veriden çizilir. Raporlar kişiye
+  özeldir (`data/users/<kişi>`), HTML olarak indirilebilir.
+- **Resmi Göstergeler** (panoda ayrı bölüm): TÜİK TÜFE genel ve gıda (yıllık, aylık), ABD doları kuru,
+  TCMB ağırlıklı ortalama fonlama maliyeti ve Piyasa Katılımcıları Anketi'nin 12 ay sonrası TÜFE
+  beklentisi, EVDS bağlayıcısının `get_series_data` aracıyla her açılışta canlı okunur (sayfayı açan
+  kişinin kendi EVDS bağlantısıyla). Sorguların bitiş tarihi 31.12.2027; 2028'den önce uzatılmalı.
+  Analiz Masası da aynı bağlayıcıyla (`evds_kesfet`, `evds_seri_verisi` araçları) resmi seri okur.
+- **Ayrım kuralı:** Web TÜFE ile resmi seriler (TÜİK TÜFE dahil, EVDS'den) hiçbir yerde tek seride
+  birleştirilmez, zincirlenmez ya da ortalanmaz. Aynı grafiğe düşerlerse ayrı panellerde, kendi
+  ölçekleriyle çizilir; her raporda kaynak tablosu ve uyarılar yer alır.
+- Yerel deneme: `pano/test/olustur.py` (pano, gerçek veri) ve `pano/test/analiz_olustur.py`
+  (Analiz Masası, sahte Claude ortamıyla) test sayfaları üretir.
+
+## Sentetik veri
 
 Gerçek veri gelene kadar motor sentetik fiyatlarla denenebilir:
 
@@ -123,12 +156,16 @@ data/
   referans/sepet_<yıl>.csv       TÜİK sepeti ve ağırlıklar
   ham/<kaynak>/tarih=…/          ham fiyat gözlemleri (değiştirilmez)
   cikti/                         endeksler
+  cikti/pano/                    sayfalara giden CSV'ler (depoya kaydedilmez)
 webtufe/
   tuik.py                        TÜİK veri portalı (JSON-stat, UserLang: tr)
   toplayicilar/                  kaynak başına bir toplayıcı
   eslestirme.py, metin.py        eşleme ve Türkçe metin normalleştirme
   endeks.py                      madde endeksi, Laspeyres zincirleme, aylık
   gostergeler.py                 seriler ve özel göstergeler
+  mansetler.py                   gerçek fiyatlardan günün manşetleri
+  pano.py, haftalik.py           pano, Analiz Masası ve haftalık görünüm dosyaları
+pano/site/, pano/analiz/         pano ve Analiz Masası sayfaları
 tests/
 ```
 

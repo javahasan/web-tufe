@@ -53,6 +53,7 @@
     if (d.status !== 'ok' || !d.data || !d.data.length) { bosYaz(el, d.status); return; }
     el.replaceChildren();
     const rows = d.data.filter((r) => r.yillik_degisim != null).sort((a, b) => b.yillik_degisim - a.yillik_degisim);
+    if (!rows.length) { bosYaz(el, 'ok', 'Yıllık değişim için en az bir yıllık veri gerekiyor; ilk değerler Kasım 2027’de.'); return; }
     const W = Math.max(280, Math.floor(el.clientWidth || 600));
     const satir = 26;
     const m = { ust: 20, alt: 24, sag: 58 };

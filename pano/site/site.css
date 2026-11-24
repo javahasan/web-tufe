@@ -113,3 +113,15 @@
   .wt-menu-cizgi { transition: transform .34s cubic-bezier(.2, .7, .2, 1), width .34s cubic-bezier(.2, .7, .2, 1); }
   .wt-menu button, .wt-gecis-kart, .wt-bu-sayfada a, .wt-altbilgi-menu a { transition: color .15s ease, border-color .15s ease, background-color .15s ease; }
 }
+
+/* Analiz Masası bağlantısı (ayrı sayfa) */
+.wt-menu-dis { display: inline-flex; align-items: center; align-self: center; font-size: 14px; font-weight: var(--cds-font-weight-medium); padding: 6px 12px; border: 1px solid var(--color-border-line); border-radius: 999px; color: var(--color-fg); text-decoration: none; white-space: nowrap; }
+.wt-menu-dis:hover { border-color: var(--wt-vurgu); color: var(--wt-vurgu); }
+.wt-menu-dis:focus-visible { outline: 2px solid var(--wt-vurgu); outline-offset: 2px; }
+
+/* Resmi göstergeler (TCMB EVDS): Web TÜFE'den ayrı olduğunu gösteren işaretler */
+.wt-resmi-not { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font-size: 14px; line-height: 1.5; color: var(--color-fg); background: color-mix(in srgb, var(--color-warn) 8%, var(--color-panel)); border: 1px solid color-mix(in srgb, var(--color-warn) 30%, var(--color-border-line)); border-radius: var(--cds-radius); padding: 10px 14px; margin: 0 0 18px; max-width: 80ch; }
+.wt-resmi-rozet { font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); color: var(--color-warn); border: 1px solid currentColor; border-radius: 4px; padding: 0 6px; white-space: nowrap; }
+.wt-ikili { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: var(--cds-gap-md); }
+.wt-panel-baslik { margin: 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); }
+#resmi .wt-grafik { min-height: 240px; }

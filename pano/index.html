@@ -595,22 +595,26 @@
   dash.calc('ozet', {
     inputs: ['aylik', 'gunluk'],
     title: 'Özet: genel endeks',
-    description: 'Genel endeksin son ay ve son gün değerleri; yıllık değişimin önceki aya göre farkı.',
+    description: 'Genel endeksin son ay ve son gün değerleri; yıllık değişimin önceki aya göre farkı; baz gününden (= 100) bu yana değişim.',
     fn: (aylik, gunluk) => {
       const sayi = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
       const genel = aylik.filter((r) => r.seri_kodu === 'TUFE').sort((a, b) => (a.ay < b.ay ? -1 : 1));
       const g = gunluk.filter((r) => r.seri_kodu === 'TUFE').sort((a, b) => (a.tarih < b.tarih ? -1 : 1));
-      if (genel.length < 2 || !g.length) return [];
+      if (!genel.length || !g.length) return [];
       const son = genel[genel.length - 1];
-      const onceki = genel[genel.length - 2];
+      // Veri yeni başladığında önceki ay yoktur
+      const onceki = genel.length > 1 ? genel[genel.length - 2] : {};
       const sg = g[g.length - 1];
       const fark = sayi(son.yillik_degisim) == null || sayi(onceki.yillik_degisim) == null ? null
         : Math.round((sayi(son.yillik_degisim) - sayi(onceki.yillik_degisim)) * 100) / 100;
       return [{
         ay: son.ay, durum: son.kesin, gun: sayi(son.gun),
         aylik_degisim: sayi(son.aylik_degisim), yillik_degisim: sayi(son.yillik_degisim), yillik_fark: fark,
-        onceki_ay: onceki.ay, onceki_aylik_degisim: sayi(onceki.aylik_degisim), onceki_durum: onceki.kesin,
+        onceki_ay: onceki.ay ?? null, onceki_aylik_degisim: sayi(onceki.aylik_degisim), onceki_durum: onceki.kesin ?? null,
         son_gun: sg.tarih, endeks: sayi(sg.endeks), gunluk_degisim: sayi(sg.gunluk_degisim),
+        // Baz günü (ilk toplama günü) = 100; yıllık veri birikene kadar açılışta bu gösterilir
+        baz_tarihi: g[0].tarih, aylik_endeks: sayi(son.endeks),
+        baslangictan: sayi(sg.endeks) == null ? null : Math.round((sayi(sg.endeks) - 100) * 100) / 100,
       }];
     },
   });
@@ -856,8 +860,15 @@
     };
   }
 
-  function bosYaz(el, durum) {
+  function bosYaz(el, durum, mesaj) {
     el.replaceChildren();
+    if (mesaj && durum === 'ok') {
+      const p = document.createElement('p');
+      p.className = 'wt-bos';
+      p.textContent = mesaj;
+      el.append(p);
+      return;
+    }
     el.textContent = durum === 'error' ? 'Yüklenemedi' : '—';
   }
 

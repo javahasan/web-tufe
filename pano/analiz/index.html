@@ -1,0 +1,986 @@
+<title>Analiz Masası</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Düzen: üstte durum şeridi ve sekmeler; altında tek sütun çalışma alanı. Raporlar okunur
+   genişlikte (en çok 76ch) bir "not kâğıdı" gibi dizilir. Web TÜFE yeşil-mavi (deniz), resmi
+   seriler (TCMB EVDS) kiremit renginde; iki kaynak hiçbir yerde aynı renge düşmez. */
+:root {
+  --bg: #f3f5f7;
+  --panel: #ffffff;
+  --ink: #15212c;
+  --muted: #5a6774;
+  --line: #d9e0e6;
+  --accent: #1f4e79;
+  --accent-ink: #ffffff;
+  --web: #0d766e;
+  --web-soft: #dff1ee;
+  --resmi: #ad521a;
+  --resmi-soft: #f7e7da;
+  --warn: #855600;
+  --warn-soft: #fbf0d9;
+  --bad: #a02929;
+  --grid: #e7ecf0;
+  --font-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-rapor: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --font-kod: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f151b; --panel: #172029; --ink: #e5ecf2; --muted: #98a6b3; --line: #2a3742;
+    --accent: #84b4e0; --accent-ink: #0f151b; --web: #4cc0b3; --web-soft: #12322e;
+    --resmi: #ec9a63; --resmi-soft: #3a2517; --warn: #e3b55a; --warn-soft: #33270f;
+    --bad: #f08585; --grid: #23303a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f151b; --panel: #172029; --ink: #e5ecf2; --muted: #98a6b3; --line: #2a3742;
+  --accent: #84b4e0; --accent-ink: #0f151b; --web: #4cc0b3; --web-soft: #12322e;
+  --resmi: #ec9a63; --resmi-soft: #3a2517; --warn: #e3b55a; --warn-soft: #33270f;
+  --bad: #f08585; --grid: #23303a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; line-height: 1.5; }
+.dis { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.ic { max-width: 1080px; margin: 0 auto; }
+a { color: var(--accent); }
+button, select, textarea, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* üst bölüm */
+.ust { background: var(--panel); border-bottom: 1px solid var(--line); padding-block: 18px 0; }
+.ust-sira { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.marka h1 { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.marka p { margin: 2px 0 0; color: var(--muted); font-size: 14px; max-width: 62ch; }
+.cipler { display: flex; flex-wrap: wrap; gap: 8px; }
+.cip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); white-space: nowrap; }
+.cip .nokta { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.cip.web .nokta { background: var(--web); }
+.cip.resmi .nokta { background: var(--resmi); }
+.cip.kapali .nokta { background: transparent; border: 1.5px solid var(--muted); }
+.sekmeler { display: flex; gap: 4px; margin-top: 16px; overflow-x: auto; }
+.sekmeler a { padding: 10px 14px; text-decoration: none; color: var(--muted); font-weight: 500; border-bottom: 2px solid transparent; white-space: nowrap; }
+.sekmeler a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+.sekmeler a:hover { color: var(--ink); }
+
+main { padding-block: 24px 48px; }
+.gorunum[hidden] { display: none; }
+.uyari { border: 1px solid var(--line); background: var(--warn-soft); color: var(--ink); padding: 10px 14px; border-radius: var(--r); font-size: 14px; }
+.uyari b { color: var(--warn); }
+.bos { color: var(--muted); padding: 28px 0; }
+.bos h2 { color: var(--ink); font-size: 18px; margin: 0 0 6px; }
+
+/* soru paneli */
+.soru-panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 14px; }
+.soru-panel label { font-weight: 600; font-size: 14px; }
+#soru { width: 100%; min-height: 92px; resize: vertical; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); line-height: 1.45; }
+.ornekler { display: flex; flex-wrap: wrap; gap: 8px; }
+.ornek { border: 1px dashed var(--line); background: transparent; border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; color: var(--ink); text-align: left; }
+.ornek:hover { border-style: solid; border-color: var(--accent); }
+.ornek[disabled] { opacity: .5; cursor: not-allowed; }
+.kontroller { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.secenek { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.secenek label { font-weight: 500; font-size: 13.5px; padding: 6px 12px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.secenek input { margin: 0; }
+.secenek label:has(input:checked) { background: var(--accent); color: var(--accent-ink); }
+.dugme { border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); padding: 8px 16px; border-radius: var(--r); font-weight: 600; cursor: pointer; }
+.dugme.ikincil { background: transparent; color: var(--accent); }
+.dugme[disabled] { opacity: .55; cursor: not-allowed; }
+.ilerleme { font-size: 13.5px; color: var(--muted); display: grid; gap: 4px; }
+.ilerleme ol { margin: 0; padding-left: 18px; }
+.ilerleme li.web::marker { color: var(--web); }
+.ilerleme li.resmi::marker { color: var(--resmi); }
+.hata { color: var(--bad); font-size: 14px; }
+
+/* rapor */
+.rapor-kap { margin-top: 22px; }
+.rapor-araclar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-bottom: 8px; }
+.rapor { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 28px clamp(16px, 4vw, 44px) 32px; }
+.rapor > * { max-width: 76ch; }
+.rapor .ust-etiket { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+.rapor h2.rapor-baslik { font-size: 26px; line-height: 1.25; margin: 0 0 10px; text-wrap: balance; }
+.rapor .soru-metni { color: var(--muted); font-style: italic; font-family: var(--font-rapor); margin: 0 0 18px; }
+.rapor .ozet { font-family: var(--font-rapor); font-size: 17px; line-height: 1.6; border-left: 3px solid var(--accent); padding-left: 14px; margin: 0 0 20px; }
+.rapor h3 { font-size: 18px; margin: 28px 0 8px; }
+.rapor p { font-family: var(--font-rapor); font-size: 16px; line-height: 1.65; margin: 0 0 12px; }
+.rapor ul { font-family: var(--font-rapor); font-size: 16px; line-height: 1.6; margin: 0 0 12px; padding-left: 20px; }
+.rapor .bulgular li { margin-bottom: 6px; }
+.rapor .grafik { max-width: none; margin: 14px 0 18px; }
+.grafik-baslik { font-weight: 600; font-size: 14px; margin: 0 0 4px; }
+.panel-etiket { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin: 6px 0 2px; }
+.panel-etiket.web { background: var(--web-soft); color: var(--web); }
+.panel-etiket.resmi { background: var(--resmi-soft); color: var(--resmi); }
+.lejant { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.lejant span { display: inline-flex; align-items: center; gap: 6px; }
+.lejant i { width: 14px; height: 3px; display: inline-block; border-radius: 2px; }
+.grafik svg { display: block; width: 100%; height: auto; overflow: visible; }
+.grafik svg text { fill: var(--muted); font-family: var(--font-ui); font-size: 11px; }
+.grafik .izgara line { stroke: var(--grid); }
+.grafik .eksen path, .grafik .eksen line { stroke: var(--line); }
+.grafik-not { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.kaynaklar { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 14px; }
+.kaynaklar th, .kaynaklar td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.kaynaklar th { color: var(--muted); font-weight: 500; }
+.tablo-kap { overflow-x: auto; max-width: none; }
+.rozet { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 1px 7px; border-radius: 4px; white-space: nowrap; }
+.rozet.web { background: var(--web-soft); color: var(--web); }
+.rozet.resmi { background: var(--resmi-soft); color: var(--resmi); }
+.kod { font-family: var(--font-kod); font-size: 12.5px; }
+.feragat { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 22px; font-family: var(--font-ui); }
+.feragat p { font-family: var(--font-ui); font-size: 13px; line-height: 1.5; margin: 0 0 6px; }
+
+/* listeler */
+.liste { display: grid; gap: 8px; }
+.liste-oge { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; }
+.liste-oge button.ac { border: 0; background: none; padding: 0; text-align: left; cursor: pointer; font-weight: 600; color: var(--ink); min-width: 0; }
+.liste-oge button.ac:hover { color: var(--accent); }
+.liste-oge .tarih { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.liste-oge .sil { border: 0; background: none; color: var(--bad); cursor: pointer; font-size: 13px; }
+.hafta-sec { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.hafta-sec select { padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); max-width: 100%; min-width: 0; text-overflow: ellipsis; }
+[hidden] { display: none !important; }
+.alt { color: var(--muted); font-size: 12.5px; padding-block: 0 32px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+<header class="ust dis">
+  <div class="ic">
+    <div class="ust-sira">
+      <div class="marka">
+        <h1>Analiz Masası</h1>
+        <p>Web TÜFE’nin günlük market fiyatları ve TCMB EVDS’nin resmi serileriyle soru sor, grafikli rapor al, haftalık görünümü oku.</p>
+      </div>
+      <div class="cipler" aria-live="polite">
+        <span class="cip web" id="cip-web"><span class="nokta" aria-hidden="true"></span><span id="cip-web-metin">Web TÜFE yükleniyor</span></span>
+        <span class="cip resmi kapali" id="cip-evds"><span class="nokta" aria-hidden="true"></span><span id="cip-evds-metin">EVDS bağlı değil</span></span>
+        <a class="cip" href="https://claude.ai/artifact/EBnsgW9YWx84vQTiunF39Z" target="_blank" rel="noopener">Panoya git ↗</a>
+      </div>
+    </div>
+    <nav class="sekmeler" aria-label="Bölümler">
+      <a href="#haftalik" data-sekme="haftalik">Haftalık Görünüm</a>
+      <a href="#sor" data-sekme="sor">Soru Sor</a>
+      <a href="#raporlar" data-sekme="raporlar">Raporlarım</a>
+    </nav>
+  </div>
+</header>
+
+<main class="dis">
+  <div class="ic">
+    <p class="uyari" id="yetenek-uyari" hidden></p>
+
+    <!-- ===================================================== HAFTALIK -->
+    <section class="gorunum" id="gorunum-haftalik" aria-label="Haftalık Görünüm" hidden>
+      <div class="hafta-sec" id="hafta-sec" hidden>
+        <label for="hafta-listesi">Hafta</label>
+        <select id="hafta-listesi"></select>
+      </div>
+      <div id="haftalik-icerik">
+        <div class="bos">
+          <h2>Haftalık görünüm henüz yayımlanmadı</h2>
+          <p>Her pazartesi Web TÜFE’nin haftalık seyri ve EVDS’deki resmi göstergelerle birlikte kısa bir değerlendirme burada yayımlanır. Bu arada <a href="#sor">Soru Sor</a> bölümünden kendi sorunu sorabilirsin.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== SORU SOR -->
+    <section class="gorunum" id="gorunum-sor" aria-label="Soru Sor" hidden>
+      <form class="soru-panel" id="soru-formu">
+        <label for="soru">Ne öğrenmek istiyorsun?</label>
+        <textarea id="soru" name="soru" maxlength="1500" placeholder="Ör. Toplamaya başladığımızdan bu yana hangi gıda kalemleri en çok pahalandı, zincirler arasında fark var mı?"></textarea>
+        <div class="ornekler" id="ornekler" aria-label="Örnek sorular"></div>
+        <div class="kontroller">
+          <div class="secenek" role="radiogroup" aria-label="Rapor türü">
+            <label><input type="radio" name="mod" value="kisa" id="mod-kisa" checked> Kısa yanıt</label>
+            <label><input type="radio" name="mod" value="whitepaper" id="mod-whitepaper"> Whitepaper</label>
+          </div>
+          <button class="dugme" type="submit" id="sor-dugme">Analiz et</button>
+          <button class="dugme ikincil" type="button" id="dur-dugme" hidden>Durdur</button>
+        </div>
+        <div class="ilerleme" id="ilerleme" hidden aria-live="polite">
+          <span id="ilerleme-durum">Düşünüyor…</span>
+          <ol id="ilerleme-adimlar"></ol>
+        </div>
+        <p class="hata" id="soru-hata" hidden></p>
+      </form>
+      <div class="rapor-kap" id="sor-rapor"></div>
+    </section>
+
+    <!-- ===================================================== RAPORLARIM -->
+    <section class="gorunum" id="gorunum-raporlar" aria-label="Raporlarım" hidden>
+      <div class="liste" id="rapor-listesi">
+        <div class="bos"><h2>Henüz kayıtlı rapor yok</h2><p>Soru Sor bölümünde ürettiğin raporlar burada saklanır. Raporlar yalnızca sana görünür.</p></div>
+      </div>
+      <div class="rapor-kap" id="secili-rapor"></div>
+    </section>
+  </div>
+</main>
+<footer class="dis alt"><div class="ic">Web TÜFE bu projenin market fiyatlarından kendi hesabıdır, TÜİK’in resmi TÜFE’si değildir. Resmi seriler TCMB EVDS’den alınır; TCMB yalnızca veri sağlayıcıdır. Raporlardaki yorumlar yapay zekâ tarafından üretilir ve yanıltıcı olabilir.</div></footer>
+
+<script>
+(() => {
+  'use strict';
+
+  // ------------------------------------------------------------ ayarlar
+  const EVDS_SUNUCU = 'EVDS';   // TCMB'nin resmi EVDS bağlayıcısı (mcp.tcmb.gov.tr)
+  // Sık kullanılan resmi seriler; Claude'a kısa yol olarak verilir (keşif turlarını azaltır).
+  const EVDS_BILINEN = [
+    ['TP.TUKFIY2025.GENEL', 'TÜİK TÜFE genel endeks (2025=100), aylık'],
+    ['TP.TUKFIY2025.01', 'TÜİK TÜFE gıda ve alkolsüz içecekler (2025=100), aylık'],
+    ['TP.TUKFIY2025.011', 'TÜİK TÜFE gıda (2025=100), aylık'],
+    ['TP.DK.USD.A.YTL', 'ABD doları döviz alış kuru (TCMB), günlük, TL'],
+    ['TP.DK.EUR.A.YTL', 'Euro döviz alış kuru (TCMB), günlük, TL'],
+    ['TP.APIFON4', 'TCMB ağırlıklı ortalama fonlama maliyeti, günlük, %'],
+    ['TP.BISPOLFAIZ.TUR', 'TCMB politika faizi (BIS derlemesi), aylık, %'],
+    ['TP.PKAUO.S01.A.U', 'Piyasa Katılımcıları Anketi: cari ayın aylık TÜFE beklentisi, %'],
+    ['TP.PKAUO.S01.D.U', 'Piyasa Katılımcıları Anketi: yıl sonu yıllık TÜFE beklentisi, %'],
+    ['TP.PKAUO.S01.E.U', 'Piyasa Katılımcıları Anketi: 12 ay sonrası yıllık TÜFE beklentisi, %'],
+  ];
+  const EVDS_FORMUL = { 0: 'düzey', 1: 'dönemsel % değişim', 2: 'fark', 3: 'yıllık % değişim', 4: 'yıllık fark', 5: 'yıl sonuna göre %', 6: 'yıl sonuna göre fark', 7: 'hareketli ortalama', 8: 'hareketli toplam' };
+  const AZAMI_DONEN_SATIR = 260;      // bir araç sonucunda Claude'a giden en çok satır
+  const AZAMI_KAYIT_SATIRI = 1500;    // raporla saklanan, grafiğe giren en çok satır
+  const ZINCIR = { a101: 'A101', bim: 'BİM', carrefour: 'CarrefourSA', hakmar: 'Hakmar', migros: 'Migros', sok: 'ŞOK', tarim_kredi: 'Tarım Kredi', tum: 'Tüm zincirler' };
+  const SAYISAL = new Set(['endeks', 'gunluk_degisim', 'yillik_degisim', 'kapsam', 'aylik_degisim', 'gun', 'ortanca_birim_fiyat', 'urun_sayisi', 'gozlem', 'agirlik', 'alt_sinif_agirlik', 'gunluk', 'aylik', 'yillik']);
+  const AYLAR = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+  const sayiBicim = new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 2 });
+  const s2 = (v) => (v == null || isNaN(v) ? '—' : sayiBicim.format(v));
+  const tarihMetin = (t) => {
+    if (!t) return '';
+    const s = String(t);
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return Number(s.slice(8, 10)) + ' ' + AYLAR[Number(s.slice(5, 7)) - 1] + ' ' + s.slice(0, 4);
+    if (/^\d{4}-\d{2}$/.test(s)) return AYLAR[Number(s.slice(5, 7)) - 1] + ' ' + s.slice(0, 4);
+    return s;
+  };
+  const zamanMetin = (ms) => { try { return new Date(ms).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { return ''; } };
+  const $ = (s, r = document) => r.querySelector(s);
+
+  // Güvenli öğe kurucu: metinler hep textContent ile yazılır.
+  function el(tag, ozellik, ...cocuklar) {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(ozellik || {})) {
+      if (v == null || v === false) continue;
+      if (k === 'class') e.className = v;
+      else if (k === 'text') e.textContent = v;
+      else if (k.startsWith('on') && typeof v === 'function') e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : String(v));
+    }
+    for (const c of cocuklar.flat(Infinity)) if (c != null && c !== false) e.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    return e;
+  }
+
+  const durum = {
+    db: null, user: null, sample: null, downloads: null, mcp: null, uid: null,
+    web: { hazir: false, tablo: {}, tarih: null },
+    evdsBagli: false, raporlar: [], haftalar: [], calisiyor: null,
+  };
+
+  // ------------------------------------------------------------ sekmeler
+  const SEKMELER = ['haftalik', 'sor', 'raporlar'];
+  function yonlendir() {
+    let h = (location.hash || '').slice(1);
+    if (!SEKMELER.includes(h)) h = durum.haftalar.length ? 'haftalik' : 'sor';
+    SEKMELER.forEach((s) => { const g = $('#gorunum-' + s); if (g) g.hidden = s !== h; });
+    document.querySelectorAll('.sekmeler a').forEach((a) => {
+      if (a.dataset.sekme === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('hashchange', yonlendir);
+
+  // ------------------------------------------------------------ Web TÜFE verisi
+  function csvOku(metin) {
+    return d3.csvParse(metin, (r) => {
+      const o = {};
+      for (const k in r) {
+        const v = r[k];
+        o[k] = v === '' ? null : (SAYISAL.has(k) ? Number(v) : v);
+      }
+      return o;
+    });
+  }
+
+  async function webVerisiniYukle() {
+    const cip = $('#cip-web-metin');
+    if (!durum.db) { cip.textContent = 'Web TÜFE okunamadı'; return; }
+    try {
+      const snap = await durum.db.doc('veri/guncel').get();
+      if (!snap.exists) { cip.textContent = 'Web TÜFE verisi henüz yüklenmedi'; return; }
+      const d = snap.data() || {};
+      const dosyalar = d.dosyalar || {};
+      const anahtarlar = Object.keys(dosyalar);
+      const metinler = await Promise.all(anahtarlar.map(async (k) => {
+        const yanit = await fetch(String(dosyalar[k]));
+        if (!yanit.ok) throw new Error(k + ' dosyası okunamadı (' + yanit.status + ')');
+        return yanit.text();
+      }));
+      anahtarlar.forEach((k, i) => { durum.web.tablo[k] = csvOku(metinler[i]); });
+      const gun = [...new Set((durum.web.tablo.gunluk || []).map((r) => r.tarih))].sort();
+      durum.web.gunler = gun;
+      durum.web.tarih = gun[gun.length - 1] || d.tarih || null;
+      durum.web.hazir = true;
+      cip.textContent = 'Web TÜFE · ' + gun.length + ' toplama günü · son ' + tarihMetin(durum.web.tarih);
+    } catch (e) {
+      cip.textContent = 'Web TÜFE okunamadı';
+      console.error(e);
+    }
+  }
+
+  // ------------------------------------------------------------ veri kaydı (bir analiz boyunca)
+  let kayit = new Map();
+  let kayitSayac = 0;
+  function kaydaEkle(kaynak, baslik, sutunlar, satirlar, sorgu, aciklama) {
+    const id = 'v' + (++kayitSayac);
+    kayit.set(id, { id, kaynak, baslik, sutunlar, satirlar, sorgu, aciklama: aciklama || '' });
+    return id;
+  }
+  function seyrelt(satirlar, azami) {
+    if (satirlar.length <= azami) return { satirlar, seyreltildi: false };
+    const adim = Math.ceil(satirlar.length / azami);
+    const s = satirlar.filter((_, i) => i % adim === 0);
+    if (s[s.length - 1] !== satirlar[satirlar.length - 1]) s.push(satirlar[satirlar.length - 1]);
+    return { satirlar: s, seyreltildi: true };
+  }
+  function seriOzeti(satirlar, anahtar, x, y) {
+    const gruplar = d3.group(satirlar.filter((r) => r[y] != null), (r) => r[anahtar]);
+    return [...gruplar].map(([k, l]) => {
+      const s = l.slice().sort((a, b) => (a[x] < b[x] ? -1 : 1));
+      const ilk = s[0], son = s[s.length - 1];
+      return {
+        [anahtar]: k, ad: son.ad || son.seri_adi || null, ilk_tarih: ilk[x], ilk: ilk[y], son_tarih: son[x], son: son[y],
+        degisim_yuzde: ilk[y] ? Math.round((son[y] / ilk[y] - 1) * 10000) / 100 : null,
+        en_dusuk: d3.min(s, (r) => r[y]), en_yuksek: d3.max(s, (r) => r[y]), gozlem: s.length,
+      };
+    });
+  }
+  const tarihAraligi = (satirlar, baslangic, bitis, alan = 'tarih') => satirlar.filter((r) =>
+    (!baslangic || String(r[alan]) >= String(baslangic)) && (!bitis || String(r[alan]) <= String(bitis)));
+  const kodListesi = (v) => (Array.isArray(v) ? v : (v == null ? [] : String(v).split(','))).map((x) => String(x).trim()).filter(Boolean).slice(0, 12);
+  const kucuk = (s) => String(s || '').toLocaleLowerCase('tr');
+
+  function adim(metin, kaynak) {
+    const li = el('li', { class: kaynak || '', text: metin });
+    $('#ilerleme-adimlar').append(li);
+  }
+
+  // ------------------------------------------------------------ Web TÜFE araçları
+  function webAraclari() {
+    const T = durum.web.tablo;
+    const seriAdlari = () => {
+      const m = new Map();
+      (T.gunluk || []).forEach((r) => m.set(r.seri_kodu, { kod: r.seri_kodu, ad: r.seri_adi, duzey: r.duzey }));
+      (T.madde_endeksleri || []).forEach((r) => m.set(r.seri_kodu, { kod: r.seri_kodu, ad: r.seri_adi, duzey: 'madde' }));
+      return m;
+    };
+    return [
+      {
+        name: 'web_tufe_katalog',
+        description: 'Web TÜFE’deki serileri (genel, ana grup, özel göstergeler, maddeler) ve veri kapsamını (ilk ve son toplama günü, gün sayısı, sepet kapsamı) listeler. "arama" verilirse ada ya da koda göre süzer. Kodları bulmak için analizin başında kullan.',
+        inputSchema: { type: 'object', properties: { arama: { type: 'string', description: 'Ör. "süt", "sebze", "ekmek". Boşsa genel, ana grup ve özel göstergeler döner.' } } },
+        execute: ({ arama }) => {
+          adim('Web TÜFE kataloğu okundu' + (arama ? ' (“' + String(arama) + '”)' : ''), 'web');
+          const m = [...seriAdlari().values()];
+          const q = kucuk(arama);
+          const secilen = q ? m.filter((s) => kucuk(s.ad).includes(q) || String(s.kod).startsWith(q)) : m.filter((s) => s.duzey !== 'madde');
+          const g = (T.gunluk || []).filter((r) => r.seri_kodu === 'TUFE');
+          const sonKapsam = g.length ? g[g.length - 1].kapsam : null;
+          return {
+            kaynak: 'Web TÜFE (bu projenin market fiyatlarından günlük endeksi; resmi TÜFE değildir)',
+            kapsam: {
+              baz: (durum.web.gunler || [])[0] + ' = 100', ilk_gun: (durum.web.gunler || [])[0], son_gun: durum.web.tarih,
+              toplama_gunu_sayisi: (durum.web.gunler || []).length, toplama_gunleri: (durum.web.gunler || []).slice(-40),
+              sepet_agirligindaki_pay_yuzde: sonKapsam, sehirler: 'İstanbul (Anadolu), Ankara, İzmir', kaynak_site: 'marketfiyati.org.tr',
+            },
+            seriler: secilen.slice(0, 60),
+            not: secilen.length > 60 ? (secilen.length - 60) + ' seri daha var; aramayı daralt.' : undefined,
+          };
+        },
+      },
+      {
+        name: 'web_tufe_endeks',
+        description: 'Verilen Web TÜFE seri ya da madde kodlarının günlük endeksini (ilk toplama günü = 100) ve önceki toplamaya göre değişimini döndürür. Sonuçtaki veri_kimligi grafikte kullanılır; her seri için ilk-son değer ve değişim özeti de gelir.',
+        inputSchema: { type: 'object', properties: {
+          kodlar: { type: 'array', items: { type: 'string' }, description: 'Ör. ["TUFE","01"] ya da madde kodları ["0114111"]; en çok 12' },
+          baslangic: { type: 'string', description: 'YYYY-AA-GG (isteğe bağlı)' }, bitis: { type: 'string', description: 'YYYY-AA-GG (isteğe bağlı)' } }, required: ['kodlar'] },
+        execute: ({ kodlar, baslangic, bitis }) => {
+          const k = new Set(kodListesi(kodlar));
+          if (!k.size) throw new Error('En az bir kod ver.');
+          const kaynak = [...(T.gunluk || []), ...(T.madde_endeksleri || [])];
+          const satirlar = tarihAraligi(kaynak.filter((r) => k.has(r.seri_kodu)), baslangic, bitis)
+            .map((r) => ({ tarih: r.tarih, kod: r.seri_kodu, ad: r.seri_adi, endeks: r.endeks, gunluk_degisim: r.gunluk_degisim }))
+            .sort((a, b) => (a.kod === b.kod ? (a.tarih < b.tarih ? -1 : 1) : (a.kod < b.kod ? -1 : 1)));
+          if (!satirlar.length) throw new Error('Bu kodlar için veri yok. web_tufe_katalog ile kodları kontrol et.');
+          const id = kaydaEkle('web', 'Web TÜFE günlük endeks', ['tarih', 'kod', 'ad', 'endeks', 'gunluk_degisim'], satirlar,
+            { arac: 'web_tufe_endeks', kodlar: [...k], baslangic, bitis }, 'İlk toplama günü = 100');
+          adim('Web TÜFE endeksi okundu: ' + [...new Set(satirlar.map((r) => r.ad))].slice(0, 4).join(', '), 'web');
+          const s = seyrelt(satirlar, AZAMI_DONEN_SATIR);
+          return { veri_kimligi: id, sutunlar: ['tarih', 'kod', 'ad', 'endeks', 'gunluk_degisim'], ozet: seriOzeti(satirlar, 'kod', 'tarih', 'endeks'), satirlar: s.satirlar, seyreltildi: s.seyreltildi || undefined };
+        },
+      },
+      {
+        name: 'web_tufe_aylik',
+        description: 'Web TÜFE aylık endeksini (ayın ilk 24 gününün geometrik ortalaması), aylık ve yıllık değişimi ve ayın kesin ya da geçici olduğunu döndürür. Aylık değişim için iki ay, yıllık için on üç ay veri gerekir.',
+        inputSchema: { type: 'object', properties: { kodlar: { type: 'array', items: { type: 'string' } } }, required: ['kodlar'] },
+        execute: ({ kodlar }) => {
+          const k = new Set(kodListesi(kodlar));
+          const satirlar = (T.aylik || []).filter((r) => k.has(r.seri_kodu))
+            .map((r) => ({ ay: r.ay, kod: r.seri_kodu, ad: r.seri_adi, endeks: r.endeks, aylik_degisim: r.aylik_degisim, yillik_degisim: r.yillik_degisim, durum: r.kesin, gun: r.gun }));
+          if (!satirlar.length) throw new Error('Bu kodlar için aylık veri yok.');
+          const id = kaydaEkle('web', 'Web TÜFE aylık endeks', ['ay', 'kod', 'ad', 'endeks', 'aylik_degisim', 'yillik_degisim', 'durum', 'gun'], satirlar, { arac: 'web_tufe_aylik', kodlar: [...k] });
+          adim('Web TÜFE aylık endeksi okundu', 'web');
+          return { veri_kimligi: id, satirlar: seyrelt(satirlar, AZAMI_DONEN_SATIR).satirlar };
+        },
+      },
+      {
+        name: 'web_tufe_fiyat',
+        description: 'Madde kodları için her toplama gününde marketlerdeki raf fiyatlarının ortanca birim fiyatını (TL/Kg, TL/Lt ya da TL/Adet) döndürür. zincir_kirilimi=true ise son günlerde zincir zincir verir. Ortanca, o gün bulunan ürünlere göre değişir; enflasyon için endeksi kullan.',
+        inputSchema: { type: 'object', properties: {
+          madde_kodlari: { type: 'array', items: { type: 'string' } }, zincir_kirilimi: { type: 'boolean' },
+          baslangic: { type: 'string' }, bitis: { type: 'string' } }, required: ['madde_kodlari'] },
+        execute: ({ madde_kodlari, zincir_kirilimi, baslangic, bitis }) => {
+          const k = new Set(kodListesi(madde_kodlari));
+          const zk = zincir_kirilimi === true || zincir_kirilimi === 'true';
+          const satirlar = tarihAraligi((T.madde_fiyatlari || []).filter((r) => k.has(r.madde_kodu) && (zk ? r.zincir !== 'tum' : r.zincir === 'tum')), baslangic, bitis)
+            .map((r) => ({ tarih: r.tarih, kod: r.madde_kodu, ad: r.madde_adi, zincir: ZINCIR[r.zincir] || r.zincir, birim: r.birim, fiyat: r.ortanca_birim_fiyat, urun_sayisi: r.urun_sayisi }));
+          if (!satirlar.length) throw new Error('Bu maddeler için fiyat yok.');
+          const id = kaydaEkle('web', 'Web TÜFE ortanca birim fiyat' + (zk ? ' (zincir bazında)' : ''), ['tarih', 'kod', 'ad', 'zincir', 'birim', 'fiyat', 'urun_sayisi'], satirlar,
+            { arac: 'web_tufe_fiyat', madde_kodlari: [...k], zincir_kirilimi: zk, baslangic, bitis }, 'Raf fiyatı (kampanyalı fiyat dahil), TL/birim');
+          adim('Market fiyatları okundu' + (zk ? ' (zincir bazında)' : ''), 'web');
+          return { veri_kimligi: id, satirlar: seyrelt(satirlar, AZAMI_DONEN_SATIR).satirlar };
+        },
+      },
+      {
+        name: 'web_tufe_hareketler',
+        description: 'En çok artan ya da düşen Web TÜFE kalemlerini sıralar. olcu: "baslangictan" (ilk toplama gününden bu yana madde endeksi değişimi), "son_gun" (önceki toplamaya göre), "aylik" (son ayın aylık değişimi). duzey: "madde" ya da "grup".',
+        inputSchema: { type: 'object', properties: {
+          olcu: { type: 'string', enum: ['baslangictan', 'son_gun', 'aylik'] }, yon: { type: 'string', enum: ['artan', 'dusen'] },
+          duzey: { type: 'string', enum: ['madde', 'grup'] }, n: { type: 'integer', minimum: 1, maximum: 25 } }, required: ['olcu', 'yon'] },
+        execute: ({ olcu, yon, duzey, n }) => {
+          const adet = Math.max(1, Math.min(25, Number(n) || 10));
+          const dz = duzey === 'grup' ? 'grup' : 'madde';
+          let satirlar;
+          if (olcu === 'baslangictan') {
+            if (dz !== 'madde') throw new Error('baslangictan yalnızca madde düzeyinde.');
+            satirlar = seriOzeti((T.madde_endeksleri || []).map((r) => ({ ...r, ad: r.seri_adi })), 'seri_kodu', 'tarih', 'endeks')
+              .filter((r) => r.degisim_yuzde != null && r.ilk_tarih !== r.son_tarih)
+              .map((r) => ({ kod: r.seri_kodu, ad: r.ad, deger: r.degisim_yuzde, ilk_tarih: r.ilk_tarih, son_tarih: r.son_tarih }));
+          } else {
+            const alan = olcu === 'aylik' ? 'aylik' : 'gunluk';
+            satirlar = (T.son_degisimler || []).filter((r) => r.duzey === dz && r[alan] != null)
+              .map((r) => ({ kod: r.seri_kodu, ad: r.seri_adi, deger: r[alan], tarih: r.tarih }));
+          }
+          satirlar.sort((a, b) => (yon === 'dusen' ? a.deger - b.deger : b.deger - a.deger));
+          satirlar = satirlar.slice(0, adet);
+          if (!satirlar.length) throw new Error('Bu ölçü için henüz yeterli veri yok.');
+          const id = kaydaEkle('web', 'Web TÜFE: en çok ' + (yon === 'dusen' ? 'düşen' : 'artan') + ' kalemler (' + olcu + ')', Object.keys(satirlar[0]), satirlar,
+            { arac: 'web_tufe_hareketler', olcu, yon, duzey: dz, n: adet }, 'deger: yüzde değişim');
+          adim('Web TÜFE hareketleri sıralandı', 'web');
+          return { veri_kimligi: id, satirlar };
+        },
+      },
+    ];
+  }
+
+  // ------------------------------------------------------------ EVDS araçları (bağlayıcı üzerinden)
+  // EVDS bağlayıcısı yanıtı {result: "<markdown metni>"} olarak verir; tablolar markdown'dır.
+  function evdsMetni(yanit) {
+    const p = yanit && (yanit.payload !== undefined ? yanit.payload : yanit.structuredContent);
+    if (typeof p === 'string') return p;
+    if (p && typeof p.result === 'string') return p.result;
+    if (yanit && Array.isArray(yanit.content)) return yanit.content.map((c) => c.text || '').join('\n');
+    return JSON.stringify(p ?? yanit ?? '');
+  }
+  function mdTablo(metin) {
+    const satirlar = String(metin).split('\n').filter((s) => s.trim().startsWith('|'));
+    if (satirlar.length < 3) return [];
+    const hucre = (s) => s.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((x) => x.trim().replace(/\\_/g, '_'));
+    const bas = hucre(satirlar[0]);
+    return satirlar.slice(2).map((s) => { const h = hucre(s); const o = {}; bas.forEach((b, i) => { o[b] = h[i] ?? ''; }); return o; });
+  }
+  function evdsTarih(s) {
+    let m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(s);
+    if (m) return m[3] + '-' + m[2] + '-' + m[1];
+    m = /^(\d{4})-(\d{1,2})$/.exec(s);
+    if (m) return m[1] + '-' + m[2].padStart(2, '0');
+    return s;
+  }
+  async function evdsCagir(arac, girdi, signal) {
+    try {
+      const yanit = await durum.mcp.callTool(EVDS_SUNUCU, arac, girdi, { signal, cache: { staleTime: 3600000, gcTime: 3600000 } });
+      return evdsMetni(yanit);
+    } catch (e) {
+      const kod = e && e.code;
+      if (kod === 'server_not_connected' || kod === 'needs_reauth' || kod === 'not_granted' || kod === 'consent_required') evdsDurumu(false, kod);
+      throw new Error('EVDS çağrısı başarısız (' + (kod || 'hata') + ')' + (e && e.message ? ': ' + e.message : ''));
+    }
+  }
+  const kisalt = (s, n) => (s.length > n ? s.slice(0, n) + '\n…(kısaltıldı)' : s);
+
+  function evdsAraclari() {
+    if (!durum.evdsBagli) return [];
+    return [
+      {
+        name: 'evds_kesfet',
+        description: 'TCMB EVDS’de resmi seri arar. adim="kategoriler" kategori ağacını; adim="veri_gruplari" bir kategorinin veri gruplarını (kategori_id ve isteğe bağlı anahtar_kelimeler); adim="seriler" bir veri grubunun serilerini ve seri kodlarını (veri_grubu ve isteğe bağlı anahtar_kelimeler) döndürür. Sık kullanılan seri kodları istemde verildi; onlar yetiyorsa bu aracı kullanma.',
+        inputSchema: { type: 'object', properties: {
+          adim: { type: 'string', enum: ['kategoriler', 'veri_gruplari', 'seriler'] },
+          kategori_id: { type: 'integer' }, veri_grubu: { type: 'string', description: 'Ör. bie_tukfiy2025' },
+          anahtar_kelimeler: { type: 'string', description: 'Virgülle ayrılmış, en çok 5; genel terimler' } }, required: ['adim'] },
+        execute: async ({ adim: a, kategori_id, veri_grubu, anahtar_kelimeler }, baglam) => {
+          let metin;
+          if (a === 'kategoriler') metin = await evdsCagir('list_categories', {}, baglam.signal);
+          else if (a === 'veri_gruplari') metin = await evdsCagir('list_datagroups', { category_id: Number(kategori_id), keywords: String(anahtar_kelimeler || '') }, baglam.signal);
+          else if (a === 'seriler') metin = await evdsCagir('list_series', { datagroup_code: String(veri_grubu || ''), keywords: String(anahtar_kelimeler || '') }, baglam.signal);
+          else throw new Error('adim kategoriler, veri_gruplari ya da seriler olmalı.');
+          adim('EVDS’de seri arandı (' + a + (anahtar_kelimeler ? ': ' + anahtar_kelimeler : '') + ')', 'resmi');
+          return kisalt(metin, 14000);
+        },
+      },
+      {
+        name: 'evds_seri_verisi',
+        description: 'Bir TCMB EVDS serisinin verisini okur (resmi kaynak). Sonuçtaki veri_kimligi grafikte kullanılır; satırlar {tarih, kod, ad, deger}. formul: "1" dönemsel % değişim (aylık seride aylık), "3" yıllık % değişim; boşsa düzey. frekans: "5" aylık, "3" haftalık (günlük seriyi uzun dönemde seyreltmek için; toplulastirma "avg" ya da "last"). İstek başına en çok 1000 gözlem.',
+        inputSchema: { type: 'object', properties: {
+          seri_kodu: { type: 'string', description: 'Ör. TP.DK.USD.A.YTL' }, ad: { type: 'string', description: 'Grafikte görünecek kısa ad' },
+          baslangic: { type: 'string', description: 'YYYY-AA-GG' }, bitis: { type: 'string', description: 'YYYY-AA-GG' },
+          formul: { type: 'string', enum: ['', '0', '1', '2', '3', '4', '5', '6', '7', '8'] },
+          frekans: { type: 'string', enum: ['', '1', '2', '3', '4', '5', '6', '7', '8'] },
+          toplulastirma: { type: 'string', enum: ['', 'avg', 'min', 'max', 'first', 'last', 'sum'] } }, required: ['seri_kodu', 'baslangic', 'bitis'] },
+        execute: async ({ seri_kodu, ad, baslangic, bitis, formul, frekans, toplulastirma }, baglam) => {
+          const kod = String(seri_kodu || '').trim();
+          if (!/^[A-Za-z0-9_.-]{1,256}$/.test(kod)) throw new Error('Geçersiz seri kodu.');
+          const girdi = { series_code: kod, start_date: String(baslangic), end_date: String(bitis), full_data: true };
+          if (formul) girdi.formulas = String(formul);
+          if (frekans) girdi.frequency = String(frekans);
+          if (toplulastirma) girdi.aggregation = String(toplulastirma);
+          const metin = await evdsCagir('get_series_data', girdi, baglam.signal);
+          const tablo = mdTablo(metin);
+          if (!tablo.length) throw new Error('EVDS bu seri için tablo döndürmedi: ' + kisalt(metin, 400));
+          const sutunlar = Object.keys(tablo[0]);
+          const tarihSut = sutunlar.find((s) => /tarih/i.test(s)) || sutunlar[0];
+          const degerSut = sutunlar.find((s) => s !== tarihSut);
+          const bilinen = EVDS_BILINEN.find(([k]) => k === kod);
+          const kisaAd = String(ad || (bilinen ? bilinen[1] : kod));
+          const satirlar = tablo.map((r) => ({ tarih: evdsTarih(r[tarihSut]), kod, ad: kisaAd, deger: r[degerSut] === '' ? null : Number(r[degerSut]) }))
+            .filter((r) => r.deger != null && isFinite(r.deger));
+          if (!satirlar.length) throw new Error('Bu aralıkta değer yok.');
+          const ek = formul && formul !== '0' ? ' (' + EVDS_FORMUL[formul] + ')' : '';
+          const id = kaydaEkle('resmi', 'TCMB EVDS: ' + kisaAd + ek, ['tarih', 'kod', 'ad', 'deger'], satirlar,
+            { arac: 'get_series_data', seri: kod, baslangic, bitis, formul: formul || undefined, frekans: frekans || undefined, toplulastirma: toplulastirma || undefined }, 'Kaynak: TCMB EVDS');
+          adim('EVDS verisi okundu: ' + kisaAd + ek, 'resmi');
+          const s = seyrelt(satirlar, AZAMI_DONEN_SATIR);
+          return { veri_kimligi: id, kaynak: 'Resmi (TCMB EVDS)', seri: kod, ozet: seriOzeti(satirlar, 'kod', 'tarih', 'deger'), satirlar: s.satirlar, seyreltildi: s.seyreltildi || undefined };
+        },
+      },
+    ];
+  }
+  function evdsDurumu(bagli, neden) {
+    durum.evdsBagli = bagli;
+    $('#cip-evds').classList.toggle('kapali', !bagli);
+    $('#cip-evds-metin').textContent = bagli ? 'EVDS bağlı' : (neden === 'needs_reauth' ? 'EVDS yeniden giriş istiyor' : 'EVDS bağlı değil');
+    ornekleriCiz();
+  }
+
+  // ------------------------------------------------------------ istem
+  function istem(soru, mod) {
+    const bugun = new Date().toISOString().slice(0, 10);
+    const evds = durum.evdsBagli;
+    const kisa = mod !== 'whitepaper';
+    return [
+      'Bir Türk bankasının ekonomi ekibi için çalışan bir analistsin. Aşağıdaki soruyu araçlarla veri okuyarak yanıtla. Bugün ' + bugun + '. Türkçe yaz.',
+      '',
+      'VERİ KAYNAKLARI — İKİSİ ASLA KARIŞTIRILMAZ:',
+      '1) Web TÜFE: bu projenin marketfiyati.org.tr’den İstanbul (Anadolu), Ankara ve İzmir’de her gün topladığı market fiyatlarından hesapladığı günlük endeks. Baz: ilk toplama günü (' + ((durum.web.gunler || [])[0] || '2026-11-12') + ') = 100. Toplama günü sayısı: ' + ((durum.web.gunler || []).length) + '. Kapsam şimdilik TÜİK sepetinin market ürünleri (çoğu gıda). Resmi TÜFE değildir; her zaman "Web TÜFE" diye an.',
+      '2) Resmi seriler: TCMB EVDS (TÜİK TÜFE, kurlar, faizler, beklentiler vb.). ' + (evds
+        ? 'EVDS araçları açık. Sık kullanılan seri kodları: ' + EVDS_BILINEN.map(([k, a]) => k + ' = ' + a).join('; ') + '. Aylık TÜFE için yıllık değişim formul "3", aylık değişim formul "1". Başka seri gerekirse evds_kesfet ile ara.'
+        : 'Bu oturumda EVDS bağlı değil; resmi veri kullanma, gerekirse bunu sınır olarak belirt.'),
+      'Verimli çalış: birbirinden bağımsız araç çağrılarını aynı turda birlikte yap; tur sayısı sınırlıdır.',
+      'Kurallar: İki kaynağı tek seride birleştirme, zincirleme, ortalama ya da birbirinin yerine kullanma. Karşılaştırma yalnızca yan yana ve kaynak adıyla yapılır. Yalnızca araçlardan gelen sayıları kullan; tahmin ettiğin bir sayıyı veri gibi sunma. Veri kısaysa (ör. birkaç gün) bunu açıkça söyle ve aşırı yorumdan kaçın. Ortanca fiyatlar ürün karmasıyla değişir; fiyat değişimi için endeksi kullan.',
+      '',
+      kisa
+        ? 'BİÇİM: Kısa yanıt. 1-2 bölüm, toplam 120-250 kelime, en çok 1 grafik.'
+        : 'BİÇİM: Whitepaper. 4-6 bölüm (ör. Yönetici özeti, Veri ve yöntem, Bulgular, Riskler ve sınırlar, Sonuç ve izlenecekler), toplam 600-1100 kelime, 2-4 grafik.',
+      '',
+      'Son mesajın YALNIZCA şu biçimde tek bir JSON nesnesi olsun:',
+      '{"baslik": "kısa başlık", "ozet": "2-3 cümle", "bulgular": ["madde madde ana bulgular (3-5)"], "bolumler": [{"baslik": "...", "metin": "paragraflar; paragraf arası boş satır; madde için satır başında \'- \'", "grafik": null}], "sinirlar": ["veri ve yöntem sınırları"], "izlenecekler": ["takip edilecek göstergeler (isteğe bağlı)"]}',
+      'Grafik: {"tur": "cizgi" ya da "cubuk", "baslik": "...", "birim": "endeks" | "%" | "TL" | başka, "seriler": [{"veri_kimligi": "v1", "x": "tarih", "y": "endeks", "filtre": {"kod": "TUFE"}, "ad": "Web TÜFE genel"}]}. veri_kimligi mutlaka bir araç sonucundan gelmeli; x ve y o sonucun sütun adları olmalı. Grafiğe sayı yazma. Çubuk grafikte x kategori sütunudur (ör. "ad"), y değer sütunudur.',
+      '',
+      'SORU: ' + soru,
+    ].join('\n');
+  }
+
+  // ------------------------------------------------------------ soru sorma
+  const ORNEKLER = [
+    { metin: 'Toplamaya başladığımızdan bu yana en çok pahalanan ve ucuzlayan 10 gıda kalemi hangileri?', evds: false },
+    { metin: 'Temel gıdalarda (süt, yumurta, ekmek, domates) zincirler arasındaki fiyat farkı ne durumda?', evds: false },
+    { metin: 'Web TÜFE genel endeksinin ve ana gruplarının günlük seyrini özetle.', evds: false },
+    { metin: 'Son aylarda resmi gıda enflasyonu ile dolar kuru nasıl seyretti? Web TÜFE’nin işaret ettiğiyle yan yana koy.', evds: true },
+    { metin: 'Piyasa katılımcılarının enflasyon beklentisi ile Web TÜFE’nin ay içi seyri ne söylüyor?', evds: true },
+  ];
+  function ornekleriCiz() {
+    const kap = $('#ornekler');
+    kap.replaceChildren(...ORNEKLER.map((o) => el('button', {
+      type: 'button', class: 'ornek', disabled: o.evds && !durum.evdsBagli,
+      title: o.evds && !durum.evdsBagli ? 'EVDS bağlanınca kullanılabilir' : null,
+      text: o.metin, onclick: () => { $('#soru').value = o.metin; $('#soru').focus(); },
+    })));
+  }
+
+  async function soruSor(ev) {
+    ev.preventDefault();
+    const soru = $('#soru').value.trim();
+    const mod = $('#mod-whitepaper').checked ? 'whitepaper' : 'kisa';
+    const hata = $('#soru-hata');
+    hata.hidden = true;
+    if (!soru) { hata.textContent = 'Önce bir soru yaz.'; hata.hidden = false; return; }
+    if (!durum.sample) { hata.textContent = 'Bu görünümde Claude’a soru sorulamıyor.'; hata.hidden = false; return; }
+    if (!durum.web.hazir) { hata.textContent = 'Web TÜFE verisi yüklenemedi; sayfayı yenileyip yeniden dene.'; hata.hidden = false; return; }
+
+    kayit = new Map(); kayitSayac = 0;
+    const ctl = new AbortController();
+    durum.calisiyor = ctl;
+    $('#sor-dugme').disabled = true; $('#dur-dugme').hidden = false;
+    $('#ilerleme').hidden = false; $('#ilerleme-adimlar').replaceChildren();
+    const baslama = Date.now();
+    const sayac = setInterval(() => { $('#ilerleme-durum').textContent = 'Çalışıyor… ' + Math.round((Date.now() - baslama) / 1000) + ' sn'; }, 1000);
+    $('#ilerleme-durum').textContent = 'Çalışıyor…';
+    $('#sor-rapor').replaceChildren();
+    try {
+      const sonuc = await durum.sample.json(istem(soru, mod), {
+        tools: [...webAraclari(), ...evdsAraclari()],
+        modelTier: mod === 'whitepaper' ? 'complex' : 'default',
+        signal: ctl.signal,
+      });
+      const rapor = raporuDuzelt(sonuc);
+      const kayitli = raporuPaketle(rapor, soru, mod);
+      raporCiz($('#sor-rapor'), kayitli, { indir: true });
+      $('#ilerleme-durum').textContent = 'Tamamlandı (' + Math.round((Date.now() - baslama) / 1000) + ' sn).';
+      await raporuKaydet(kayitli);
+    } catch (e) {
+      const kod = e && e.code;
+      $('#ilerleme-durum').textContent = 'Durdu.';
+      if (kod !== 'cancelled') {
+        hata.textContent = hataMetni(kod, e);
+        hata.hidden = false;
+      }
+    } finally {
+      clearInterval(sayac);
+      durum.calisiyor = null;
+      $('#sor-dugme').disabled = false; $('#dur-dugme').hidden = true;
+    }
+  }
+  function hataMetni(kod, e) {
+    const m = {
+      not_granted: 'Claude’a erişim izni verilmedi. İzin vermek için sayfayı yenileyip yeniden sor.',
+      sampling_disabled: 'Bu hesapta Claude kullanılamıyor.',
+      rate_limited: 'Kısa sürede çok soru soruldu ya da kullanım sınırına ulaşıldı. Biraz sonra yeniden dene.',
+      invalid_json: 'Yanıt rapor biçiminde gelmedi. Soruyu biraz daraltıp yeniden dene.',
+      prompt_too_large: 'Sorgu çok büyüdü. Daha dar bir dönem ya da daha az kalemle dene.',
+      tools_unavailable: 'Bu görünüm veri araçlarını çalıştıramıyor (ör. eski uygulama sürümü).',
+    };
+    return m[kod] || ('Analiz tamamlanamadı' + (e && e.message ? ': ' + e.message : '.'));
+  }
+
+  // Claude'un JSON'unu güvenli bir rapora çevirir.
+  function raporuDuzelt(r) {
+    const metin = (v) => (v == null ? '' : String(v));
+    const dizi = (v) => (Array.isArray(v) ? v.map(metin).filter(Boolean) : []);
+    const o = r && typeof r === 'object' ? r : {};
+    return {
+      baslik: metin(o.baslik) || 'Analiz',
+      ozet: metin(o.ozet),
+      bulgular: dizi(o.bulgular),
+      bolumler: (Array.isArray(o.bolumler) ? o.bolumler : []).map((b) => ({
+        baslik: metin(b && b.baslik), metin: metin(b && b.metin),
+        grafik: b && b.grafik && typeof b.grafik === 'object' ? {
+          tur: b.grafik.tur === 'cubuk' ? 'cubuk' : 'cizgi', baslik: metin(b.grafik.baslik), birim: metin(b.grafik.birim),
+          seriler: (Array.isArray(b.grafik.seriler) ? b.grafik.seriler : []).map((s) => ({
+            veri_kimligi: metin(s && s.veri_kimligi), x: metin(s && s.x), y: metin(s && s.y), ad: metin(s && s.ad),
+            filtre: s && s.filtre && typeof s.filtre === 'object' ? Object.fromEntries(Object.entries(s.filtre).map(([k, v]) => [String(k), metin(v)])) : null,
+          })).filter((s) => s.veri_kimligi && s.x && s.y),
+        } : null,
+      })),
+      sinirlar: dizi(o.sinirlar),
+      izlenecekler: dizi(o.izlenecekler),
+    };
+  }
+
+  // Grafiklerde kullanılan veriyi süzerek raporla birlikte saklanacak biçime getirir.
+  function raporuPaketle(rapor, soru, mod) {
+    const veriler = {};
+    const kullanilan = new Set();
+    rapor.bolumler.forEach((b) => (b.grafik ? b.grafik.seriler : []).forEach((s) => kullanilan.add(s.veri_kimligi)));
+    for (const [id, k] of kayit) {
+      let satirlar = [];
+      if (kullanilan.has(id)) {
+        const filtreler = rapor.bolumler.flatMap((b) => (b.grafik ? b.grafik.seriler : [])).filter((s) => s.veri_kimligi === id);
+        satirlar = k.satirlar.filter((r) => filtreler.some((s) => !s.filtre || Object.entries(s.filtre).every(([a, v]) => String(r[a]) === v)));
+        satirlar = seyrelt(satirlar, AZAMI_KAYIT_SATIRI).satirlar;
+      }
+      veriler[id] = { kaynak: k.kaynak, baslik: k.baslik, aciklama: k.aciklama, sorgu: k.sorgu, satir_sayisi: k.satirlar.length, satirlar };
+    }
+    return { soru, mod, olusturma: Date.now(), web_son_gun: durum.web.tarih, rapor, veriler };
+  }
+
+  // ------------------------------------------------------------ rapor çizimi
+  function paragraflar(metin) {
+    const bloklar = String(metin || '').split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+    return bloklar.map((b) => {
+      const satirlar = b.split('\n');
+      if (satirlar.every((s) => /^\s*[-•]\s+/.test(s))) return el('ul', {}, satirlar.map((s) => el('li', { text: s.replace(/^\s*[-•]\s+/, '') })));
+      return el('p', { text: b.replace(/\n/g, ' ') });
+    });
+  }
+
+  function raporCiz(kap, paket, secenek = {}) {
+    const { rapor, veriler } = paket;
+    const kaynakVar = (t) => Object.values(veriler).some((v) => v.kaynak === t);
+    const govde = el('article', { class: 'rapor' },
+      el('p', { class: 'ust-etiket', text: (paket.hafta ? 'Haftalık görünüm · ' + paket.hafta : (paket.mod === 'whitepaper' ? 'Whitepaper' : 'Kısa yanıt')) + ' · ' + zamanMetin(paket.olusturma) }),
+      el('h2', { class: 'rapor-baslik', text: rapor.baslik }),
+      paket.soru ? el('p', { class: 'soru-metni', text: '“' + paket.soru + '”' }) : null,
+      rapor.ozet ? el('p', { class: 'ozet', text: rapor.ozet }) : null,
+      rapor.bulgular.length ? [el('h3', { text: 'Ana bulgular' }), el('ul', { class: 'bulgular' }, rapor.bulgular.map((b) => el('li', { text: b })))] : null,
+      rapor.bolumler.map((b) => [
+        b.baslik ? el('h3', { text: b.baslik }) : null,
+        paragraflar(b.metin),
+        b.grafik && b.grafik.seriler.length ? grafikKabi(b.grafik, veriler) : null,
+      ]),
+      rapor.sinirlar.length ? [el('h3', { text: 'Sınırlar' }), el('ul', {}, rapor.sinirlar.map((s) => el('li', { text: s })))] : null,
+      rapor.izlenecekler.length ? [el('h3', { text: 'İzlenecekler' }), el('ul', {}, rapor.izlenecekler.map((s) => el('li', { text: s })))] : null,
+      kaynakTablosu(veriler),
+      el('div', { class: 'feragat' },
+        el('p', { text: 'Bu metin yapay zekâ tarafından üretilmiştir; yorumlar yanıltıcı olabilir ve yatırım tavsiyesi değildir.' }),
+        kaynakVar('web') || !kaynakVar('resmi') ? el('p', { text: 'Web TÜFE, bu projenin marketfiyati.org.tr fiyatlarından hesapladığı deneysel bir endekstir; TÜİK’in resmi TÜFE’si değildir ve onunla birleştirilmemiştir.' }) : null,
+        kaynakVar('resmi') ? el('p', { text: 'Resmi seriler TCMB EVDS’den alınmıştır. TCMB yalnızca veri sağlayıcıdır; buradaki yorumlar TCMB’ye ait değildir. Kesin kullanımdan önce değerleri EVDS’den doğrulayın.' }) : null,
+      ),
+    );
+    const araclar = el('div', { class: 'rapor-araclar' },
+      secenek.indir && durum.downloads ? el('button', { type: 'button', class: 'dugme ikincil', text: 'HTML olarak indir', onclick: () => raporuIndir(govde, paket) }) : null,
+      secenek.sil ? el('button', { type: 'button', class: 'dugme ikincil', text: 'Raporu sil', onclick: (e) => secenek.sil(e.currentTarget) }) : null,
+    );
+    kap.replaceChildren(araclar, govde);
+  }
+
+  function kaynakTablosu(veriler) {
+    const satirlar = Object.entries(veriler);
+    if (!satirlar.length) return null;
+    return [
+      el('h3', { text: 'Veri kaynakları' }),
+      el('div', { class: 'tablo-kap' }, el('table', { class: 'kaynaklar' },
+        el('thead', {}, el('tr', {}, el('th', { text: 'Kimlik' }), el('th', { text: 'Kaynak' }), el('th', { text: 'Veri' }), el('th', { text: 'Sorgu' }))),
+        el('tbody', {}, satirlar.map(([id, v]) => el('tr', {},
+          el('td', { class: 'kod', text: id }),
+          el('td', {}, el('span', { class: 'rozet ' + v.kaynak, text: v.kaynak === 'resmi' ? 'Resmi · EVDS' : 'Web TÜFE' })),
+          el('td', { text: v.baslik + (v.aciklama ? ' (' + v.aciklama + ')' : '') + ' · ' + v.satir_sayisi + ' satır' }),
+          el('td', { class: 'kod', text: sorguMetni(v.sorgu) }),
+        ))),
+      )),
+    ];
+  }
+  function sorguMetni(s) {
+    if (!s) return '';
+    return Object.entries(s).filter(([, v]) => v != null && v !== '').map(([k, v]) => k + '=' + (Array.isArray(v) ? v.join(',') : (typeof v === 'object' ? JSON.stringify(v) : v))).join(' ');
+  }
+
+  // ------------------------------------------------------------ grafikler
+  const WEB_TONLARI = ['--web', '#2f9e8f', '#5aa9c9', '#0b4f4a', '#7cc7b4'];
+  const RESMI_TONLARI = ['--resmi', '#d07a3c', '#8a3c12', '#e0a86e', '#b66b45'];
+  const renk = (ton) => (ton.startsWith('--') ? getComputedStyle(document.documentElement).getPropertyValue(ton).trim() || '#888' : ton);
+
+  function grafikKabi(g, veriler) {
+    const kap = el('figure', { class: 'grafik' });
+    kap.append(el('figcaption', { class: 'grafik-baslik', text: g.baslik || '' }));
+    const seriler = g.seriler.map((s) => {
+      const v = veriler[s.veri_kimligi];
+      if (!v) return null;
+      const satirlar = (v.satirlar || []).filter((r) => !s.filtre || Object.entries(s.filtre).every(([a, b]) => String(r[a]) === b));
+      const noktalar = satirlar.map((r) => ({ x: r[s.x], y: Number(r[s.y]) })).filter((p) => p.x != null && isFinite(p.y));
+      return noktalar.length ? { ...s, kaynak: v.kaynak, noktalar } : null;
+    }).filter(Boolean);
+    if (!seriler.length) { kap.append(el('p', { class: 'grafik-not', text: 'Bu grafiğin verisi bulunamadı.' })); return kap; }
+    const paneller = ['web', 'resmi'].map((k) => seriler.filter((s) => s.kaynak === k)).filter((l) => l.length);
+    const ciz = () => {
+      kap.querySelectorAll('.panel').forEach((p) => p.remove());
+      paneller.forEach((liste) => kap.append(panelCiz(g, liste, kap.clientWidth || 640)));
+    };
+    ciz();
+    let son = 0;
+    if ('ResizeObserver' in window) new ResizeObserver(() => { const w = kap.clientWidth; if (w && Math.abs(w - son) > 8) { son = w; ciz(); } }).observe(kap);
+    if (paneller.length > 1) kap.append(el('p', { class: 'grafik-not', text: 'Web TÜFE ve resmi seriler ayrı panellerde, kendi ölçekleriyle gösterilir; tek seride birleştirilmez.' }));
+    return kap;
+  }
+
+  function panelCiz(g, seriler, genislik) {
+    const kaynak = seriler[0].kaynak;
+    const tonlar = kaynak === 'resmi' ? RESMI_TONLARI : WEB_TONLARI;
+    const panel = el('div', { class: 'panel' });
+    panel.append(el('span', { class: 'panel-etiket ' + kaynak, text: kaynak === 'resmi' ? 'Resmi · TCMB EVDS' : 'Web TÜFE · bu proje' }));
+    const W = Math.max(280, Math.floor(genislik));
+    const xml = 'http://www.w3.org/2000/svg';
+    if (g.tur === 'cubuk') {
+      const s = seriler[0];
+      const n = s.noktalar.slice(0, 25);
+      const solBosluk = Math.min(W * 0.45, 12 + d3.max(n, (p) => String(p.x).length) * 6.4);
+      const satir = 24, H = 16 + n.length * satir + 24;
+      const x = d3.scaleLinear().domain([Math.min(0, d3.min(n, (p) => p.y)), Math.max(0, d3.max(n, (p) => p.y))]).nice().range([solBosluk, W - 48]);
+      const y = d3.scaleBand().domain(n.map((p, i) => i)).range([12, H - 24]).padding(0.25);
+      const svg = d3.select(document.createElementNS(xml, 'svg')).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', g.baslik || 'Çubuk grafik');
+      svg.append('g').attr('class', 'izgara').selectAll('line').data(x.ticks(4)).join('line').attr('x1', (t) => x(t)).attr('x2', (t) => x(t)).attr('y1', 8).attr('y2', H - 22);
+      svg.append('g').attr('class', 'eksen').attr('transform', `translate(0,${H - 22})`).call(d3.axisBottom(x).ticks(4).tickFormat((t) => s2(t)));
+      const c = renk(tonlar[0]);
+      const gr = svg.append('g').selectAll('g').data(n).join('g');
+      gr.append('rect').attr('x', (p) => x(Math.min(0, p.y))).attr('y', (p, i) => y(i)).attr('width', (p) => Math.max(1, Math.abs(x(p.y) - x(0)))).attr('height', y.bandwidth()).attr('fill', c)
+        .append('title').text((p) => p.x + ': ' + s2(p.y) + (g.birim ? ' ' + g.birim : ''));
+      gr.append('text').attr('x', solBosluk - 6).attr('y', (p, i) => y(i) + y.bandwidth() / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text((p) => String(p.x).length > 34 ? String(p.x).slice(0, 33) + '…' : p.x);
+      gr.append('text').attr('x', (p) => (p.y >= 0 ? x(p.y) + 4 : x(0) + 4)).attr('y', (p, i) => y(i) + y.bandwidth() / 2).attr('dy', '0.35em').text((p) => s2(p.y));
+      panel.append(svg.node());
+      return panel;
+    }
+    // çizgi
+    const H = 240, m = { u: 12, s: 56, a: 26, l: 48 };
+    const tarihMi = seriler.every((s) => s.noktalar.every((p) => /^\d{4}-\d{2}(-\d{2})?$/.test(String(p.x))));
+    const xDeger = (p) => (tarihMi ? new Date(String(p.x).length === 7 ? p.x + '-01T00:00:00' : p.x + 'T00:00:00') : p.x);
+    const tum = seriler.flatMap((s) => s.noktalar);
+    const x = tarihMi ? d3.scaleTime().domain(d3.extent(tum, xDeger)).range([m.l + 4, W - m.s]) :
+      d3.scalePoint().domain([...new Set(tum.map((p) => p.x))]).range([m.l + 4, W - m.s]);
+    const [ymin, ymax] = d3.extent(tum, (p) => p.y);
+    const pad = ymin === ymax ? Math.max(1, Math.abs(ymin) * 0.01) : 0;
+    const y = d3.scaleLinear().domain([ymin - pad, ymax + pad]).nice(5).range([H - m.a, m.u]);
+    const svg = d3.select(document.createElementNS(xml, 'svg')).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', g.baslik || 'Çizgi grafik');
+    svg.append('g').attr('class', 'izgara').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.s + 4).attr('y1', (t) => y(t)).attr('y2', (t) => y(t));
+    svg.append('g').attr('class', 'eksen').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(0).tickPadding(6).tickFormat((t) => s2(t))).call((e) => e.select('.domain').remove());
+    const aylikMi = tarihMi && seriler.every((s) => s.noktalar.every((p) => /^\d{4}-\d{2}$/.test(String(p.x))));
+    const xEksen = !tarihMi ? d3.axisBottom(x) : d3.axisBottom(x).ticks(Math.max(2, Math.min(6, Math.floor(W / 110))))
+      .tickFormat((d) => (aylikMi ? AYLAR[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2) : d.getDate() + ' ' + AYLAR[d.getMonth()]));
+    svg.append('g').attr('class', 'eksen').attr('transform', `translate(0,${H - m.a})`).call(xEksen);
+    const cizgi = d3.line().x((p) => x(xDeger(p))).y((p) => y(p.y));
+    const sonlar = [];
+    seriler.forEach((s, i) => {
+      const c = renk(tonlar[i % tonlar.length]);
+      const nok = s.noktalar.slice().sort((a, b) => (xDeger(a) < xDeger(b) ? -1 : 1));
+      svg.append('path').attr('d', cizgi(nok)).attr('fill', 'none').attr('stroke', c).attr('stroke-width', 2).attr('stroke-dasharray', kaynak === 'resmi' && i > 0 ? '5 3' : null);
+      svg.append('g').selectAll('circle').data(nok).join('circle').attr('cx', (p) => x(xDeger(p))).attr('cy', (p) => y(p.y)).attr('r', nok.length > 40 ? 1.6 : 3.2).attr('fill', c)
+        .append('title').text((p) => (s.ad ? s.ad + ' · ' : '') + tarihMetin(p.x) + ': ' + s2(p.y) + (g.birim && g.birim !== 'endeks' ? ' ' + g.birim : ''));
+      sonlar.push({ y: y(nok[nok.length - 1].y), x: x(xDeger(nok[nok.length - 1])), deger: nok[nok.length - 1].y, c });
+    });
+    // Son değer etiketleri sağ boşlukta; birbirine binmesin diye dikeyde aralanır
+    sonlar.sort((a, b) => a.y - b.y).forEach((s, i, l) => { if (i && s.y - l[i - 1].y < 13) s.y = l[i - 1].y + 13; });
+    sonlar.forEach((s) => svg.append('text').attr('x', s.x + 7).attr('y', s.y).attr('dy', '0.35em').style('fill', s.c).style('font-weight', 600).text(s2(s.deger)));
+    panel.append(svg.node());
+    panel.append(el('div', { class: 'lejant' }, seriler.map((s, i) => el('span', {}, (() => { const k = el('i'); k.style.background = renk(tonlar[i % tonlar.length]); return k; })(), s.ad || s.y))));
+    return panel;
+  }
+
+  // ------------------------------------------------------------ indir ve sakla
+  async function raporuIndir(govde, paket) {
+    if (!durum.downloads) return;
+    const stil = [...document.styleSheets].flatMap((ss) => { try { return [...ss.cssRules].map((r) => r.cssText); } catch (e) { return []; } }).join('\n');
+    const baslik = paket.rapor.baslik.replace(/[\\/:*?"<>|]+/g, ' ').slice(0, 80);
+    const html = '<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' +
+      baslik.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</title><style>' + stil + ' body{padding:24px;} .rapor-araclar{display:none}</style></head><body>' + govde.outerHTML + '</body></html>';
+    try {
+      await durum.downloads.save({ filename: 'analiz-' + new Date(paket.olusturma).toISOString().slice(0, 10) + '-' + baslik.toLocaleLowerCase('tr').replace(/\s+/g, '-').slice(0, 40) + '.html', data: html });
+    } catch (e) { /* izleyici vazgeçti ya da indirme kapalı */ }
+  }
+
+  async function raporuKaydet(paket) {
+    if (!durum.db || !durum.uid) return;
+    try {
+      await durum.db.collection('data/users/' + durum.uid).doc('r' + paket.olusturma).set({ tur: 'rapor', ...paket });
+    } catch (e) {
+      console.warn('Rapor kaydedilemedi', e);
+    }
+  }
+
+  // ------------------------------------------------------------ raporlarım
+  function raporlariDinle() {
+    if (!durum.db || !durum.uid) return;
+    durum.db.collection('data/users/' + durum.uid).orderBy('olusturma', 'desc').limit(50).onSnapshot((snap) => {
+      durum.raporlar = snap.docs.filter((d) => d.exists && (d.data() || {}).tur === 'rapor').map((d) => ({ id: d.id, ...d.data() }));
+      raporListesiCiz();
+    }, (e) => console.warn(e));
+  }
+  function raporListesiCiz() {
+    const kap = $('#rapor-listesi');
+    if (!durum.raporlar.length) {
+      kap.replaceChildren(el('div', { class: 'bos' }, el('h2', { text: 'Henüz kayıtlı rapor yok' }), el('p', { text: 'Soru Sor bölümünde ürettiğin raporlar burada saklanır. Raporlar yalnızca sana görünür.' })));
+      return;
+    }
+    kap.replaceChildren(...durum.raporlar.map((r) => el('div', { class: 'liste-oge' },
+      el('button', { type: 'button', class: 'ac', text: (r.rapor && r.rapor.baslik) || r.soru, onclick: () => raporAc(r) }),
+      el('span', { class: 'tarih', text: (r.mod === 'whitepaper' ? 'Whitepaper · ' : 'Kısa · ') + zamanMetin(r.olusturma) }),
+    )));
+  }
+  function raporAc(r) {
+    const kap = $('#secili-rapor');
+    raporCiz(kap, { ...r, rapor: raporuDuzelt(r.rapor) }, {
+      indir: true,
+      sil: (dugme) => {
+        if (dugme.dataset.onay !== '1') { dugme.dataset.onay = '1'; dugme.textContent = 'Silinsin mi? Tekrar bas'; return; }
+        const ref = durum.db.collection('data/users/' + durum.uid).doc(r.id);
+        ref.delete().then(() => kap.replaceChildren()).catch(() => { dugme.textContent = 'Silinemedi'; });
+      },
+    });
+    kap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ------------------------------------------------------------ haftalık görünüm
+  function haftalikDinle() {
+    if (!durum.db) return;
+    durum.db.collection('haftalik').orderBy('hafta', 'desc').limit(26).onSnapshot((snap) => {
+      durum.haftalar = snap.docs.filter((d) => d.exists).map((d) => ({ id: d.id, ...d.data() }));
+      haftalikCiz();
+      if (!location.hash) yonlendir();
+    }, (e) => console.warn(e));
+  }
+  function haftalikCiz(secili) {
+    if (!durum.haftalar.length) return;
+    const sec = $('#hafta-listesi');
+    const id = secili || sec.value || durum.haftalar[0].id;
+    sec.replaceChildren(...durum.haftalar.map((h) => el('option', { value: h.id, text: (h.hafta || h.id) + (h.rapor && h.rapor.baslik ? ' · ' + h.rapor.baslik : '') })));
+    sec.value = durum.haftalar.some((h) => h.id === id) ? id : durum.haftalar[0].id;
+    $('#hafta-sec').hidden = durum.haftalar.length < 2;
+    const h = durum.haftalar.find((x) => x.id === sec.value);
+    raporCiz($('#haftalik-icerik'), { ...h, rapor: raporuDuzelt(h.rapor), veriler: h.veriler || {} }, { indir: true });
+  }
+  $('#hafta-listesi').addEventListener('change', (e) => haftalikCiz(e.target.value));
+
+  // ------------------------------------------------------------ başlat
+  async function baslat() {
+    yonlendir();
+    $('#soru-formu').addEventListener('submit', soruSor);
+    $('#dur-dugme').addEventListener('click', () => durum.calisiyor && durum.calisiyor.abort());
+    const c = window.claude;
+    if (!c || typeof c.use !== 'function') {
+      const u = $('#yetenek-uyari');
+      u.textContent = 'Bu sayfa Claude içinde açıldığında çalışır: veriler, soru sorma ve raporlar burada kullanılamıyor.';
+      u.hidden = false;
+      $('#sor-dugme').disabled = true;
+      ornekleriCiz();
+      return;
+    }
+    const al = (ad) => c.use(ad).catch(() => null);
+    [durum.db, durum.user, durum.sample, durum.downloads, durum.mcp] = await Promise.all(['db', 'user', 'sample', 'downloads', 'mcp'].map(al));
+    if (durum.user) { try { durum.uid = await durum.user.id(); } catch (e) { durum.uid = null; } }
+    if (!durum.sample) {
+      const u = $('#yetenek-uyari');
+      u.textContent = 'Bu görünümde Claude’a soru sorulamıyor; haftalık görünümü okuyabilirsin.';
+      u.hidden = false;
+      $('#sor-dugme').disabled = true;
+    }
+    let evdsVar = false;
+    if (durum.mcp) {
+      try {
+        const lt = await durum.mcp.listTools(EVDS_SUNUCU);
+        evdsVar = (lt.servers || []).some((s) => s.server === EVDS_SUNUCU && (s.tools || []).some((a) => a.name === 'get_series_data'));
+      } catch (e) { evdsVar = false; }
+    }
+    evdsDurumu(evdsVar);
+    await webVerisiniYukle();
+    haftalikDinle();
+    raporlariDinle();
+  }
+  baslat();
+})();
+</script>

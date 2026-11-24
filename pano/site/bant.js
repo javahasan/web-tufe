@@ -3,7 +3,7 @@
   dash.calc('mansetler', {
     inputs: ['gercek_mansetler', 'ozet', 'son_degisimler', 'ana_grup_tablosu', 'yayginlik'],
     title: 'Günün manşetleri',
-    description: 'Manşet bandındaki cümleler: gerçek market fiyatlarından (en pahalı ürün, zincir farkı, temel gıdalar, günlük değişim) ve sentetik endeksten (yıllık enflasyon, en çok artan ve düşen kalemler, gruplar, yaygınlık) seçilen değerler.',
+    description: 'Manşet bandındaki cümleler: gerçek market fiyatlarından (en pahalı ürün, zincir farkı, temel gıdalar, günlük değişim) ve Web TÜFE endeksinden (genel endeks, aylık ve yıllık değişim, en çok artan ve düşen kalemler, gruplar, yaygınlık) seçilen değerler. Hesaplanamayan değerler (ör. bir yıllık veri olmadan yıllık değişim) banda girmez.',
     fn: (gercek, ozet, son_degisimler, ana_gruplar, yayginlik) => {
       const sayi = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
       const AYK = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
@@ -29,9 +29,19 @@
         }
       });
       const o = (ozet || [])[0];
+      const K = 'Web TÜFE';
       if (o) {
-        sentetikler.push({ kaynak: 'Sentetik', on: 'Yıllık enflasyon ', deger: o.yillik_degisim, bicim: 'yuzde', ara1: '; önceki aya göre ', deger2: o.yillik_fark, bicim2: 'puan', ara2: ' puan' });
-        sentetikler.push({ kaynak: 'Sentetik', on: o.ay ? 'Aylık değişim ' : '', deger: o.aylik_degisim, bicim: 'yuzde', ara1: o.durum === 'kesin' ? ' (kesin)' : ' (geçici)' });
+        if (o.yillik_degisim != null) {
+          sentetikler.push(o.yillik_fark != null
+            ? { kaynak: K, on: 'Yıllık enflasyon ', deger: o.yillik_degisim, bicim: 'yuzde', ara1: '; önceki aya göre ', deger2: o.yillik_fark, bicim2: 'puan', ara2: ' puan' }
+            : { kaynak: K, on: 'Yıllık enflasyon ', deger: o.yillik_degisim, bicim: 'yuzde' });
+        }
+        if (o.aylik_degisim != null) {
+          sentetikler.push({ kaynak: K, on: 'Aylık değişim ', deger: o.aylik_degisim, bicim: 'yuzde', ara1: o.durum === 'kesin' ? ' (kesin)' : ' (geçici)' });
+        }
+        if (o.endeks != null) {
+          sentetikler.push({ kaynak: K, on: 'Genel endeks (12 Kas 2026 = 100) ', deger: o.endeks, bicim: 'endeks', ara1: o.gunluk_degisim != null ? '; önceki toplamaya göre ' : '', deger2: o.gunluk_degisim, bicim2: 'isaretli' });
+        }
       }
       const maddeler = (son_degisimler || []).filter((r) => r.duzey === 'madde');
       const uc = (alan, buyuk) => {
@@ -41,15 +51,15 @@
       [['gunluk', true, 'Günün en çok artan maddesi: '], ['aylik', true, 'Ayın en çok artan maddesi: '],
         ['aylik', false, 'Ayın en çok düşen maddesi: '], ['yillik', true, 'Yılın en çok artan maddesi: ']].forEach(([alan, buyuk, metin]) => {
         const r = uc(alan, buyuk);
-        if (r) sentetikler.push({ kaynak: 'Sentetik', on: metin + r.seri_adi + ' ', deger: sayi(r[alan]), bicim: 'isaretli' });
+        if (r) sentetikler.push({ kaynak: K, on: metin + r.seri_adi + ' ', deger: sayi(r[alan]), bicim: 'isaretli' });
       });
       const g = (ana_gruplar || []).filter((r) => r.yillik_degisim != null).sort((a, b) => a.yillik_degisim - b.yillik_degisim);
       if (g.length) {
-        sentetikler.push({ kaynak: 'Sentetik', on: 'En yüksek yıllık enflasyon: ' + g[g.length - 1].ad + ' ', deger: g[g.length - 1].yillik_degisim, bicim: 'yuzde' });
-        sentetikler.push({ kaynak: 'Sentetik', on: 'En düşük yıllık enflasyon: ' + g[0].ad + ' ', deger: g[0].yillik_degisim, bicim: 'yuzde' });
+        sentetikler.push({ kaynak: K, on: 'En yüksek yıllık enflasyon: ' + g[g.length - 1].ad + ' ', deger: g[g.length - 1].yillik_degisim, bicim: 'yuzde' });
+        sentetikler.push({ kaynak: K, on: 'En düşük yıllık enflasyon: ' + g[0].ad + ' ', deger: g[0].yillik_degisim, bicim: 'yuzde' });
       }
       const y = (yayginlik || [])[(yayginlik || []).length - 1];
-      if (y) sentetikler.push({ kaynak: 'Sentetik', on: 'Fiyatı artan maddelerin payı ', deger: y.artan_oran, bicim: 'yuzde1' });
+      if (y && y.artan_oran != null) sentetikler.push({ kaynak: K, on: 'Fiyatı artan maddelerin payı ', deger: y.artan_oran, bicim: 'yuzde1' });
       const sonuc = [];
       for (let i = 0; i < Math.max(gercekler.length, sentetikler.length); i++) {
         if (sentetikler[i]) sonuc.push(sentetikler[i]);
@@ -66,6 +76,7 @@
     isaretli: (v) => wt.isaretli(v),
     puan: (v) => wt.puan(v),
     sayi: (v) => (v == null ? '—' : f0(v)),
+    endeks: (v) => (v == null ? '—' : f2(v)),
   };
 
   dash.draw('manset-bandi', (el) => {

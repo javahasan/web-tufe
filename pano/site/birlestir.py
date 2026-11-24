@@ -1,7 +1,8 @@
 """Site görünümlü pano sayfasını parçalarından birleştirir: pano/site/index.html.
 
 Parçalar: pano/index.html (temel stil ve hesaplar), pano/taslak/ek.css ve ek.js
-(yeni çizimler), pano/site/site.css, govde.html ve menu.js.
+(yeni çizimler), pano/site/site.css, govde.html, menu.js, bant.css/bant.js (manşet bandı)
+gercek.js (veri yeniyken açılış) ve resmi.js (TCMB EVDS bölümü).
 """
 import json, re, sys
 from datetime import datetime, timezone
@@ -16,6 +17,8 @@ ek_js = open("pano/taslak/ek.js", encoding="utf-8").read()
 menu_js = open("pano/site/menu.js", encoding="utf-8").read()
 bant_css = open("pano/site/bant.css", encoding="utf-8").read()
 bant_js = open("pano/site/bant.js", encoding="utf-8").read()
+gercek_js = open("pano/site/gercek.js", encoding="utf-8").read()
+resmi_js = open("pano/site/resmi.js", encoding="utf-8").read()
 
 bas = ek_js.index("// ================================================================ taslak: sekmeler")
 son = ek_js.index("// ================================================================ taslak: özet kartlarında")
@@ -31,7 +34,7 @@ for eski, yeni in [
     js = js.replace(eski, yeni)
 s = js.rstrip()
 assert s.endswith("})();")
-js = s[: -len("})();")] + ek_js + menu_js + bant_js + "})();\n"
+js = s[: -len("})();")] + ek_js + menu_js + bant_js + gercek_js + resmi_js + "})();\n"
 html = '<meta name="dash-one-writer">\n<style>' + css + ek_css + site_css + bant_css + '</style>\n\n' + govde + '\n<script>' + js + '</script>\n'
 open("pano/site/index.html", "w", encoding="utf-8").write(html)
 open("pano/site/sayfa.js", "w", encoding="utf-8").write(js)
