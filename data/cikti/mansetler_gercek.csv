@@ -1,14 +1,15 @@
 anahtar,tarih,urun,deger,deger2,deger3,birim,zincir,zincir2,konum,onceki_tarih
-gozlem,2026-11-23,14799 ürün,40031.0,7.0,3.0,,,,,
-en_pahali,2026-11-23,Polonez Dana Baton Sucuk 1 Kg,3149.0,,,,CarrefourSA,,İstanbul Anadolu,
-zincir_farki,2026-11-23,Peros Amber Konsantre Yumuşatıcı 960 Ml,99.94,85.0,169.95,,A101'de,Migros'ta,,
-birim_fiyat,2026-11-23,Domatesin,84.47,24.9,14.0,kilosu,,,,
-birim_fiyat,2026-11-23,Patatesin,39.95,29.9,7.0,kilosu,,,,
-birim_fiyat,2026-11-23,Kuru soğanın,54.9,33.73,11.0,kilosu,,,,
-birim_fiyat,2026-11-23,Dana etinin,869.0,550.0,32.0,kilosu,,,,
-birim_fiyat,2026-11-23,Tavuk etinin,199.95,65.0,139.0,kilosu,,,,
-birim_fiyat,2026-11-23,Beyaz peynirin,528.57,179.0,170.0,kilosu,,,,
-birim_fiyat,2026-11-23,Sütün,77.5,32.5,87.0,litresi,,,,
-birim_fiyat,2026-11-23,Ayçiçek yağının,117.0,85.8,52.0,litresi,,,,
-birim_fiyat,2026-11-23,Yumurtanın,9.96,4.57,70.0,tanesi,,,,
-en_cok_zamlanan,2026-11-23,Eker Kaymaklı Tava Yoğurdu 1 Kg,18.06,143.95,169.95,,Migros'ta,,3 şehirde,2026-11-22
+gozlem,2026-11-24,14734 ürün,39760.0,7.0,3.0,,,,,
+en_pahali,2026-11-24,Polonez Dana Baton Sucuk 1 Kg,3149.0,,,,CarrefourSA,,İstanbul Anadolu,
+zincir_farki,2026-11-24,Axe Erkek Deodorant 150 Ml,100.0,159.5,319.0,,A101'de,Hakmar'da,,
+birim_fiyat,2026-11-24,Domatesin,84.47,24.9,14.0,kilosu,,,,
+birim_fiyat,2026-11-24,Patatesin,39.9,32.5,7.0,kilosu,,,,
+birim_fiyat,2026-11-24,Kuru soğanın,54.9,32.5,11.0,kilosu,,,,
+birim_fiyat,2026-11-24,Dana etinin,875.0,550.0,31.0,kilosu,,,,
+birim_fiyat,2026-11-24,Tavuk etinin,219.0,65.0,131.0,kilosu,,,,
+birim_fiyat,2026-11-24,Beyaz peynirin,528.57,199.0,168.0,kilosu,,,,
+birim_fiyat,2026-11-24,Sütün,77.5,32.5,87.0,litresi,,,,
+birim_fiyat,2026-11-24,Ayçiçek yağının,114.99,85.8,52.0,litresi,,,,
+birim_fiyat,2026-11-24,Yumurtanın,9.99,4.97,71.0,tanesi,,,,
+en_cok_zamlanan,2026-11-24,Ülker Çokokrem Tüp Kakaolu Fındık Kreması 40 Gr,14.43,30.5,34.9,,Migros'ta,,3 şehirde,2026-11-23
+en_cok_ucuzlayan,2026-11-24,Ülker Çiziviç Peynirli Sandviç Kraker 3x82 Gr,-13.54,63.5,54.9,,Tarım Kredi'de,,İstanbul Anadolu,2026-11-23
