@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from webtufe.pano import madde_endeksleri_yaz, madde_fiyatlari, pano_yaz
+from webtufe.pano import madde_endeksleri_yaz, madde_fiyatlari, mobilite_pano_yaz, pano_yaz
 
 
 def _ham(kok, tarih, satirlar):
@@ -75,3 +75,27 @@ def test_pano_yaz(tmp_path, sonuc):
     assert pd.read_csv(tmp_path / "agirliklar.csv")["market_kurali"].tolist() == ["evet"]
     m = pd.read_csv(madde_endeksleri_yaz(sonuc["gunluk"], tmp_path), dtype={"seri_kodu": str})
     assert m["seri_kodu"].unique().tolist() == ["0111121"] and m["endeks"].tolist() == [101.0, 102.0]
+
+
+def test_mobilite_pano_yaz_tum_pencereler(tmp_path):
+    """Pano son 120 günü, Analiz Masası tüm günlük pencereleri alır; kaynak yoksa yalnızca başlık yazılır."""
+    mob = tmp_path / "mobilite"
+    mob.mkdir()
+    gunler = pd.date_range("2026-01-01", periods=200, freq="D").strftime("%Y-%m-%d")
+    pd.DataFrame({"tarih": gunler, "gun_tipi": "is_gunu", "pencere": "zorunlu_sabah", "tur": "zorunlu", "deger": 50.0,
+                  "yillik_degisim": 1.0, "kisa_sapma": 0.5, "temiz": True, "okul_tatili": False,
+                  "resmi_tatil": False, "fazla": 1}).to_csv(mob / "pencereler.csv", index=False)
+    pd.DataFrame({"hafta": ["2026-W01"], "hafta_basi": ["2025-12-29"], "temiz_gun": [5]}).to_csv(mob / "haftalik.csv", index=False)
+    saatlik = tmp_path / "saatlik.csv"
+    pd.DataFrame({"zaman": ["2026-07-19 10:00"], "indeks": [40]}).to_csv(saatlik, index=False)
+    pano = tmp_path / "pano"
+    yazilan = {y.name for y in mobilite_pano_yaz(pano, saatlik, mob)}
+    assert yazilan == {"mobilite_saatlik.csv", "mobilite_gunluk.csv", "mobilite_pencereler.csv", "mobilite_haftalik.csv"}
+    tum = pd.read_csv(pano / "mobilite_pencereler.csv")
+    assert len(tum) == 200 and "fazla" not in tum.columns
+    assert len(pd.read_csv(pano / "mobilite_gunluk.csv")) == 120
+
+    bos = tmp_path / "bos"
+    mobilite_pano_yaz(bos, tmp_path / "yok.csv", tmp_path / "yok")
+    assert pd.read_csv(bos / "mobilite_pencereler.csv").empty
+    assert list(pd.read_csv(bos / "mobilite_pencereler.csv").columns)[:3] == ["tarih", "gun_tipi", "pencere"]

@@ -6,7 +6,8 @@
 <style>
 /* Düzen: üstte durum şeridi ve sekmeler; altında tek sütun çalışma alanı. Raporlar okunur
    genişlikte (en çok 76ch) bir "not kâğıdı" gibi dizilir. Web TÜFE yeşil-mavi (deniz), resmi
-   seriler (TCMB EVDS) kiremit renginde; iki kaynak hiçbir yerde aynı renge düşmez. */
+   seriler (TCMB EVDS) kiremit, İstanbul hareketliliği (İBB trafik indeksi) mor; kaynaklar hiçbir yerde
+   aynı renge düşmez. */
 :root {
   --bg: #f3f5f7;
   --panel: #ffffff;
@@ -19,6 +20,8 @@
   --web-soft: #dff1ee;
   --resmi: #ad521a;
   --resmi-soft: #f7e7da;
+  --trafik: #6a4c9c;
+  --trafik-soft: #ece6f5;
   --warn: #855600;
   --warn-soft: #fbf0d9;
   --bad: #a02929;
@@ -32,14 +35,14 @@
   :root:not([data-theme="light"]) {
     --bg: #0f151b; --panel: #172029; --ink: #e5ecf2; --muted: #98a6b3; --line: #2a3742;
     --accent: #84b4e0; --accent-ink: #0f151b; --web: #4cc0b3; --web-soft: #12322e;
-    --resmi: #ec9a63; --resmi-soft: #3a2517; --warn: #e3b55a; --warn-soft: #33270f;
+    --resmi: #ec9a63; --resmi-soft: #3a2517; --trafik: #b9a2e3; --trafik-soft: #2a2338; --warn: #e3b55a; --warn-soft: #33270f;
     --bad: #f08585; --grid: #23303a; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0f151b; --panel: #172029; --ink: #e5ecf2; --muted: #98a6b3; --line: #2a3742;
   --accent: #84b4e0; --accent-ink: #0f151b; --web: #4cc0b3; --web-soft: #12322e;
-  --resmi: #ec9a63; --resmi-soft: #3a2517; --warn: #e3b55a; --warn-soft: #33270f;
+  --resmi: #ec9a63; --resmi-soft: #3a2517; --trafik: #b9a2e3; --trafik-soft: #2a2338; --warn: #e3b55a; --warn-soft: #33270f;
   --bad: #f08585; --grid: #23303a; color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -60,6 +63,7 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .cip .nokta { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .cip.web .nokta { background: var(--web); }
 .cip.resmi .nokta { background: var(--resmi); }
+.cip.trafik .nokta { background: var(--trafik); }
 .cip.kapali .nokta { background: transparent; border: 1.5px solid var(--muted); }
 .sekmeler { display: flex; gap: 4px; margin-top: 16px; overflow-x: auto; }
 .sekmeler a { padding: 10px 14px; text-decoration: none; color: var(--muted); font-weight: 500; border-bottom: 2px solid transparent; white-space: nowrap; }
@@ -93,6 +97,7 @@ main { padding-block: 24px 48px; }
 .ilerleme ol { margin: 0; padding-left: 18px; }
 .ilerleme li.web::marker { color: var(--web); }
 .ilerleme li.resmi::marker { color: var(--resmi); }
+.ilerleme li.trafik::marker { color: var(--trafik); }
 .hata { color: var(--bad); font-size: 14px; }
 
 /* rapor */
@@ -113,6 +118,7 @@ main { padding-block: 24px 48px; }
 .panel-etiket { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin: 6px 0 2px; }
 .panel-etiket.web { background: var(--web-soft); color: var(--web); }
 .panel-etiket.resmi { background: var(--resmi-soft); color: var(--resmi); }
+.panel-etiket.trafik { background: var(--trafik-soft); color: var(--trafik); }
 .lejant { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
 .lejant span { display: inline-flex; align-items: center; gap: 6px; }
 .lejant i { width: 14px; height: 3px; display: inline-block; border-radius: 2px; }
@@ -128,6 +134,7 @@ main { padding-block: 24px 48px; }
 .rozet { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 1px 7px; border-radius: 4px; white-space: nowrap; }
 .rozet.web { background: var(--web-soft); color: var(--web); }
 .rozet.resmi { background: var(--resmi-soft); color: var(--resmi); }
+.rozet.trafik { background: var(--trafik-soft); color: var(--trafik); }
 .kod { font-family: var(--font-kod); font-size: 12.5px; }
 .feragat { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 22px; font-family: var(--font-ui); }
 .feragat p { font-family: var(--font-ui); font-size: 13px; line-height: 1.5; margin: 0 0 6px; }
@@ -152,11 +159,12 @@ main { padding-block: 24px 48px; }
     <div class="ust-sira">
       <div class="marka">
         <h1>Analiz Masası</h1>
-        <p>Web TÜFE’nin günlük market fiyatları ve TCMB EVDS’nin resmi serileriyle soru sor, grafikli rapor al, haftalık görünümü oku.</p>
+        <p>Web TÜFE’nin günlük market fiyatları, TCMB EVDS’nin resmi serileri ve İstanbul trafik hareketliliğiyle soru sor, grafikli rapor al, haftalık görünümü oku.</p>
       </div>
       <div class="cipler" aria-live="polite">
         <span class="cip web" id="cip-web"><span class="nokta" aria-hidden="true"></span><span id="cip-web-metin">Web TÜFE yükleniyor</span></span>
         <span class="cip resmi kapali" id="cip-evds"><span class="nokta" aria-hidden="true"></span><span id="cip-evds-metin">EVDS bağlı değil</span></span>
+        <span class="cip trafik kapali" id="cip-trafik"><span class="nokta" aria-hidden="true"></span><span id="cip-trafik-metin">İstanbul trafiği yükleniyor</span></span>
         <a class="cip" href="https://claude.ai/artifact/EBnsgW9YWx84vQTiunF39Z" target="_blank" rel="noopener">Panoya git ↗</a>
       </div>
     </div>
@@ -218,7 +226,7 @@ main { padding-block: 24px 48px; }
     </section>
   </div>
 </main>
-<footer class="dis alt"><div class="ic">Web TÜFE bu projenin market fiyatlarından kendi hesabıdır, TÜİK’in resmi TÜFE’si değildir. Resmi seriler TCMB EVDS’den alınır; TCMB yalnızca veri sağlayıcıdır. Raporlardaki yorumlar yapay zekâ tarafından üretilir ve yanıltıcı olabilir.</div></footer>
+<footer class="dis alt"><div class="ic">Web TÜFE bu projenin market fiyatlarından kendi hesabıdır, TÜİK’in resmi TÜFE’si değildir. Resmi seriler TCMB EVDS’den alınır; TCMB yalnızca veri sağlayıcıdır. Hareketlilik göstergeleri İBB’nin İstanbul trafik indeksinden (İBB Açık Veri Lisansı) bu projede hesaplanır. Raporlardaki yorumlar yapay zekâ tarafından üretilir ve yanıltıcı olabilir.</div></footer>
 
 <script>
 (() => {
@@ -238,6 +246,11 @@ main { padding-block: 24px 48px; }
     ['TP.PKAUO.S01.A.U', 'Piyasa Katılımcıları Anketi: cari ayın aylık TÜFE beklentisi, %'],
     ['TP.PKAUO.S01.D.U', 'Piyasa Katılımcıları Anketi: yıl sonu yıllık TÜFE beklentisi, %'],
     ['TP.PKAUO.S01.E.U', 'Piyasa Katılımcıları Anketi: 12 ay sonrası yıllık TÜFE beklentisi, %'],
+    ['TP.HPBITABLO3.1', 'Bankacılık sektörü toplam TL mevduat (yurt içi şubeler), haftalık (Cuma), bin TL, Haziran 2024’ten'],
+    ['TP.HPBITABLO3.3', 'TL mevduat: yurt içi yerleşik gerçek kişiler, haftalık (Cuma), bin TL, Haziran 2024’ten'],
+    ['TP.HPBITABLO4.1', 'Bankacılık sektörü toplam yabancı para mevduat (yurt içi şubeler), haftalık (Cuma), milyon ABD doları'],
+    ['TP.HPBITABLO4.3', 'YP mevduat: yurt içi yerleşik gerçek kişiler, haftalık (Cuma), milyon ABD doları'],
+    ['TP.KM.F35', 'Mevduat bankaları toplam mevduat (türlerine göre), aylık, bin TL, 1986’dan'],
   ];
   const EVDS_FORMUL = { 0: 'düzey', 1: 'dönemsel % değişim', 2: 'fark', 3: 'yıllık % değişim', 4: 'yıllık fark', 5: 'yıl sonuna göre %', 6: 'yıl sonuna göre fark', 7: 'hareketli ortalama', 8: 'hareketli toplam' };
   const AZAMI_DONEN_SATIR = 260;      // bir araç sonucunda Claude'a giden en çok satır
@@ -303,7 +316,7 @@ main { padding-block: 24px 48px; }
 
   async function webVerisiniYukle() {
     const cip = $('#cip-web-metin');
-    if (!durum.db) { cip.textContent = 'Web TÜFE okunamadı'; return; }
+    if (!durum.db) { cip.textContent = 'Web TÜFE okunamadı'; trafikCipi(); return; }
     try {
       const snap = await durum.db.doc('veri/guncel').get();
       if (!snap.exists) { cip.textContent = 'Web TÜFE verisi henüz yüklenmedi'; return; }
@@ -324,6 +337,9 @@ main { padding-block: 24px 48px; }
     } catch (e) {
       cip.textContent = 'Web TÜFE okunamadı';
       console.error(e);
+    } finally {
+      trafikCipi();
+      ornekleriCiz();
     }
   }
 
@@ -505,6 +521,22 @@ main { padding-block: 24px 48px; }
     if (m) return m[1] + '-' + m[2].padStart(2, '0');
     return s;
   }
+  // EVDS haftası "2026-46" -> ISO hafta "2026-W46" (EVDS YEARWEEK ISO haftasıdır; hareketlilik haftalarıyla eşleşir)
+  function evdsHafta(s) {
+    const m = /^(\d{4})-(\d{1,2})$/.exec(String(s || '').trim());
+    return m ? m[1] + '-W' + m[2].padStart(2, '0') : (s || null);
+  }
+  function evdsSutunlari(tablo, kod) {
+    const sutunlar = Object.keys(tablo[0]);
+    const tarihSut = sutunlar.find((s) => /^tarih$/i.test(s)) || sutunlar.find((s) => /tarih/i.test(s)) || sutunlar[0];
+    const haftaSut = sutunlar.find((s) => /^yearweek$/i.test(s)) || null;
+    const kodSut = kod.replace(/\./g, '_').toUpperCase();
+    const sayisal = (s) => tablo.some((r) => r[s] !== '' && r[s] != null && isFinite(Number(r[s])));
+    const degerSut = sutunlar.find((s) => s.toUpperCase() === kodSut || s.toUpperCase().startsWith(kodSut + '-'))
+      || sutunlar.filter((s) => s !== tarihSut && s !== haftaSut && !/^(yearweek|unixtime)$/i.test(s)).reverse().find(sayisal);
+    if (!degerSut) throw new Error('EVDS yanıtında değer sütunu bulunamadı (sütunlar: ' + sutunlar.join(', ') + ').');
+    return { tarihSut, haftaSut, degerSut };
+  }
   async function evdsCagir(arac, girdi, signal) {
     try {
       const yanit = await durum.mcp.callTool(EVDS_SUNUCU, arac, girdi, { signal, cache: { staleTime: 3600000, gcTime: 3600000 } });
@@ -539,7 +571,7 @@ main { padding-block: 24px 48px; }
       },
       {
         name: 'evds_seri_verisi',
-        description: 'Bir TCMB EVDS serisinin verisini okur (resmi kaynak). Sonuçtaki veri_kimligi grafikte kullanılır; satırlar {tarih, kod, ad, deger}. formul: "1" dönemsel % değişim (aylık seride aylık), "3" yıllık % değişim; boşsa düzey. frekans: "5" aylık, "3" haftalık (günlük seriyi uzun dönemde seyreltmek için; toplulastirma "avg" ya da "last"). İstek başına en çok 1000 gözlem.',
+        description: 'Bir TCMB EVDS serisinin verisini okur (resmi kaynak). Sonuçtaki veri_kimligi grafikte kullanılır; satırlar {tarih, kod, ad, deger}; haftalık serilerde ayrıca ISO "hafta" (ör. 2026-W46), hareketlilik haftalarıyla bu alanla eşleşir. formul: "1" dönemsel % değişim (aylık seride aylık), "3" yıllık % değişim; boşsa düzey. frekans: "5" aylık, "3" haftalık (günlük seriyi uzun dönemde seyreltmek için; toplulastirma "avg" ya da "last"). İstek başına en çok 1000 gözlem.',
         inputSchema: { type: 'object', properties: {
           seri_kodu: { type: 'string', description: 'Ör. TP.DK.USD.A.YTL' }, ad: { type: 'string', description: 'Grafikte görünecek kısa ad' },
           baslangic: { type: 'string', description: 'YYYY-AA-GG' }, bitis: { type: 'string', description: 'YYYY-AA-GG' },
@@ -556,16 +588,18 @@ main { padding-block: 24px 48px; }
           const metin = await evdsCagir('get_series_data', girdi, baglam.signal);
           const tablo = mdTablo(metin);
           if (!tablo.length) throw new Error('EVDS bu seri için tablo döndürmedi: ' + kisalt(metin, 400));
-          const sutunlar = Object.keys(tablo[0]);
-          const tarihSut = sutunlar.find((s) => /tarih/i.test(s)) || sutunlar[0];
-          const degerSut = sutunlar.find((s) => s !== tarihSut);
+          // Sütunlar seriye göre değişir: aylıkta "Tarih | TP_X", haftalıkta "Tarih | YEARWEEK | TP_X",
+          // formüllü sorguda değer sütunu "TP_X-3". Değer sütunu seri kodundan bulunur.
+          const { tarihSut, haftaSut, degerSut } = evdsSutunlari(tablo, kod);
           const bilinen = EVDS_BILINEN.find(([k]) => k === kod);
-          const kisaAd = String(ad || (bilinen ? bilinen[1] : kod));
-          const satirlar = tablo.map((r) => ({ tarih: evdsTarih(r[tarihSut]), kod, ad: kisaAd, deger: r[degerSut] === '' ? null : Number(r[degerSut]) }))
+          const kisaAd = String(ad || (bilinen ? bilinen[1].split(',')[0] : kod));
+          const satirlar = tablo.map((r) => ({
+            tarih: evdsTarih(r[tarihSut]), ...(haftaSut ? { hafta: evdsHafta(r[haftaSut]) } : {}), kod, ad: kisaAd,
+            deger: r[degerSut] === '' || r[degerSut] == null ? null : Number(r[degerSut]) }))
             .filter((r) => r.deger != null && isFinite(r.deger));
-          if (!satirlar.length) throw new Error('Bu aralıkta değer yok.');
+          if (!satirlar.length) throw new Error('Bu aralıkta değer yok (EVDS sütunları: ' + Object.keys(tablo[0]).join(', ') + ').');
           const ek = formul && formul !== '0' ? ' (' + EVDS_FORMUL[formul] + ')' : '';
-          const id = kaydaEkle('resmi', 'TCMB EVDS: ' + kisaAd + ek, ['tarih', 'kod', 'ad', 'deger'], satirlar,
+          const id = kaydaEkle('resmi', 'TCMB EVDS: ' + kisaAd + ek, haftaSut ? ['tarih', 'hafta', 'kod', 'ad', 'deger'] : ['tarih', 'kod', 'ad', 'deger'], satirlar,
             { arac: 'get_series_data', seri: kod, baslangic, bitis, formul: formul || undefined, frekans: frekans || undefined, toplulastirma: toplulastirma || undefined }, 'Kaynak: TCMB EVDS');
           adim('EVDS verisi okundu: ' + kisaAd + ek, 'resmi');
           const s = seyrelt(satirlar, AZAMI_DONEN_SATIR);
@@ -581,6 +615,103 @@ main { padding-block: 24px 48px; }
     ornekleriCiz();
   }
 
+  // ------------------------------------------------------------ İstanbul hareketliliği (İBB trafik indeksi)
+  // Veri: veri/guncel belgesindeki mobilite_haftalik (haftalık özet) ve mobilite_pencereler (günlük
+  // saat pencereleri). Web TÜFE'den ve EVDS'den ayrı üçüncü kaynaktır.
+  const TRAFIK_AD = {
+    istege_bagli: 'İsteğe bağlı (iş günü akşamı, hafta sonu gündüz ve akşam)',
+    istege_bagli_zayif: 'Zayıf isteğe bağlı (iş günü 10-15)',
+    karma: 'Karma (iş günü 16-19)',
+    zorunlu: 'Zorunlu (iş günü 06-09, işe ve okula gidiş)',
+    hafta_sonu_gunduz: 'Hafta sonu gündüz (11-19)',
+    hafta_sonu_gece: 'Hafta sonu akşam (20-23)',
+    is_gunu_gece: 'İş günü akşam (20-23)',
+    is_gunu_ogle: 'İş günü öğle (10-15)',
+    karma_aksam: 'İş günü akşam zirvesi (16-19)',
+    zorunlu_sabah: 'İş günü sabah zirvesi (06-09)',
+  };
+  const TRAFIK_TURLERI = ['istege_bagli', 'istege_bagli_zayif', 'karma', 'zorunlu'];
+  const TRAFIK_PENCERELERI = ['hafta_sonu_gunduz', 'hafta_sonu_gece', 'is_gunu_gece', 'is_gunu_ogle', 'karma_aksam', 'zorunlu_sabah'];
+  const TRAFIK_OLCU = { yillik_degisim: 'yıllık değişim, %', kisa_sapma: 'son 8 haftanın aynı günlerine göre sapma, %', duzey: 'trafik indeksi, %' };
+  const sayi = (v) => (v == null || v === '' || !isFinite(Number(v)) ? null : Number(v));
+  const trafikVar = () => (durum.web.tablo.mobilite_haftalik || []).length > 0;
+  const trafikSonGun = () => (durum.web.tablo.mobilite_pencereler || []).reduce((m, r) => (r.tarih > m ? r.tarih : m), '') || null;
+  const gunEkle = (t, n) => new Date(Date.parse(t + 'T00:00:00Z') + n * 86400000).toISOString().slice(0, 10);
+
+  function trafikCipi() {
+    const var_ = trafikVar();
+    $('#cip-trafik').classList.toggle('kapali', !var_);
+    $('#cip-trafik-metin').textContent = var_ ? 'İstanbul trafiği · son ' + tarihMetin(trafikSonGun()) : 'İstanbul trafiği yüklenmedi';
+  }
+
+  function trafikOzeti(satirlar, x) {
+    return [...d3.group(satirlar, (r) => r.gosterge)].map(([g, l]) => {
+      const s = l.slice().sort((a, b) => (a[x] < b[x] ? -1 : 1));
+      return { gosterge: g, ad: TRAFIK_AD[g] || g, ilk: s[0][x], son: s[s.length - 1][x], son_deger: s[s.length - 1].deger,
+        ortalama: Math.round(d3.mean(s, (r) => r.deger) * 100) / 100, en_dusuk: d3.min(s, (r) => r.deger), en_yuksek: d3.max(s, (r) => r.deger), gozlem: s.length };
+    });
+  }
+
+  function trafikAraclari() {
+    if (!trafikVar()) return [];
+    const T = durum.web.tablo;
+    return [{
+      name: 'istanbul_hareketlilik',
+      description: 'İstanbul trafik hareketliliği (İBB trafik indeksinden bu projenin hesapladığı göstergeler; Web TÜFE ya da EVDS değildir). '
+        + 'duzey="haftalik": ISO haftası başına (hafta_basi pazartesi, hafta ör. 2026-W46) gösterge değerleri; olcu "yillik_degisim" (varsayılan, 52 hafta önceki aynı gün tipine göre %) ya da "kisa_sapma" (son 8 haftanın aynı günlerine göre %, yalnızca türlerde). '
+        + 'Tamamlanmamış son hafta ve temiz günü 4’ten az olan bayram/tatil haftaları çıkarılır (tatil_haftalari=true ile gelir). '
+        + 'duzey="gunluk": gün ve saat penceresi başına değer; olcu "duzey" (varsayılan, indeks), "yillik_degisim" ya da "kisa_sapma"; tarih verilmezse son 120 gün. '
+        + 'gostergeler: türler ' + TRAFIK_TURLERI.join(', ') + ' ya da pencereler ' + TRAFIK_PENCERELERI.join(', ') + '. Tüketimle ilişkili hareketlilik için istege_bagli ve hafta_sonu_gunduz kullan. Sonuçtaki veri_kimligi grafikte kullanılır.',
+      inputSchema: { type: 'object', properties: {
+        duzey: { type: 'string', enum: ['haftalik', 'gunluk'] },
+        olcu: { type: 'string', enum: ['yillik_degisim', 'kisa_sapma', 'duzey'] },
+        gostergeler: { type: 'array', items: { type: 'string', enum: [...TRAFIK_TURLERI, ...TRAFIK_PENCERELERI] }, description: 'Varsayılan ["istege_bagli","zorunlu"]' },
+        baslangic: { type: 'string', description: 'YYYY-AA-GG (isteğe bağlı)' }, bitis: { type: 'string', description: 'YYYY-AA-GG (isteğe bağlı)' },
+        tatil_haftalari: { type: 'boolean' } }, required: ['duzey'] },
+      execute: ({ duzey, olcu, gostergeler, baslangic, bitis, tatil_haftalari }) => {
+        const g = kodListesi(gostergeler).filter((x) => TRAFIK_AD[x]);
+        const secilen = g.length ? g : ['istege_bagli', 'zorunlu'];
+        const sonGun = trafikSonGun();
+        let satirlar, sutunlar, x, baslik, not;
+        if (duzey === 'gunluk') {
+          const o = olcu === 'yillik_degisim' || olcu === 'kisa_sapma' ? olcu : 'duzey';
+          const bas = baslangic || (sonGun ? gunEkle(sonGun, -119) : null);
+          satirlar = tarihAraligi((T.mobilite_pencereler || []).filter((r) => secilen.includes(r.pencere) || secilen.includes(r.tur)), bas, bitis)
+            .map((r) => ({ tarih: r.tarih, gosterge: r.pencere, ad: TRAFIK_AD[r.pencere] || r.pencere, tur: r.tur, deger: sayi(o === 'duzey' ? r.deger : r[o]), gun_tipi: r.gun_tipi, temiz: r.temiz === 'True' }))
+            .filter((r) => r.deger != null)
+            .sort((a, b) => (a.gosterge === b.gosterge ? (a.tarih < b.tarih ? -1 : 1) : (a.gosterge < b.gosterge ? -1 : 1)));
+          sutunlar = ['tarih', 'gosterge', 'ad', 'tur', 'deger', 'gun_tipi', 'temiz'];
+          x = 'tarih'; baslik = 'İstanbul hareketliliği: günlük (' + TRAFIK_OLCU[o] + ')'; olcu = o;
+          not = 'temiz=false: resmi tatil, arife, bayram çevresi ya da okul durumu farklı gün.';
+        } else {
+          const o = olcu === 'kisa_sapma' ? 'kisa_sapma' : 'yillik_degisim';
+          satirlar = [];
+          (T.mobilite_haftalik || []).forEach((r) => {
+            if (!r.hafta_basi || (sonGun && gunEkle(r.hafta_basi, 6) > sonGun)) return;   // tamamlanmamış hafta
+            const temiz = sayi(r.temiz_gun);
+            if (!(tatil_haftalari === true || tatil_haftalari === 'true') && !(temiz >= 4)) return;
+            secilen.forEach((k) => {
+              const v = sayi(r[k + '_' + o]);
+              if (v != null) satirlar.push({ hafta_basi: r.hafta_basi, hafta: r.hafta, gosterge: k, ad: TRAFIK_AD[k], deger: v, temiz_gun: temiz });
+            });
+          });
+          satirlar = tarihAraligi(satirlar, baslangic, bitis, 'hafta_basi')
+            .sort((a, b) => (a.gosterge === b.gosterge ? (a.hafta_basi < b.hafta_basi ? -1 : 1) : (a.gosterge < b.gosterge ? -1 : 1)));
+          sutunlar = ['hafta_basi', 'hafta', 'gosterge', 'ad', 'deger', 'temiz_gun'];
+          x = 'hafta_basi'; baslik = 'İstanbul hareketliliği: haftalık (' + TRAFIK_OLCU[o] + ')'; olcu = o;
+          not = o === 'kisa_sapma' && secilen.some((k) => !TRAFIK_TURLERI.includes(k)) ? 'kisa_sapma yalnızca türler için vardır; pencereler atlandı.' : undefined;
+        }
+        if (!satirlar.length) throw new Error('Bu gösterge ve dönem için hareketlilik verisi yok (yıllık değişim Eylül 2025’ten başlar).');
+        const id = kaydaEkle('trafik', baslik, sutunlar, satirlar,
+          { arac: 'istanbul_hareketlilik', duzey: duzey === 'gunluk' ? 'gunluk' : 'haftalik', olcu, gostergeler: secilen, baslangic, bitis }, 'Kaynak: İBB trafik indeksi');
+        adim('İstanbul hareketliliği okundu: ' + secilen.map((k) => TRAFIK_AD[k].split(' (')[0]).join(', '), 'trafik');
+        const s = seyrelt(satirlar, AZAMI_DONEN_SATIR);
+        return { veri_kimligi: id, kaynak: 'İstanbul trafik hareketliliği (İBB trafik indeksi, bu proje)', x, son_veri_gunu: sonGun,
+          olcu: TRAFIK_OLCU[olcu], ozet: trafikOzeti(satirlar, x), satirlar: s.satirlar, seyreltildi: s.seyreltildi || undefined, not };
+      },
+    }];
+  }
+
   // ------------------------------------------------------------ istem
   function istem(soru, mod) {
     const bugun = new Date().toISOString().slice(0, 10);
@@ -589,13 +720,17 @@ main { padding-block: 24px 48px; }
     return [
       'Bir Türk bankasının ekonomi ekibi için çalışan bir analistsin. Aşağıdaki soruyu araçlarla veri okuyarak yanıtla. Bugün ' + bugun + '. Türkçe yaz.',
       '',
-      'VERİ KAYNAKLARI — İKİSİ ASLA KARIŞTIRILMAZ:',
+      'VERİ KAYNAKLARI — BİRBİRİNE ASLA KARIŞTIRILMAZ:',
       '1) Web TÜFE: bu projenin marketfiyati.org.tr’den İstanbul (Anadolu), Ankara ve İzmir’de her gün topladığı market fiyatlarından hesapladığı günlük endeks. Baz: ilk toplama günü (' + ((durum.web.gunler || [])[0] || '2026-11-12') + ') = 100. Toplama günü sayısı: ' + ((durum.web.gunler || []).length) + '. Kapsam şimdilik TÜİK sepetinin market ürünleri (çoğu gıda). Resmi TÜFE değildir; her zaman "Web TÜFE" diye an.',
       '2) Resmi seriler: TCMB EVDS (TÜİK TÜFE, kurlar, faizler, beklentiler vb.). ' + (evds
         ? 'EVDS araçları açık. Sık kullanılan seri kodları: ' + EVDS_BILINEN.map(([k, a]) => k + ' = ' + a).join('; ') + '. Aylık TÜFE için yıllık değişim formul "3", aylık değişim formul "1". Başka seri gerekirse evds_kesfet ile ara.'
         : 'Bu oturumda EVDS bağlı değil; resmi veri kullanma, gerekirse bunu sınır olarak belirt.'),
+      '3) İstanbul trafik hareketliliği (İBB): ' + (trafikVar()
+        ? 'İBB’nin İstanbul trafik indeksinden (saatlik yol tıkanıklığı, %) bu projenin hesapladığı göstergeler; istanbul_hareketlilik aracıyla okunur. Gün tipi ve saat penceresine göre ayrılır: zorunlu (iş günü 06-09, işe ve okula gidiş), karma (iş günü 16-19), zayıf isteğe bağlı (iş günü 10-15), isteğe bağlı (iş günü 20-23, hafta sonu 11-19 ve 20-23; tüketimle ilişkili hareketliliğin en temiz ölçüsü). Yıllık değişim 52 hafta önceki aynı gün tipine göre yüzdedir; veri Eylül 2024’te, yıllık değişim Eylül 2025’te başlar. Son veri günü: ' + trafikSonGun() + '. Yalnızca İstanbul; tıkanıklık ölçüsüdür, araç sayısı ya da harcama değildir. Hava koşulları (kar, yağmur) ve Ramazan ayının yıldan yıla kayması için düzeltme yoktur; tek haftalık sıçramaları bu etkenlerle birlikte yorumla. Her zaman "İstanbul trafik hareketliliği (İBB)" diye an. Web TÜFE’de hareketlilik verisi yoktur.'
+        : 'Bu oturumda hareketlilik verisi yüklenmedi; kullanma, gerekirse bunu sınır olarak belirt.'),
+      'Haftalık karşılaştırmada EVDS haftalık serilerindeki "hafta" alanını hareketlilikteki "hafta" alanıyla eşleştir (ikisi de ISO haftası; EVDS haftası cuma günü tarihlidir). İlişki sorularında iki serinin aynı haftalardaki yönünü ve büyüklüğünü yan yana anlat; birlikte hareketi nedensellik gibi sunma, ortak etkenleri (faiz, enflasyon, bayramlar, okul takvimi) sınır olarak belirt. Mevduat gibi düzey serilerinde yıllık değişim için formul "3" kullan.',
       'Verimli çalış: birbirinden bağımsız araç çağrılarını aynı turda birlikte yap; tur sayısı sınırlıdır.',
-      'Kurallar: İki kaynağı tek seride birleştirme, zincirleme, ortalama ya da birbirinin yerine kullanma. Karşılaştırma yalnızca yan yana ve kaynak adıyla yapılır. Yalnızca araçlardan gelen sayıları kullan; tahmin ettiğin bir sayıyı veri gibi sunma. Veri kısaysa (ör. birkaç gün) bunu açıkça söyle ve aşırı yorumdan kaçın. Ortanca fiyatlar ürün karmasıyla değişir; fiyat değişimi için endeksi kullan.',
+      'Kurallar: Kaynakları tek seride birleştirme, zincirleme, ortalama ya da birbirinin yerine kullanma. Karşılaştırma yalnızca yan yana ve kaynak adıyla yapılır. Yalnızca araçlardan gelen sayıları kullan; tahmin ettiğin bir sayıyı veri gibi sunma. Veri kısaysa (ör. birkaç gün) bunu açıkça söyle ve aşırı yorumdan kaçın. Ortanca fiyatlar ürün karmasıyla değişir; fiyat değişimi için endeksi kullan.',
       '',
       kisa
         ? 'BİÇİM: Kısa yanıt. 1-2 bölüm, toplam 120-250 kelime, en çok 1 grafik.'
@@ -616,12 +751,14 @@ main { padding-block: 24px 48px; }
     { metin: 'Web TÜFE genel endeksinin ve ana gruplarının günlük seyrini özetle.', evds: false },
     { metin: 'Son aylarda resmi gıda enflasyonu ile dolar kuru nasıl seyretti? Web TÜFE’nin işaret ettiğiyle yan yana koy.', evds: true },
     { metin: 'Piyasa katılımcılarının enflasyon beklentisi ile Web TÜFE’nin ay içi seyri ne söylüyor?', evds: true },
+    { metin: 'İstanbul’da hafta sonu hareketliliği geçen yıla göre nasıl değişti? Zorunlu hareketlilikle karşılaştır.', evds: false, trafik: true },
+    { metin: 'İstanbul’da isteğe bağlı hareketlilik ile haftalık TL mevduatın yıllık değişimi birlikte nasıl seyrediyor?', evds: true, trafik: true },
   ];
   function ornekleriCiz() {
     const kap = $('#ornekler');
     kap.replaceChildren(...ORNEKLER.map((o) => el('button', {
-      type: 'button', class: 'ornek', disabled: o.evds && !durum.evdsBagli,
-      title: o.evds && !durum.evdsBagli ? 'EVDS bağlanınca kullanılabilir' : null,
+      type: 'button', class: 'ornek', disabled: (o.evds && !durum.evdsBagli) || (o.trafik && !trafikVar()),
+      title: o.evds && !durum.evdsBagli ? 'EVDS bağlanınca kullanılabilir' : (o.trafik && !trafikVar() ? 'Hareketlilik verisi yüklenince kullanılabilir' : null),
       text: o.metin, onclick: () => { $('#soru').value = o.metin; $('#soru').focus(); },
     })));
   }
@@ -647,7 +784,7 @@ main { padding-block: 24px 48px; }
     $('#sor-rapor').replaceChildren();
     try {
       const sonuc = await durum.sample.json(istem(soru, mod), {
-        tools: [...webAraclari(), ...evdsAraclari()],
+        tools: [...webAraclari(), ...evdsAraclari(), ...trafikAraclari()],
         modelTier: mod === 'whitepaper' ? 'complex' : 'default',
         signal: ctl.signal,
       });
@@ -751,8 +888,9 @@ main { padding-block: 24px 48px; }
       kaynakTablosu(veriler),
       el('div', { class: 'feragat' },
         el('p', { text: 'Bu metin yapay zekâ tarafından üretilmiştir; yorumlar yanıltıcı olabilir ve yatırım tavsiyesi değildir.' }),
-        kaynakVar('web') || !kaynakVar('resmi') ? el('p', { text: 'Web TÜFE, bu projenin marketfiyati.org.tr fiyatlarından hesapladığı deneysel bir endekstir; TÜİK’in resmi TÜFE’si değildir ve onunla birleştirilmemiştir.' }) : null,
+        kaynakVar('web') || (!kaynakVar('resmi') && !kaynakVar('trafik')) ? el('p', { text: 'Web TÜFE, bu projenin marketfiyati.org.tr fiyatlarından hesapladığı deneysel bir endekstir; TÜİK’in resmi TÜFE’si değildir ve onunla birleştirilmemiştir.' }) : null,
         kaynakVar('resmi') ? el('p', { text: 'Resmi seriler TCMB EVDS’den alınmıştır. TCMB yalnızca veri sağlayıcıdır; buradaki yorumlar TCMB’ye ait değildir. Kesin kullanımdan önce değerleri EVDS’den doğrulayın.' }) : null,
+        kaynakVar('trafik') ? el('p', { text: 'Hareketlilik göstergeleri İBB’nin İstanbul trafik indeksinden (İBB Açık Veri Lisansı) bu projede hesaplanmıştır; yol tıkanıklığı ölçüsüdür, araç sayısı ya da harcama değildir ve yalnızca İstanbul’u kapsar.' }) : null,
       ),
     );
     const araclar = el('div', { class: 'rapor-araclar' },
@@ -771,7 +909,7 @@ main { padding-block: 24px 48px; }
         el('thead', {}, el('tr', {}, el('th', { text: 'Kimlik' }), el('th', { text: 'Kaynak' }), el('th', { text: 'Veri' }), el('th', { text: 'Sorgu' }))),
         el('tbody', {}, satirlar.map(([id, v]) => el('tr', {},
           el('td', { class: 'kod', text: id }),
-          el('td', {}, el('span', { class: 'rozet ' + v.kaynak, text: v.kaynak === 'resmi' ? 'Resmi · EVDS' : 'Web TÜFE' })),
+          el('td', {}, el('span', { class: 'rozet ' + v.kaynak, text: KAYNAK_ETIKETI[v.kaynak] || 'Web TÜFE' })),
           el('td', { text: v.baslik + (v.aciklama ? ' (' + v.aciklama + ')' : '') + ' · ' + v.satir_sayisi + ' satır' }),
           el('td', { class: 'kod', text: sorguMetni(v.sorgu) }),
         ))),
@@ -786,6 +924,9 @@ main { padding-block: 24px 48px; }
   // ------------------------------------------------------------ grafikler
   const WEB_TONLARI = ['--web', '#2f9e8f', '#5aa9c9', '#0b4f4a', '#7cc7b4'];
   const RESMI_TONLARI = ['--resmi', '#d07a3c', '#8a3c12', '#e0a86e', '#b66b45'];
+  const TRAFIK_TONLARI = ['--trafik', '#9a7fd0', '#4b2f7a', '#c3b0e6', '#7d63b5'];
+  const KAYNAK_ETIKETI = { web: 'Web TÜFE', resmi: 'Resmi · EVDS', trafik: 'Trafik · İBB' };
+  const PANEL_ETIKETI = { web: 'Web TÜFE · bu proje', resmi: 'Resmi · TCMB EVDS', trafik: 'İstanbul trafik hareketliliği · İBB' };
   const renk = (ton) => (ton.startsWith('--') ? getComputedStyle(document.documentElement).getPropertyValue(ton).trim() || '#888' : ton);
 
   function grafikKabi(g, veriler) {
@@ -799,7 +940,7 @@ main { padding-block: 24px 48px; }
       return noktalar.length ? { ...s, kaynak: v.kaynak, noktalar } : null;
     }).filter(Boolean);
     if (!seriler.length) { kap.append(el('p', { class: 'grafik-not', text: 'Bu grafiğin verisi bulunamadı.' })); return kap; }
-    const paneller = ['web', 'resmi'].map((k) => seriler.filter((s) => s.kaynak === k)).filter((l) => l.length);
+    const paneller = ['web', 'resmi', 'trafik'].map((k) => seriler.filter((s) => s.kaynak === k)).filter((l) => l.length);
     const ciz = () => {
       kap.querySelectorAll('.panel').forEach((p) => p.remove());
       paneller.forEach((liste) => kap.append(panelCiz(g, liste, kap.clientWidth || 640)));
@@ -807,15 +948,15 @@ main { padding-block: 24px 48px; }
     ciz();
     let son = 0;
     if ('ResizeObserver' in window) new ResizeObserver(() => { const w = kap.clientWidth; if (w && Math.abs(w - son) > 8) { son = w; ciz(); } }).observe(kap);
-    if (paneller.length > 1) kap.append(el('p', { class: 'grafik-not', text: 'Web TÜFE ve resmi seriler ayrı panellerde, kendi ölçekleriyle gösterilir; tek seride birleştirilmez.' }));
+    if (paneller.length > 1) kap.append(el('p', { class: 'grafik-not', text: 'Farklı kaynaklar ayrı panellerde, kendi ölçekleriyle gösterilir; tek seride birleştirilmez.' }));
     return kap;
   }
 
   function panelCiz(g, seriler, genislik) {
     const kaynak = seriler[0].kaynak;
-    const tonlar = kaynak === 'resmi' ? RESMI_TONLARI : WEB_TONLARI;
+    const tonlar = kaynak === 'resmi' ? RESMI_TONLARI : (kaynak === 'trafik' ? TRAFIK_TONLARI : WEB_TONLARI);
     const panel = el('div', { class: 'panel' });
-    panel.append(el('span', { class: 'panel-etiket ' + kaynak, text: kaynak === 'resmi' ? 'Resmi · TCMB EVDS' : 'Web TÜFE · bu proje' }));
+    panel.append(el('span', { class: 'panel-etiket ' + kaynak, text: PANEL_ETIKETI[kaynak] || PANEL_ETIKETI.web }));
     const W = Math.max(280, Math.floor(genislik));
     const xml = 'http://www.w3.org/2000/svg';
     if (g.tur === 'cubuk') {
@@ -859,7 +1000,7 @@ main { padding-block: 24px 48px; }
     seriler.forEach((s, i) => {
       const c = renk(tonlar[i % tonlar.length]);
       const nok = s.noktalar.slice().sort((a, b) => (xDeger(a) < xDeger(b) ? -1 : 1));
-      svg.append('path').attr('d', cizgi(nok)).attr('fill', 'none').attr('stroke', c).attr('stroke-width', 2).attr('stroke-dasharray', kaynak === 'resmi' && i > 0 ? '5 3' : null);
+      svg.append('path').attr('d', cizgi(nok)).attr('fill', 'none').attr('stroke', c).attr('stroke-width', 2).attr('stroke-dasharray', kaynak !== 'web' && i > 0 ? '5 3' : null);
       svg.append('g').selectAll('circle').data(nok).join('circle').attr('cx', (p) => x(xDeger(p))).attr('cy', (p) => y(p.y)).attr('r', nok.length > 40 ? 1.6 : 3.2).attr('fill', c)
         .append('title').text((p) => (s.ad ? s.ad + ' · ' : '') + tarihMetin(p.x) + ': ' + s2(p.y) + (g.birim && g.birim !== 'endeks' ? ' ' + g.birim : ''));
       sonlar.push({ y: y(nok[nok.length - 1].y), x: x(xDeger(nok[nok.length - 1])), deger: nok[nok.length - 1].y, c });

@@ -56,6 +56,8 @@ HEDEFLER = {
     "analiz:madde_endeksleri": (ANALIZ, PANO_DIZIN / "madde_endeksleri.csv"),
     "analiz:madde_fiyatlari": (ANALIZ, PANO_DIZIN / "madde_fiyatlari.csv"),
     "analiz:agirliklar": (ANALIZ, PANO_DIZIN / "agirliklar.csv"),
+    "analiz:mobilite_haftalik": (ANALIZ, PANO_DIZIN / "mobilite_haftalik.csv"),
+    "analiz:mobilite_pencereler": (ANALIZ, PANO_DIZIN / "mobilite_pencereler.csv"),
 }
 # Bir dosyanın "sürümü" (yüklenenden yeni mi?) hangi dosyanın hangi sütununun en büyük değeri.
 # Tarih sütunu olmayan dosyalar, birlikte üretildikleri dosyaya bakar. Trafik dosyaları saatlik
@@ -66,6 +68,7 @@ SURUM = {
     "mobilite_saatlik.csv": ("mobilite_saatlik.csv", "zaman"),
     "mobilite_gunluk.csv": ("mobilite_saatlik.csv", "zaman"),
     "mobilite_haftalik.csv": ("mobilite_saatlik.csv", "zaman"),
+    "mobilite_pencereler.csv": ("mobilite_saatlik.csv", "zaman"),
 }
 
 
@@ -145,10 +148,12 @@ def analiz_belgesi(cikti: str) -> dict:
         if not hedef.startswith("analiz:") or hedef not in kayit:
             continue
         dosyalar[hedef.split(":", 1)[1]] = "/_blob/" + kayit[hedef]["varlik_id"]
-        tarihler.append(kayit[hedef]["tarih"])
+        if not hedef.startswith("analiz:mobilite_"):     # belgenin tarihi Web TÜFE'nin son günüdür
+            tarihler.append(kayit[hedef]["tarih"])
     belge = {"tarih": max(tarihler) if tarihler else None,
              "guncelleme": datetime.now(ZoneInfo("Europe/Istanbul")).isoformat(timespec="seconds"),
-             "kaynak": "Web TÜFE (marketfiyati.org.tr fiyatları, bu proje)", "dosyalar": dosyalar}
+             "kaynak": "Web TÜFE (marketfiyati.org.tr fiyatları, bu proje); mobilite_* İBB trafik indeksi",
+             "dosyalar": dosyalar}
     Path(cikti).write_text(json.dumps(belge, ensure_ascii=False, indent=2), encoding="utf-8")
     return belge
 

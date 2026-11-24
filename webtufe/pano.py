@@ -151,6 +151,8 @@ MOBILITE_SUTUNLAR = {
     "mobilite_gunluk.csv": ["tarih", "gun_tipi", "pencere", "tur", "deger", "yillik_degisim", "kisa_sapma", "temiz",
                             "okul_tatili", "resmi_tatil"],
 }
+# Analiz Masası için günlük pencerelerin tamamı (panodaki mobilite_gunluk yalnızca son 120 gün)
+MOBILITE_SUTUNLAR["mobilite_pencereler.csv"] = MOBILITE_SUTUNLAR["mobilite_gunluk.csv"]
 AKARYAKIT_SUTUNLAR = {
     "akaryakit_ulke.csv": ["tarih", "yakit", "fiyat"],
     "akaryakit_il.csv": ["tarih", "il_kodu", "il_adi", "yakit", "ortanca", "en_dusuk", "en_yuksek", "firma",
@@ -192,14 +194,17 @@ def mobilite_pano_yaz(pano: Path, saatlik_yol: Path, mobilite_dizin: Path) -> li
     yazilan.append(yol)
 
     yol = pano / "mobilite_gunluk.csv"
+    tum_yol = pano / "mobilite_pencereler.csv"
     kaynak = mobilite_dizin / "pencereler.csv"
     if kaynak.exists():
         p = pd.read_csv(kaynak, dtype={"tarih": str})
         sinir = (pd.Timestamp(p["tarih"].max()) - pd.Timedelta(days=MOBILITE_GUNLUK_GUN)).strftime("%Y-%m-%d")
         p[p["tarih"] > sinir][MOBILITE_SUTUNLAR["mobilite_gunluk.csv"]].to_csv(yol, index=False)
+        p[MOBILITE_SUTUNLAR["mobilite_pencereler.csv"]].to_csv(tum_yol, index=False)
     else:
         _bos_yaz(yol, MOBILITE_SUTUNLAR["mobilite_gunluk.csv"])
-    yazilan.append(yol)
+        _bos_yaz(tum_yol, MOBILITE_SUTUNLAR["mobilite_pencereler.csv"])
+    yazilan += [yol, tum_yol]
 
     yol = pano / "mobilite_haftalik.csv"
     kaynak = mobilite_dizin / "haftalik.csv"
