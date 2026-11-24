@@ -9,6 +9,7 @@
   pano      Pano ve Analiz Masası dosyaları (data/cikti/pano/)
   haftalik  Analiz Masası'nın haftalık görünümü için Web TÜFE verisi (JSON)
   akaryakit EPDK akaryakıt ve LPG fiyatlarını topla (data/ham/epdk/)
+  mobilite  İstanbul trafik indeksi: topla (data/ham/ibb_trafik/) ya da hesapla (data/cikti/mobilite/)
 """
 
 from __future__ import annotations
@@ -173,6 +174,20 @@ def komut_akaryakit(a):
         raise SystemExit(f"Eksik kalanlar: {sonuc['basarisiz']}")
 
 
+def komut_mobilite(a):
+    if a.islem == "topla":
+        from .toplayicilar.ibb_trafik import topla as trafik_topla
+        sonuc = trafik_topla()
+        print(f"Saatlik: {sonuc.get('saatlik')} yeni saat; 5 dk: {sonuc.get('5dk')} yeni kayıt; "
+              f"arşiv: {sonuc.get('arsiv') or 'zaten var'}")
+        if sonuc["hatalar"]:
+            raise SystemExit(f"Toplanamayanlar: {sonuc['hatalar']}")
+    else:
+        from .mobilite import hesapla as mobilite_hesapla
+        s = mobilite_hesapla()
+        print(f"{s['gun']} gün, {s['pencere_satiri']} pencere satırı, {s['hafta']} hafta; son gün {s['son_gun']}")
+
+
 def komut_rapor(a):
     yol = CIKTI / "gunluk.parquet"
     if not yol.exists():
@@ -252,6 +267,10 @@ def main(argv=None):
     s.add_argument("--sekiz-firma-yok", action="store_true", help="8 firma bültenini doldurma")
     s.add_argument("--sekiz-firma-azami-gun", type=int, help="bir çalışmada doldurulacak en çok gün")
     s.set_defaults(f=komut_akaryakit)
+
+    s = alt.add_parser("mobilite", help="İstanbul trafik indeksi ve hareketlilik göstergeleri")
+    s.add_argument("islem", choices=["topla", "hesapla"])
+    s.set_defaults(f=komut_mobilite)
 
     s = alt.add_parser("haftalik", help="haftalık görünüm verisi")
     s.add_argument("--cikti", required=True, help="yazılacak JSON dosyası")

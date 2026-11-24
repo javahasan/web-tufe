@@ -1,0 +1,94 @@
+# Hareketlilik endeksi için takvim (webtufe/mobilite.py).
+# Dini bayramlar Diyanet takvimine, okul tatilleri MEB çalışma takvimine göredir. Her yıl,
+# yeni takvim açıklandığında güncellenmeli. "takvim_son_gun" sonrasındaki günlerin okul
+# durumu bilinmez; bu günler baz hesaplarına alınmaz.
+
+takvim_ilk_gun: 2024-09-09   # 2024-25 öğretim yılının ilk günü
+takvim_son_gun: 2027-06-25   # 2026-27 öğretim yılının son günü
+
+# Tam gün resmi tatiller (bayram günleri dahil)
+resmi_tatil:
+  # 2024
+  - 2024-01-01
+  - 2024-04-10
+  - 2024-04-11
+  - 2024-04-12   # Ramazan Bayramı
+  - 2024-04-23
+  - 2024-05-01
+  - 2024-05-19
+  - 2024-06-16
+  - 2024-06-17
+  - 2024-06-18
+  - 2024-06-19   # Kurban Bayramı
+  - 2024-07-15
+  - 2024-08-30
+  - 2024-10-29
+  # 2025
+  - 2025-01-01
+  - 2025-03-30
+  - 2025-03-31
+  - 2025-04-01   # Ramazan Bayramı
+  - 2025-04-23
+  - 2025-05-01
+  - 2025-05-19
+  - 2025-06-06
+  - 2025-06-07
+  - 2025-06-08
+  - 2025-06-09   # Kurban Bayramı
+  - 2025-07-15
+  - 2025-08-30
+  - 2025-10-29
+  # 2026
+  - 2026-01-01
+  - 2026-03-20
+  - 2026-03-21
+  - 2026-03-22   # Ramazan Bayramı
+  - 2026-04-23
+  - 2026-05-01
+  - 2026-05-19
+  - 2026-05-27
+  - 2026-05-28
+  - 2026-05-29
+  - 2026-05-30   # Kurban Bayramı
+  - 2026-07-15
+  - 2026-08-30
+  - 2026-10-29
+  # 2027
+  - 2027-01-01
+  - 2027-03-09
+  - 2027-03-10
+  - 2027-03-11   # Ramazan Bayramı
+  - 2027-04-23
+  - 2027-05-01
+  - 2027-05-16
+  - 2027-05-17
+  - 2027-05-18
+  - 2027-05-19   # Kurban Bayramı (19 Mayıs ile çakışıyor)
+
+# Öğleden sonra yarım gün tatil: bayram arifeleri ve 28 Ekim
+yarim_gun:
+  - 2024-04-09
+  - 2024-06-15
+  - 2024-10-28
+  - 2025-03-29
+  - 2025-06-05
+  - 2025-10-28
+  - 2026-03-19
+  - 2026-05-26
+  - 2026-10-28
+  - 2027-03-08
+  - 2027-05-15
+
+# Okul tatilleri (başlangıç ve bitiş dahil; hafta sonları önemsizdir)
+okul_tatili:
+  - [2024-11-11, 2024-11-15]   # 2024-25 birinci ara tatil
+  - [2025-01-20, 2025-01-31]   # yarıyıl
+  - [2025-03-31, 2025-04-04]   # ikinci ara tatil
+  - [2025-06-21, 2025-09-07]   # yaz (2025-26 yılı 8 Eylül'de başladı)
+  - [2025-11-10, 2025-11-14]   # 2025-26 birinci ara tatil
+  - [2026-01-19, 2026-01-30]   # yarıyıl
+  - [2026-03-16, 2026-03-20]   # ikinci ara tatil
+  - [2026-06-27, 2026-09-13]   # yaz (2026-27 yılı 14 Eylül'de başladı)
+  - [2026-11-16, 2026-11-20]   # 2026-27 birinci ara tatil
+  - [2027-01-25, 2027-02-05]   # yarıyıl (tek kaynakta doğrulandı; MEB genelgesiyle kontrol edilmeli)
+  - [2027-03-08, 2027-03-12]   # ikinci ara tatil

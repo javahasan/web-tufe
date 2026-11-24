@@ -14,6 +14,7 @@ güncellenen bir fiyat göstergesi ve deflatör elde etmek.
 | Market ürünleri → TÜİK maddesi eşleme kuralları | ✅ 164 madde, sepet ağırlığının %27,7'si (gıdanın tamamı) |
 | marketfiyati.org.tr toplayıcısı | ✅ 12.11.2026'da kullanıcı kararıyla açıldı; 3 şehir, istekler arası 2 sn, ilk gün toplanıyor |
 | Akaryakıt ve LPG fiyatları (EPDK) | ✅ 24.11.2026'dan beri her gün, 81 il; 8 firma ülke ortalaması 2023'ten. Endekse henüz girmiyor |
+| İstanbul trafik hareketliliği (İBB) | ✅ 24.11.2026'dan beri her gün; saatlik seri Eylül 2024'ten, günlük arşiv 2015'ten |
 | Diğer kaynaklar (giyim, enerji, ulaştırma, hizmetler…) | ⏳ Yapılacak |
 | Zamanlama (her gün otomatik) | ✅ GitHub Actions, her gün 09:17 (bkz. "Günlük otomatik çalışma") |
 | Pano ve Analiz Masası | ✅ Gerçek Web TÜFE verisi; resmi seriler TCMB EVDS bağlayıcısından canlı |
@@ -58,6 +59,8 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/webtufe mansetler          # gerçek fiyatlardan günün manşetleri: data/cikti/mansetler_gercek.csv
 .venv/bin/webtufe pano               # pano ve Analiz Masası dosyaları: data/cikti/pano/*.csv
 .venv/bin/webtufe akaryakit          # EPDK akaryakıt ve LPG fiyatları: data/ham/epdk/
+.venv/bin/webtufe mobilite topla     # İBB trafik indeksi: data/ham/ibb_trafik/
+.venv/bin/webtufe mobilite hesapla   # zorunlu ve isteğe bağlı hareketlilik: data/cikti/mobilite/
 .venv/bin/webtufe haftalik --cikti x.json   # haftalık görünümün Web TÜFE verisi
 .venv/bin/python -m pytest           # testler
 ```
@@ -128,6 +131,37 @@ toplamasından sonra çalıştırır; veri depoya kaydedilir ama **şimdilik Web
 - Opet de il ve ilçe bazında fiyat veriyor, ama kullanım koşulları içeriğin kopyalanmasını ve başka
   platformda yayımlanmasını yasakladığı için kullanılmadı (depo herkese açık).
 
+## Trafik hareketliliği (İBB)
+
+Amaç, tüketimle ilişkili hareketliliği işe ve okula gidiş gibi zorunlu hareketlilikten ayırmak.
+Türkiye geneli için günlük ve açık trafik verisi yok; en sağlam kaynak İBB'nin İstanbul trafik
+indeksi web servisi (İBB Açık Veri Lisansı: ticari kullanım dahil serbest, kaynak gösterilmeli).
+
+- `webtufe mobilite topla` (`webtufe/toplayicilar/ibb_trafik.py`): saatlik seri (`saatlik.csv`,
+  servis 800 güne kadar geriye, Eylül 2024'ten), 5 dakikalık seri (`5dk/YYYY-AA.csv`, her gün son
+  2 gün) ve 2015-2024 günlük özet arşivi (`gunluk_arsiv.csv`, bir kez).
+- `webtufe mobilite hesapla` (`webtufe/mobilite.py`): saatlik indeks gün tipine ve saat penceresine
+  göre ayrılır; takvim `config/takvim.yaml` (resmi tatil, arife, bayram, MEB okul tatilleri).
+
+| Pencere | Gün | Saat | Tür |
+|---|---|---|---|
+| zorunlu_sabah | iş günü | 06-09 | zorunlu (işe ve okula gidiş) |
+| karma_aksam | iş günü | 16-19 | karma (eve dönüş ve akşam alışverişi) |
+| is_gunu_ogle | iş günü | 10-15 | zayıf isteğe bağlı |
+| is_gunu_gece | iş günü | 20-23 | isteğe bağlı |
+| hafta_sonu_gunduz | Cmt-Paz | 11-19 | isteğe bağlı (en temiz sinyal) |
+| hafta_sonu_gece | Cmt-Paz | 20-23 | isteğe bağlı |
+
+Her pencere için yıllık değişim (52 hafta önceki aynı gün ±1 hafta) ve kısa vadeli sapma (son 8
+haftanın aynı günleri) hesaplanır. Baz günleri resmi tatil, arife ve bayram çevresi olmamalı ve okul
+durumu aynı olmalıdır; ara tatil haftası gibi karşılığı olmayan günlerde baz boş kalır.
+`data/cikti/mobilite/pencereler.csv` günlük, `haftalik.csv` haftalık özettir (pencereler eşit ağırlıklı).
+
+Sınırlar: indeks tıkanıklıktır, araç sayısı değil; akşam zirvesinde tavana yaklaşır. Gece
+pencerelerinde indeks düşük olduğu için yüzde değişimler oynaktır. Kısa vadeli sapma mevsim
+geçişlerinde (ör. Eylül'de şehre dönüş) yanıltır; yıllık değişim esas alınmalı. Yağmur ve kar için
+hava düzeltmesi henüz yok. Yalnızca İstanbul.
+
 ## Pano ve Analiz Masası
 
 - **Pano** (Web Fiyat Endeksi): 18.11.2026'dan beri gerçek Web TÜFE verisini gösterir. Bir yıllık
@@ -179,6 +213,8 @@ data/
   referans/sepet_<yıl>.csv       TÜİK sepeti ve ağırlıklar
   ham/<kaynak>/tarih=…/          ham fiyat gözlemleri (değiştirilmez)
   ham/epdk/                      akaryakıt ve LPG fiyatları (EPDK)
+  ham/ibb_trafik/                İstanbul trafik indeksi (İBB)
+  cikti/mobilite/                zorunlu ve isteğe bağlı hareketlilik göstergeleri
   cikti/                         endeksler
   cikti/pano/                    sayfalara giden CSV'ler (depoya kaydedilmez)
 webtufe/
@@ -189,6 +225,7 @@ webtufe/
   gostergeler.py                 seriler ve özel göstergeler
   mansetler.py                   gerçek fiyatlardan günün manşetleri
   pano.py, haftalik.py           pano, Analiz Masası ve haftalık görünüm dosyaları
+  mobilite.py                    trafik indeksinden hareketlilik göstergeleri
 pano/site/, pano/analiz/         pano ve Analiz Masası sayfaları
 tests/
 ```
