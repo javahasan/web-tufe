@@ -293,30 +293,42 @@
   });
 
   // ---------------------------------------------------------------- matris: senaryo sürgüleri
-  const SURGULER = [
-    ['akaryakit', (v) => (v > 0 ? '+%' : v < 0 ? '−%' : '%') + Math.abs(v)],
-    ['raf', (v) => (v > 0 ? '+%' : v < 0 ? '−%' : '%') + Math.abs(v)],
-    ['mobilite', (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + ' puan'],
-    ['kart', (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + ' puan'],
-  ];
-  const senaryoCiz = () => { dash.draw('matris-grafik'); dash.draw('matris-senaryo-sonuc'); };
-  dash.draw('matris-kontroller', (el) => {
+  // Sürgüler ve Sıfırla düğmesi HTML'dedir; betik onları yalnızca dinler ve value/disabled/class
+  // ayarlar. Sürgünün yanındaki değer ("+%5") ayrı bir çizimdir (data-draw="senaryo-deger").
+  const SURGU_BICIM = {
+    akaryakit: (v) => (v > 0 ? '+%' : v < 0 ? '−%' : '%') + Math.abs(v),
+    raf: (v) => (v > 0 ? '+%' : v < 0 ? '−%' : '%') + Math.abs(v),
+    mobilite: (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + ' puan',
+    kart: (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + ' puan',
+  };
+  const senaryoCiz = () => { dash.draw('senaryo-deger'); dash.draw('matris-grafik'); dash.draw('matris-senaryo-sonuc'); };
+  dash.draw('senaryo-deger', (el) => {
+    const ad = el.getAttribute('data-surgu');
+    const bicim = SURGU_BICIM[ad];
+    if (!bicim) { el.textContent = '—'; return; }
     const r = matrisSatirlari();
     const son = r.length ? r[r.length - 1] : null;
-    SURGULER.forEach(([ad, bicim]) => {
-      const g = el.querySelector('#senaryo-' + ad), o = el.querySelector('#senaryo-' + ad + '-deger');
-      if (!g) return;
-      const kapali = !son || (ad === 'raf' && !son.raf_dahil);
-      if (kapali && wt.senaryo[ad] !== 0) wt.senaryo[ad] = 0;
+    // Veri yokken sürgüler kapalı; raf sürgüsü Web TÜFE eksene girene kadar kapalı
+    const kapali = !son || (ad === 'raf' && !son.raf_dahil);
+    if (kapali) wt.senaryo[ad] = 0;
+    document.querySelectorAll('#senaryo-' + ad).forEach((g) => {
       g.disabled = kapali;
-      g.closest('.wt-surgu').classList.toggle('wt-kapali', kapali);
       g.value = String(wt.senaryo[ad]);
-      if (o) o.textContent = bicim(wt.senaryo[ad]);
-      g.oninput = () => { wt.senaryo[ad] = Number(g.value); if (o) o.textContent = bicim(wt.senaryo[ad]); senaryoCiz(); };
+      const kap = g.closest('.wt-surgu');
+      if (kap) kap.classList.toggle('wt-kapali', kapali);
     });
-    const sifirla = el.querySelector('#senaryo-sifirla');
-    if (sifirla) sifirla.onclick = () => { Object.keys(wt.senaryo).forEach((k) => { wt.senaryo[k] = 0; }); dash.draw('matris-kontroller'); senaryoCiz(); };
+    el.textContent = bicim(wt.senaryo[ad]);
   });
+  Object.keys(SURGU_BICIM).forEach((ad) => {
+    document.querySelectorAll('#senaryo-' + ad).forEach((g) => g.addEventListener('input', () => {
+      wt.senaryo[ad] = Number(g.value);
+      senaryoCiz();
+    }));
+  });
+  document.querySelectorAll('#senaryo-sifirla').forEach((d) => d.addEventListener('click', () => {
+    Object.keys(wt.senaryo).forEach((k) => { wt.senaryo[k] = 0; });
+    senaryoCiz();
+  }));
 
   dash.draw('matris-senaryo-sonuc', (el) => {
     const r = matrisSatirlari();
