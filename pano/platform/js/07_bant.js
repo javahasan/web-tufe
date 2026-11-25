@@ -101,4 +101,19 @@
     if (sa || ak) yaz('#durum-izleme', 'acik', [sonYakit ? 'Akaryakıt ' + gunMetin(sonYakit, true) : null, sonSaat ? 'trafik ' + gunMetin(sonSaat, true) + ' ' + sonSaat.slice(11, 16) : null].filter(Boolean).join(' · '));
     else yaz('#durum-izleme', '', 'Akaryakıt ve trafik yükleniyor');
   }
-  herDaim.push(bantCiz, durumCiz);
+  // EVDS izin şeridi: bir seri izin bekliyorsa ya da 12 saniyede hiçbir resmi seri gelmediyse görünür
+  function evdsIzinCiz() {
+    const ev = Object.values(D.evds);
+    const izin = ev.some((k) => k.durum === 'izin');
+    const sessiz = !!D.cap.mcp && D.evdsBagli !== false && !ev.some((k) => k.durum === 'hazir') && ev.some((k) => k.durum === 'yukleniyor' || k.durum === 'hata') && D.mcpZaman && Date.now() - D.mcpZaman > 12000;
+    $('#evds-izin').hidden = !(izin || sessiz);
+  }
+  $('#evds-izin-dugme').addEventListener('click', async (e) => {
+    const b = e.currentTarget, m = $('#evds-izin-metin');
+    b.disabled = true;
+    m.textContent = 'EVDS’ye bağlanılıyor; izin penceresi açılırsa onaylayın…';
+    const hata = await evdsIzinIste();
+    b.disabled = false;
+    m.textContent = hata ? 'Resmi seriler yüklenemedi (' + hata + '). Claude’da EVDS bağlayıcısının bağlı olduğunu kontrol edip yeniden deneyin.' : 'İzin verildi; resmi seriler yükleniyor…';
+  });
+  herDaim.push(bantCiz, durumCiz, evdsIzinCiz);

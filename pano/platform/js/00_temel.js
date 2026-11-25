@@ -74,7 +74,7 @@
       yapildi = true;
       cizimBekliyor = false;
       const fn = cizimler[D.sekme];
-      try { if (fn) fn(); } catch (e) { console.error(e); }
+      try { if (fn) fn(); } catch (e) { console.error(e); tani('cizim-hata', D.sekme + ' ' + e.message); }
       herDaim.forEach((f) => { try { f(); } catch (e) { console.error(e); } });
     };
     requestAnimationFrame(ciz);
@@ -104,8 +104,8 @@
     if (k.url === url && (k.durum === 'hazir' || k.durum === 'yukleniyor')) return k;
     k.url = url; k.durum = k.satirlar ? 'hazir' : 'yukleniyor';
     fetch(String(url)).then((y) => { if (!y.ok) throw new Error(ad + ' okunamadı (' + y.status + ')'); return y.text(); })
-      .then((metin) => { if (k.url !== url) return; k.satirlar = csvOku(metin); k.durum = 'hazir'; yenidenCiz(); })
-      .catch((e) => { console.warn(e); if (k.url === url) { k.durum = 'hata'; yenidenCiz(); } });
+      .then((metin) => { if (k.url !== url) return; k.satirlar = csvOku(metin); k.durum = 'hazir'; tani('dosya', ad + ' ' + k.satirlar.length); yenidenCiz(); })
+      .catch((e) => { console.warn(e); tani('dosya-hata', ad + ' ' + (e && e.message)); if (k.url === url) { k.durum = 'hata'; yenidenCiz(); } });
     return k;
   }
   // Satırları döndürür; dosya hazır değilse null
@@ -114,14 +114,16 @@
 
   function guncelDinle() {
     if (!D.cap.db) { yenidenCiz(); return; }
-    let sure = setTimeout(() => { if (!D.guncel) { D.guncel = { dosyalar: {} }; yenidenCiz(); } }, 10000);
+    let sure = setTimeout(() => { if (!D.guncel) { tani('guncel-sessiz'); D.guncel = { dosyalar: {} }; yenidenCiz(); } }, 10000);
     D.cap.db.doc('veri/guncel').onSnapshot((snap) => {
       clearTimeout(sure);
-      D.guncel = snap.exists ? (snap.data() || {}) : { dosyalar: {} };
-      D.guncel.dosyalar = D.guncel.dosyalar || {};
+      tani('guncel', snap.exists ? 'var' : 'yok');
+      // Veritabanından gelen nesneler salt okunurdur; değiştirmek yerine kopyası alınır
+      const v = snap.exists ? (snap.data() || {}) : {};
+      D.guncel = { ...v, dosyalar: { ...(v.dosyalar || {}) } };
       Object.keys(D.guncel.dosyalar).forEach((ad) => { if (!TEMBEL_DOSYA.has(ad) || D.dosya[ad]) dosyaYukle(ad); });
       yenidenCiz();
-    }, (e) => { clearTimeout(sure); console.warn(e); D.guncel = { dosyalar: {} }; yenidenCiz(); });
+    }, (e) => { clearTimeout(sure); console.warn(e); tani('guncel-hata', (e && e.code) + ' ' + (e && e.message)); D.guncel = { dosyalar: {} }; yenidenCiz(); });
   }
 
   // Bir serinin satırlarını tarihe göre gruplar: Map(kod -> satırlar)
@@ -215,21 +217,26 @@
       deger: r[degerSut] === '' || r[degerSut] == null ? null : Number(r[degerSut]),
     })).filter((r) => r.deger != null && isFinite(r.deger)).sort((a, b) => (a.tarih < b.tarih ? -1 : 1));
   }
-  const YETKI_HATASI = new Set(['server_not_connected', 'needs_reauth', 'not_granted', 'consent_required', 'not_in_manifest', 'unavailable']);
+  // EVDS'nin bu sayfaya hiç bağlı olmadığını gösteren kodlar; izin isteği ise ayrı ele alınır
+  const YETKI_HATASI = new Set(['server_not_connected', 'needs_reauth', 'not_granted', 'not_in_manifest', 'unavailable', 'capability_disabled', 'capability_removed', 'blocked_by_policy', 'server_not_found']);
+  const IZIN_KODU = new Set(['approval_required', 'consent_required', 'selection_required']);
   // EVDS istekleri sıraya girer ve aynı anda en çok EVDS_ES_ZAMANLI tanesi çalışır: açık sekmenin
   // özet kutucukları önce istenir, önce gelir; bağlayıcıya yirmiden fazla istek bir anda yığılmaz.
   // Önbellekteki (6 saatten taze) bir yanıt hemen döner ve sıradaki yeri hemen boşaltır.
   const EVDS_ES_ZAMANLI = 5;
   const evdsKuyruk = [];
-  let evdsCalisan = 0;
+  let evdsCalisan = 0, evdsNesil = 0;
   function evdsIlerlet() {
     while (evdsCalisan < EVDS_ES_ZAMANLI && evdsKuyruk.length) {
       const id = evdsKuyruk.shift();
       evdsCalisan++;
+      const nesil = evdsNesil;
       let bitti = false;
-      evdsIzle(id, () => { if (bitti) return; bitti = true; evdsCalisan--; evdsIlerlet(); });
+      evdsIzle(id, () => { if (bitti || nesil !== evdsNesil) return; bitti = true; evdsCalisan--; evdsIlerlet(); });
     }
   }
+  const evdsGirdi = (id) => { const t = EVDS[id]; const g = { series_code: t.kod, start_date: t.bas, end_date: BITIS, full_data: true }; if (t.formul) g.formulas = t.formul; return g; };
+  const EVDS_ONBELLEK = { staleTime: 6 * 3600e3, gcTime: 7 * 24 * 3600e3 };
   function evdsBaslat(id) {
     const k = D.evds[id];
     if (!D.mcpHazir) return;                                     // EVDS yeteneği gelince yeniden denenir
@@ -238,35 +245,72 @@
     evdsKuyruk.push(id);
     evdsIlerlet();
   }
+  function evdsVeri(id, sonuc) {
+    const k = D.evds[id];
+    try {
+      k.satirlar = evdsCoz(evdsMetni(sonuc), EVDS[id].kod);
+      k.durum = 'hazir'; k.hata = null;
+      k.zaman = (sonuc && sonuc.cache && sonuc.cache.storedAt) || Date.now();
+      if (D.evdsBagli !== true) D.evdsBagli = true;
+      tani('evds-veri', id + (sonuc && sonuc.cache ? ' önbellek' : ''));
+    } catch (e) { k.durum = 'hata'; k.hata = e.message; tani('evds-cozum', id + ' ' + e.message); }
+  }
   function evdsIzle(id, bitti) {
-    const t = EVDS[id];
     const k = D.evds[id];
     if (D.evdsBagli === false) { k.durum = 'yok'; bitti(); yenidenCiz(); return; }
-    const girdi = { series_code: t.kod, start_date: t.bas, end_date: BITIS, full_data: true };
-    if (t.formul) girdi.formulas = t.formul;
-    k.girdi = girdi;
-    const sure = setTimeout(bitti, 20000);                     // yanıtsız kalan bir istek sırayı tıkamasın
+    const girdi = k.girdi = evdsGirdi(id);
+    const sure = setTimeout(() => { tani('evds-sessiz', id); bitti(); yenidenCiz(); }, 20000);   // yanıtsız istek sırayı tıkamasın
     try {
       k.birak = D.cap.mcp.watchTool(EVDS_SUNUCU, 'get_series_data', girdi, (ev) => {
         clearTimeout(sure);
         bitti();
-        if (ev.type === 'data') {
-          try {
-            k.satirlar = evdsCoz(evdsMetni(ev.result), t.kod);
-            k.durum = 'hazir';
-            k.zaman = (ev.result && ev.result.cache && ev.result.cache.storedAt) || Date.now();
-            if (D.evdsBagli !== true) D.evdsBagli = true;
-          } catch (e) { k.durum = 'hata'; k.hata = e.message; }
-        } else {
-          const kod = ev.error && ev.error.code;
-          if (YETKI_HATASI.has(kod)) { k.durum = 'yok'; k.satirlar = []; k.hata = kod; if (kod !== 'not_in_manifest') D.evdsBagli = false; }
-          else if (!(k.satirlar && k.satirlar.length)) { k.durum = 'hata'; k.hata = (ev.error && ev.error.message) || kod || 'hata'; }
+        if (ev.type === 'data') evdsVeri(id, ev.result);
+        else {
+          const h = ev.error || {}, kod = h.code;
+          tani('evds-hata', id + ' ' + kod + ' ' + (h.message || ''));
+          if (IZIN_KODU.has(kod)) { if (!(k.satirlar && k.satirlar.length)) k.durum = 'izin'; }
+          else if (YETKI_HATASI.has(kod)) { k.durum = 'yok'; k.satirlar = []; k.hata = kod; if (kod !== 'not_in_manifest') D.evdsBagli = false; }
+          else {
+            // Geçici hata (ör. bağlayıcı o an izin soramadı): bir kez, önerilen süre sonra yeniden dene
+            if (h.retryable && !k.yenidenDenendi) {
+              k.yenidenDenendi = true;
+              setTimeout(() => { try { D.cap.mcp.invalidate(EVDS_SUNUCU, 'get_series_data', girdi).catch(() => {}); } catch (e) { /* eski kabuk */ } }, Math.min(60000, h.retryAfterMs || 3000));
+            }
+            if (!(k.satirlar && k.satirlar.length)) { k.durum = 'hata'; k.hata = h.message || kod || 'hata'; }
+          }
         }
         yenidenCiz();
-      }, { cache: { staleTime: 6 * 3600e3, gcTime: 7 * 24 * 3600e3 } });
-    } catch (e) { clearTimeout(sure); bitti(); k.durum = 'hata'; k.hata = e.message; }
+      }, { cache: EVDS_ONBELLEK });
+    } catch (e) { clearTimeout(sure); bitti(); k.durum = 'hata'; k.hata = e.message; tani('evds-kayit', id + ' ' + e.message); }
   }
-  // { durum: 'bekliyor'|'yukleniyor'|'hazir'|'hata'|'yok', satirlar: [{tarih, deger}] }
+  // İzin isteyen düğme: izleme çağrıları izin penceresi açamaz; kullanıcının basmasıyla yapılan tek
+  // bir çağrı pencereyi açar. İzin verilince bekleyen bütün seriler sıraya yeniden girer.
+  async function evdsIzinIste() {
+    const bekleyen = Object.keys(D.evds).find((id) => D.evds[id].durum !== 'hazir') || 'tufe_y';
+    tani('evds-izin-dugmesi', bekleyen);
+    try {
+      const sonuc = await D.cap.mcp.callTool(EVDS_SUNUCU, 'get_series_data', evdsGirdi(bekleyen), { cache: EVDS_ONBELLEK });
+      if (!D.evds[bekleyen]) D.evds[bekleyen] = { durum: 'bekliyor', satirlar: [] };
+      evdsVeri(bekleyen, sonuc);
+      D.evdsBagli = true;
+      evdsYenidenBaslat();
+      return null;
+    } catch (e) {
+      tani('evds-izin-hata', (e && e.code) + ' ' + (e && e.message));
+      return (e && e.code) || 'hata';
+    } finally { yenidenCiz(); }
+  }
+  function evdsYenidenBaslat() {
+    evdsNesil++; evdsCalisan = 0; evdsKuyruk.length = 0;
+    Object.keys(D.evds).forEach((id) => {
+      const k = D.evds[id];
+      if (k.durum === 'hazir') return;
+      try { if (k.birak) k.birak(); } catch (e) { /* zaten kapalı */ }
+      k.birak = null; k.durum = 'bekliyor'; k.yenidenDenendi = false;
+      evdsBaslat(id);
+    });
+  }
+  // { durum: 'bekliyor'|'yukleniyor'|'hazir'|'izin'|'hata'|'yok', satirlar: [{tarih, deger}] }
   function evds(id) {
     let k = D.evds[id];
     if (!k) { k = D.evds[id] = { durum: 'bekliyor', satirlar: [] }; evdsBaslat(id); }
@@ -278,6 +322,24 @@
   function evdsBosMetin(id) {
     const k = evds(id);
     if (k.durum === 'yok') return D.cap.mcp ? 'EVDS bağlantısı yok. Claude’da TCMB’nin EVDS bağlayıcısını bağlayıp bu sayfaya izin verin.' : 'Resmi seriler yalnızca Claude içinde açıldığında okunur.';
+    if (k.durum === 'izin') return 'EVDS izni bekleniyor: sayfanın üstündeki “Resmi serileri yükle” düğmesine basın.';
     if (k.durum === 'hata') return 'EVDS’den okunamadı: ' + (k.hata || 'bilinmeyen hata');
     return 'EVDS’den okunuyor…';
   }
+
+  // ---------------------------------------------------------------- tanı kaydı
+  // Açılıştaki adımların zamanı ve hata kodları, yalnızca izleyicinin kendi kayıt alanına
+  // (data/users/<kimlik>/tani) yazılır; yükleme sorunlarını uzaktan görmek içindir.
+  const TANI = { t0: Date.now(), olay: [] };
+  function tani(ad, ek) { if (TANI.olay.length < 250) TANI.olay.push([Date.now() - TANI.t0, ad, ek == null ? null : String(ek).slice(0, 240)]); }
+  window.addEventListener('error', (e) => tani('js-hata', (e.message || '') + ' @' + (e.lineno || '') + ':' + (e.colno || '')));
+  window.addEventListener('unhandledrejection', (e) => { const r = e.reason || {}; tani('soz-hata', (r.code || '') + ' ' + (r.message || String(r))); });
+  function taniKaydet(neden) {
+    if (!D.cap.db || !D.uid) return;
+    const durumlar = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v.durum + (v.hata ? ':' + String(v.hata).slice(0, 80) : '')]));
+    const belge = { tur: 'tani', neden, surum: 'platform-7', zaman: Date.now(), sure_ms: Date.now() - TANI.t0, sekme: D.sekme, gorunur: document.visibilityState,
+      dbHazir: D.dbHazir, mcpHazir: D.mcpHazir, mcpVar: !!D.cap.mcp, sampleVar: !!D.cap.sample, evdsBagli: D.evdsBagli, guncel: D.guncel ? Object.keys(D.guncel.dosyalar || {}).length : null,
+      dosyalar: durumlar(D.dosya), evds: durumlar(D.evds), olay: TANI.olay };
+    try { D.cap.db.doc('data/users/' + D.uid + '/tani').set(belge).catch(() => {}); } catch (e) { /* kayıt isteğe bağlı */ }
+  }
+  [10000, 40000].forEach((ms) => setTimeout(() => taniKaydet(ms / 1000 + ' sn'), ms));

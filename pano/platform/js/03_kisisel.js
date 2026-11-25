@@ -54,8 +54,8 @@
     if (D.cap.db && D.uid) { try { const s = await D.cap.db.doc('data/users/' + D.uid + '/sepet').get(); if (s.exists) v = s.data(); } catch (e) { console.warn(e); } }
     if (!v) { try { v = JSON.parse(localStorage.getItem('wt-sepet') || 'null'); } catch (e) { v = null; } }
     if (v) {
-      S.agirlik.resmi = v.resmi && Object.keys(v.resmi).length ? v.resmi : null;
-      S.agirlik.web = v.web && Object.keys(v.web).length ? v.web : null;
+      S.agirlik.resmi = v.resmi && Object.keys(v.resmi).length ? { ...v.resmi } : null;
+      S.agirlik.web = v.web && Object.keys(v.web).length ? { ...v.web } : null;
       if (v.kaynak === 'web' || v.kaynak === 'resmi') S.kaynak = v.kaynak;
       S.imza = '';
       yenidenCiz();

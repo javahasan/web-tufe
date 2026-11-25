@@ -397,6 +397,7 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
 
 .alt-bilgi { color: var(--muted); font-size: 12.5px; padding-block: 0 110px; }
 .alt-bilgi p { margin: 0 0 6px; max-width: 110ch; }
+.evds-izin { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
 .uyari-serit { background: var(--warn-soft); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; font-size: 13.5px; margin-bottom: 16px; }
 
 @media (max-width: 640px) {

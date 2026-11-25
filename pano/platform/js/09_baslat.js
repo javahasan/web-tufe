@@ -60,24 +60,25 @@
     const al = (ad) => c.use(ad).catch(() => null);
     const kullaniciP = al('user');
     al('db').then((db) => {
-      D.cap.db = db; D.dbHazir = true;
+      D.cap.db = db; D.dbHazir = true; tani('use-db', !!db);
       if (!db) { const u = $('#yetenek-uyari'); u.textContent = 'Veriler yalnızca Claude’da oturum açıkken okunur.'; u.hidden = false; }
       guncelDinle();
       haftalikDinle();
       return kullaniciP;
     }).then(async (user) => {
-      D.cap.user = user;
+      D.cap.user = user; tani('use-user', !!user);
       if (user) { try { D.uid = await user.id(); } catch (e) { D.uid = null; } }
       raporlariDinle();
       sepetYukle();
     });
     al('mcp').then((mcp) => {
-      D.cap.mcp = mcp; D.mcpHazir = true;
+      D.cap.mcp = mcp; D.mcpHazir = true; D.mcpZaman = Date.now(); tani('use-mcp', !!mcp);
+      setTimeout(yenidenCiz, 12500);
       if (!mcp) D.evdsBagli = false;
       evdsYetenekHazir();
       yenidenCiz();
     });
-    al('sample').then((s) => { D.cap.sample = s; D.sampleHazir = true; });
+    al('sample').then((s) => { D.cap.sample = s; D.sampleHazir = true; tani('use-sample', !!s); });
     al('downloads').then((d) => { D.cap.downloads = d; });
     yenidenCiz();
   }

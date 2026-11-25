@@ -32,7 +32,8 @@ window.claude = (() => {
   const guncel = { tarih: 'test', dosyalar: Object.fromEntries(dosyalar.map((a) => [a, 'platform_veri/' + a + '.csv'])) };
   const evdsP = fetch('platform_veri/evds.json').then((r) => r.json());
   const haftalikP = fetch('platform_veri/haftalik.json').then((r) => r.json());
-  const snap = (id, data) => ({ id, exists: !!data, data: () => data });
+  const dondur = (o) => { if (o && typeof o === 'object') { Object.values(o).forEach(dondur); Object.freeze(o); } return o; };
+  const snap = (id, data) => ({ id, exists: !!data, data: () => dondur(data ? JSON.parse(JSON.stringify(data)) : data) });
   const db = {
     doc(path) { return {
       onSnapshot(cb) { if (path === 'veri/guncel') setTimeout(() => cb(snap('guncel', guncel)), 60); return () => {}; },
@@ -47,9 +48,14 @@ window.claude = (() => {
     },
   };
   const anahtar = (g) => g.series_code + '|' + (g.formulas || '') + '|' + g.start_date;
+  // ?izin=1: izleme çağrıları önce "approval_required" döner; bir callTool'dan sonra çalışır
+  const izinModu = /izin=1/.test(location.search);
+  let izinVerildi = false;
   const mcp = {
     async listTools() { return { servers: [{ server: 'EVDS', tools: [{ name: 'get_series_data' }] }] }; },
+    async invalidate() {},
     watchTool(server, tool, input, handler) {
+      if (izinModu && !izinVerildi) { setTimeout(() => handler({ type: 'error', error: { code: 'approval_required', message: 'izin gerekli' } }), 200); return () => {}; }
       evdsP.then((f) => setTimeout(() => {
         const t = f[anahtar(input)];
         if (t) handler({ type: 'data', result: { payload: { result: t }, cache: { storedAt: Date.now(), revalidating: false } } });
@@ -57,7 +63,7 @@ window.claude = (() => {
       }, 150 + Math.random() * 600));
       return () => {};
     },
-    async callTool(server, tool, input) { const f = await evdsP; return { payload: { result: f[anahtar(input)] || '' } }; },
+    async callTool(server, tool, input) { izinVerildi = true; const f = await evdsP; return { payload: { result: f[anahtar(input)] || '' } }; },
   };
   const sample = { async json(istem, o) {
     const a = Object.fromEntries(o.tools.map((t) => [t.name, t]));
