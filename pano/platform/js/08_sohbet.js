@@ -387,7 +387,7 @@
     const soru = alan.value.trim();
     hata.hidden = true;
     if (!soru || K.calisiyor) return;
-    if (!D.cap.sample) { hata.textContent = D.capHazir ? 'Bu görünümde Claude’a soru sorulamıyor.' : 'Sayfa hazırlanıyor, birkaç saniye sonra yeniden deneyin.'; hata.hidden = false; return; }
+    if (!D.cap.sample) { hata.textContent = D.sampleHazir ? 'Bu görünümde Claude’a soru sorulamıyor.' : 'Sayfa hazırlanıyor, birkaç saniye sonra yeniden deneyin.'; hata.hidden = false; return; }
     const hg = $('#sohbet-hosgeldin');
     if (hg) hg.remove();
     alan.value = '';

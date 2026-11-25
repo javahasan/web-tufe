@@ -18,7 +18,7 @@
     if (!genel.length) return null;
     return { seriler, genel, son: sonEleman(genel), ilk: genel[0], gunler: genel.map((r) => r.tarih) };
   }
-  const webBekliyorMetin = () => (dosyaDurumu('gunluk') === 'hata' ? 'Web TÜFE dosyası okunamadı.' : !D.cap.db && D.capHazir ? 'Web TÜFE verisi yalnızca Claude içinde açıldığında okunur.' : 'Web TÜFE verisi yükleniyor…');
+  const webBekliyorMetin = () => (dosyaDurumu('gunluk') === 'hata' ? 'Web TÜFE dosyası okunamadı.' : !D.cap.db && D.dbHazir ? 'Web TÜFE verisi yalnızca Claude içinde açıldığında okunur.' : 'Web TÜFE verisi yükleniyor…');
 
   function webKpiCiz(w) {
     const kap = $('#web-kpi');
@@ -198,8 +198,12 @@
     sutunGrafik(kap, { noktalar: t.slice(-24).map((r) => ({ x: tarih(r.tarih), y: r.deger })), renk: 'var(--resmi)', negatifRenk: 'var(--ok)', yuzde: true, ad: 'Aylık TÜFE', etiket: 'Aylık TÜFE değişimi, son 24 ay' });
   }
 
+  // 13 ana grup serisi, grafik ekrana yaklaşınca istenir (açılıştaki EVDS yükünü yarıya indirir)
+  E.gruplarIste = !('IntersectionObserver' in window);
+  if (!E.gruplarIste) new IntersectionObserver((g, o) => { if (g.some((x) => x.isIntersecting)) { E.gruplarIste = true; o.disconnect(); yenidenCiz(); } }, { rootMargin: '500px 0px' }).observe($('#resmi-gruplar'));
   function resmiGruplarCiz() {
     const kap = $('#resmi-gruplar-grafik');
+    if (!E.gruplarIste) { bosYaz(kap, 'EVDS’den okunuyor…'); return; }
     const g = grupDuzeyleri();
     if (!g) { const bos = GRUP_KODLARI.map((k) => 'g' + k).find((id) => evds(id).durum !== 'hazir'); bosYaz(kap, evdsBosMetin(bos)); return; }
     const aylar = [...g['01'].keys()].sort();

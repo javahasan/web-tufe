@@ -56,7 +56,8 @@
 
   // ---------------------------------------------------------------- durum
   const D = {
-    cap: { db: null, user: null, sample: null, downloads: null, mcp: null }, capHazir: false, uid: null,
+    // Her yetenek kendi hazır bayrağıyla gelir; biri diğerini beklemez (veriler EVDS'yi beklemesin)
+    cap: { db: null, user: null, sample: null, downloads: null, mcp: null }, dbHazir: false, mcpHazir: false, sampleHazir: false, uid: null,
     guncel: null, dosya: {}, evds: {}, evdsBagli: null, sekme: 'enflasyon', surum: 0,
   };
   let cizimBekliyor = false;
@@ -66,12 +67,18 @@
     D.surum++;
     if (cizimBekliyor) return;
     cizimBekliyor = true;
-    requestAnimationFrame(() => {
+    // Kare çizimi beklenir; sayfa arka plandaysa (kare gelmiyorsa) kısa bir süre sonra yine çizilir
+    let yapildi = false;
+    const ciz = () => {
+      if (yapildi) return;
+      yapildi = true;
       cizimBekliyor = false;
       const fn = cizimler[D.sekme];
       try { if (fn) fn(); } catch (e) { console.error(e); }
       herDaim.forEach((f) => { try { f(); } catch (e) { console.error(e); } });
-    });
+    };
+    requestAnimationFrame(ciz);
+    setTimeout(ciz, 120);
   }
 
   // ---------------------------------------------------------------- dosyalar (veri/guncel belgesindeki CSV'ler)
@@ -209,17 +216,40 @@
     })).filter((r) => r.deger != null && isFinite(r.deger)).sort((a, b) => (a.tarih < b.tarih ? -1 : 1));
   }
   const YETKI_HATASI = new Set(['server_not_connected', 'needs_reauth', 'not_granted', 'consent_required', 'not_in_manifest', 'unavailable']);
+  // EVDS istekleri sıraya girer ve aynı anda en çok EVDS_ES_ZAMANLI tanesi çalışır: açık sekmenin
+  // özet kutucukları önce istenir, önce gelir; bağlayıcıya yirmiden fazla istek bir anda yığılmaz.
+  // Önbellekteki (6 saatten taze) bir yanıt hemen döner ve sıradaki yeri hemen boşaltır.
+  const EVDS_ES_ZAMANLI = 5;
+  const evdsKuyruk = [];
+  let evdsCalisan = 0;
+  function evdsIlerlet() {
+    while (evdsCalisan < EVDS_ES_ZAMANLI && evdsKuyruk.length) {
+      const id = evdsKuyruk.shift();
+      evdsCalisan++;
+      let bitti = false;
+      evdsIzle(id, () => { if (bitti) return; bitti = true; evdsCalisan--; evdsIlerlet(); });
+    }
+  }
   function evdsBaslat(id) {
-    const t = EVDS[id];
     const k = D.evds[id];
-    if (!D.capHazir) return;                                     // yetenekler gelince yeniden denenir
+    if (!D.mcpHazir) return;                                     // EVDS yeteneği gelince yeniden denenir
     if (!D.cap.mcp || D.evdsBagli === false) { k.durum = 'yok'; return; }
     k.durum = 'yukleniyor';
+    evdsKuyruk.push(id);
+    evdsIlerlet();
+  }
+  function evdsIzle(id, bitti) {
+    const t = EVDS[id];
+    const k = D.evds[id];
+    if (D.evdsBagli === false) { k.durum = 'yok'; bitti(); yenidenCiz(); return; }
     const girdi = { series_code: t.kod, start_date: t.bas, end_date: BITIS, full_data: true };
     if (t.formul) girdi.formulas = t.formul;
     k.girdi = girdi;
+    const sure = setTimeout(bitti, 20000);                     // yanıtsız kalan bir istek sırayı tıkamasın
     try {
       k.birak = D.cap.mcp.watchTool(EVDS_SUNUCU, 'get_series_data', girdi, (ev) => {
+        clearTimeout(sure);
+        bitti();
         if (ev.type === 'data') {
           try {
             k.satirlar = evdsCoz(evdsMetni(ev.result), t.kod);
@@ -234,7 +264,7 @@
         }
         yenidenCiz();
       }, { cache: { staleTime: 6 * 3600e3, gcTime: 7 * 24 * 3600e3 } });
-    } catch (e) { k.durum = 'hata'; k.hata = e.message; }
+    } catch (e) { clearTimeout(sure); bitti(); k.durum = 'hata'; k.hata = e.message; }
   }
   // { durum: 'bekliyor'|'yukleniyor'|'hazir'|'hata'|'yok', satirlar: [{tarih, deger}] }
   function evds(id) {

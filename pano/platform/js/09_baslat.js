@@ -43,11 +43,14 @@
     }).observe(kap);
   })();
 
-  async function baslat() {
+  // Yetenekler birbirini beklemeden kullanılır: veritabanı gelir gelmez Web TÜFE, akaryakıt ve
+  // trafik dosyaları istenir; EVDS ayrı yoldan gelir. EVDS'nin bağlı olup olmadığı ilk yanıttan
+  // anlaşılır (ayrıca araç listesi sorulmaz, bu bir ağ çağrısı daha demekti).
+  function baslat() {
     yonlendir();
     const c = window.claude;
     if (!c || typeof c.use !== 'function') {
-      D.capHazir = true; D.evdsBagli = false; D.guncel = { dosyalar: {} };
+      D.dbHazir = D.mcpHazir = D.sampleHazir = true; D.evdsBagli = false; D.guncel = { dosyalar: {} };
       const u = $('#yetenek-uyari');
       u.textContent = 'Bu sayfa Claude içinde açıldığında veri okur; burada veriler, resmi seriler ve soru penceresi kullanılamıyor.';
       u.hidden = false;
@@ -55,26 +58,27 @@
       return;
     }
     const al = (ad) => c.use(ad).catch(() => null);
-    [D.cap.db, D.cap.user, D.cap.sample, D.cap.downloads, D.cap.mcp] = await Promise.all(['db', 'user', 'sample', 'downloads', 'mcp'].map(al));
-    if (D.cap.user) { try { D.uid = await D.cap.user.id(); } catch (e) { D.uid = null; } }
-    if (D.cap.mcp) {
-      try {
-        const lt = await D.cap.mcp.listTools(EVDS_SUNUCU);
-        const s = (lt.servers || []).find((x) => x.server === EVDS_SUNUCU);
-        D.evdsBagli = !!(s && (s.tools || []).some((a) => a.name === 'get_series_data')) ? null : false;
-      } catch (e) { D.evdsBagli = false; }
-    } else D.evdsBagli = false;
-    D.capHazir = true;
-    if (!D.cap.db) {
-      const u = $('#yetenek-uyari');
-      u.textContent = 'Veriler yalnızca Claude’da oturum açıkken okunur.';
-      u.hidden = false;
-    }
-    evdsYetenekHazir();
-    guncelDinle();
-    haftalikDinle();
-    raporlariDinle();
-    sepetYukle();
+    const kullaniciP = al('user');
+    al('db').then((db) => {
+      D.cap.db = db; D.dbHazir = true;
+      if (!db) { const u = $('#yetenek-uyari'); u.textContent = 'Veriler yalnızca Claude’da oturum açıkken okunur.'; u.hidden = false; }
+      guncelDinle();
+      haftalikDinle();
+      return kullaniciP;
+    }).then(async (user) => {
+      D.cap.user = user;
+      if (user) { try { D.uid = await user.id(); } catch (e) { D.uid = null; } }
+      raporlariDinle();
+      sepetYukle();
+    });
+    al('mcp').then((mcp) => {
+      D.cap.mcp = mcp; D.mcpHazir = true;
+      if (!mcp) D.evdsBagli = false;
+      evdsYetenekHazir();
+      yenidenCiz();
+    });
+    al('sample').then((s) => { D.cap.sample = s; D.sampleHazir = true; });
+    al('downloads').then((d) => { D.cap.downloads = d; });
     yenidenCiz();
   }
   baslat();

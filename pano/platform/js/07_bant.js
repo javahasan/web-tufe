@@ -92,7 +92,7 @@
     const yaz = (id, sinif, metin) => { const c = $(id); c.className = 'durum ' + sinif; c.lastElementChild.textContent = metin; };
     const w = webVeri();
     if (w) yaz('#durum-web', 'acik', 'Web TÜFE · son toplama ' + gunMetin(w.son.tarih, true));
-    else yaz('#durum-web', dosyaDurumu('gunluk') === 'hata' || (D.capHazir && !D.cap.db) ? 'kapali' : '', D.capHazir && !D.cap.db ? 'Web TÜFE okunamıyor' : 'Web TÜFE yükleniyor');
+    else yaz('#durum-web', dosyaDurumu('gunluk') === 'hata' || (D.dbHazir && !D.cap.db) ? 'kapali' : '', D.dbHazir && !D.cap.db ? 'Web TÜFE okunamıyor' : 'Web TÜFE yükleniyor');
     const evdsHazir = Object.values(D.evds).some((k) => k.durum === 'hazir');
     yaz('#durum-evds', D.evdsBagli === false ? 'kapali' : evdsHazir ? 'acik' : '', D.evdsBagli === false ? 'EVDS bağlı değil' : evdsHazir ? 'EVDS bağlı' : 'EVDS bekleniyor');
     const sa = dosya('mobilite_saatlik'), ak = dosya('akaryakit_ulke');

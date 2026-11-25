@@ -887,7 +887,8 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
 
   // ---------------------------------------------------------------- durum
   const D = {
-    cap: { db: null, user: null, sample: null, downloads: null, mcp: null }, capHazir: false, uid: null,
+    // Her yetenek kendi hazır bayrağıyla gelir; biri diğerini beklemez (veriler EVDS'yi beklemesin)
+    cap: { db: null, user: null, sample: null, downloads: null, mcp: null }, dbHazir: false, mcpHazir: false, sampleHazir: false, uid: null,
     guncel: null, dosya: {}, evds: {}, evdsBagli: null, sekme: 'enflasyon', surum: 0,
   };
   let cizimBekliyor = false;
@@ -897,12 +898,18 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
     D.surum++;
     if (cizimBekliyor) return;
     cizimBekliyor = true;
-    requestAnimationFrame(() => {
+    // Kare çizimi beklenir; sayfa arka plandaysa (kare gelmiyorsa) kısa bir süre sonra yine çizilir
+    let yapildi = false;
+    const ciz = () => {
+      if (yapildi) return;
+      yapildi = true;
       cizimBekliyor = false;
       const fn = cizimler[D.sekme];
       try { if (fn) fn(); } catch (e) { console.error(e); }
       herDaim.forEach((f) => { try { f(); } catch (e) { console.error(e); } });
-    });
+    };
+    requestAnimationFrame(ciz);
+    setTimeout(ciz, 120);
   }
 
   // ---------------------------------------------------------------- dosyalar (veri/guncel belgesindeki CSV'ler)
@@ -1040,17 +1047,40 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
     })).filter((r) => r.deger != null && isFinite(r.deger)).sort((a, b) => (a.tarih < b.tarih ? -1 : 1));
   }
   const YETKI_HATASI = new Set(['server_not_connected', 'needs_reauth', 'not_granted', 'consent_required', 'not_in_manifest', 'unavailable']);
+  // EVDS istekleri sıraya girer ve aynı anda en çok EVDS_ES_ZAMANLI tanesi çalışır: açık sekmenin
+  // özet kutucukları önce istenir, önce gelir; bağlayıcıya yirmiden fazla istek bir anda yığılmaz.
+  // Önbellekteki (6 saatten taze) bir yanıt hemen döner ve sıradaki yeri hemen boşaltır.
+  const EVDS_ES_ZAMANLI = 5;
+  const evdsKuyruk = [];
+  let evdsCalisan = 0;
+  function evdsIlerlet() {
+    while (evdsCalisan < EVDS_ES_ZAMANLI && evdsKuyruk.length) {
+      const id = evdsKuyruk.shift();
+      evdsCalisan++;
+      let bitti = false;
+      evdsIzle(id, () => { if (bitti) return; bitti = true; evdsCalisan--; evdsIlerlet(); });
+    }
+  }
   function evdsBaslat(id) {
-    const t = EVDS[id];
     const k = D.evds[id];
-    if (!D.capHazir) return;                                     // yetenekler gelince yeniden denenir
+    if (!D.mcpHazir) return;                                     // EVDS yeteneği gelince yeniden denenir
     if (!D.cap.mcp || D.evdsBagli === false) { k.durum = 'yok'; return; }
     k.durum = 'yukleniyor';
+    evdsKuyruk.push(id);
+    evdsIlerlet();
+  }
+  function evdsIzle(id, bitti) {
+    const t = EVDS[id];
+    const k = D.evds[id];
+    if (D.evdsBagli === false) { k.durum = 'yok'; bitti(); yenidenCiz(); return; }
     const girdi = { series_code: t.kod, start_date: t.bas, end_date: BITIS, full_data: true };
     if (t.formul) girdi.formulas = t.formul;
     k.girdi = girdi;
+    const sure = setTimeout(bitti, 20000);                     // yanıtsız kalan bir istek sırayı tıkamasın
     try {
       k.birak = D.cap.mcp.watchTool(EVDS_SUNUCU, 'get_series_data', girdi, (ev) => {
+        clearTimeout(sure);
+        bitti();
         if (ev.type === 'data') {
           try {
             k.satirlar = evdsCoz(evdsMetni(ev.result), t.kod);
@@ -1065,7 +1095,7 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
         }
         yenidenCiz();
       }, { cache: { staleTime: 6 * 3600e3, gcTime: 7 * 24 * 3600e3 } });
-    } catch (e) { k.durum = 'hata'; k.hata = e.message; }
+    } catch (e) { clearTimeout(sure); bitti(); k.durum = 'hata'; k.hata = e.message; }
   }
   // { durum: 'bekliyor'|'yukleniyor'|'hazir'|'hata'|'yok', satirlar: [{tarih, deger}] }
   function evds(id) {
@@ -1399,7 +1429,7 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
     if (!genel.length) return null;
     return { seriler, genel, son: sonEleman(genel), ilk: genel[0], gunler: genel.map((r) => r.tarih) };
   }
-  const webBekliyorMetin = () => (dosyaDurumu('gunluk') === 'hata' ? 'Web TÜFE dosyası okunamadı.' : !D.cap.db && D.capHazir ? 'Web TÜFE verisi yalnızca Claude içinde açıldığında okunur.' : 'Web TÜFE verisi yükleniyor…');
+  const webBekliyorMetin = () => (dosyaDurumu('gunluk') === 'hata' ? 'Web TÜFE dosyası okunamadı.' : !D.cap.db && D.dbHazir ? 'Web TÜFE verisi yalnızca Claude içinde açıldığında okunur.' : 'Web TÜFE verisi yükleniyor…');
 
   function webKpiCiz(w) {
     const kap = $('#web-kpi');
@@ -1579,8 +1609,12 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
     sutunGrafik(kap, { noktalar: t.slice(-24).map((r) => ({ x: tarih(r.tarih), y: r.deger })), renk: 'var(--resmi)', negatifRenk: 'var(--ok)', yuzde: true, ad: 'Aylık TÜFE', etiket: 'Aylık TÜFE değişimi, son 24 ay' });
   }
 
+  // 13 ana grup serisi, grafik ekrana yaklaşınca istenir (açılıştaki EVDS yükünü yarıya indirir)
+  E.gruplarIste = !('IntersectionObserver' in window);
+  if (!E.gruplarIste) new IntersectionObserver((g, o) => { if (g.some((x) => x.isIntersecting)) { E.gruplarIste = true; o.disconnect(); yenidenCiz(); } }, { rootMargin: '500px 0px' }).observe($('#resmi-gruplar'));
   function resmiGruplarCiz() {
     const kap = $('#resmi-gruplar-grafik');
+    if (!E.gruplarIste) { bosYaz(kap, 'EVDS’den okunuyor…'); return; }
     const g = grupDuzeyleri();
     if (!g) { const bos = GRUP_KODLARI.map((k) => 'g' + k).find((id) => evds(id).durum !== 'hazir'); bosYaz(kap, evdsBosMetin(bos)); return; }
     const aylar = [...g['01'].keys()].sort();
@@ -2664,7 +2698,7 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
     const yaz = (id, sinif, metin) => { const c = $(id); c.className = 'durum ' + sinif; c.lastElementChild.textContent = metin; };
     const w = webVeri();
     if (w) yaz('#durum-web', 'acik', 'Web TÜFE · son toplama ' + gunMetin(w.son.tarih, true));
-    else yaz('#durum-web', dosyaDurumu('gunluk') === 'hata' || (D.capHazir && !D.cap.db) ? 'kapali' : '', D.capHazir && !D.cap.db ? 'Web TÜFE okunamıyor' : 'Web TÜFE yükleniyor');
+    else yaz('#durum-web', dosyaDurumu('gunluk') === 'hata' || (D.dbHazir && !D.cap.db) ? 'kapali' : '', D.dbHazir && !D.cap.db ? 'Web TÜFE okunamıyor' : 'Web TÜFE yükleniyor');
     const evdsHazir = Object.values(D.evds).some((k) => k.durum === 'hazir');
     yaz('#durum-evds', D.evdsBagli === false ? 'kapali' : evdsHazir ? 'acik' : '', D.evdsBagli === false ? 'EVDS bağlı değil' : evdsHazir ? 'EVDS bağlı' : 'EVDS bekleniyor');
     const sa = dosya('mobilite_saatlik'), ak = dosya('akaryakit_ulke');
@@ -3063,7 +3097,7 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
     const soru = alan.value.trim();
     hata.hidden = true;
     if (!soru || K.calisiyor) return;
-    if (!D.cap.sample) { hata.textContent = D.capHazir ? 'Bu görünümde Claude’a soru sorulamıyor.' : 'Sayfa hazırlanıyor, birkaç saniye sonra yeniden deneyin.'; hata.hidden = false; return; }
+    if (!D.cap.sample) { hata.textContent = D.sampleHazir ? 'Bu görünümde Claude’a soru sorulamıyor.' : 'Sayfa hazırlanıyor, birkaç saniye sonra yeniden deneyin.'; hata.hidden = false; return; }
     const hg = $('#sohbet-hosgeldin');
     if (hg) hg.remove();
     alan.value = '';
@@ -3157,11 +3191,14 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
     }).observe(kap);
   })();
 
-  async function baslat() {
+  // Yetenekler birbirini beklemeden kullanılır: veritabanı gelir gelmez Web TÜFE, akaryakıt ve
+  // trafik dosyaları istenir; EVDS ayrı yoldan gelir. EVDS'nin bağlı olup olmadığı ilk yanıttan
+  // anlaşılır (ayrıca araç listesi sorulmaz, bu bir ağ çağrısı daha demekti).
+  function baslat() {
     yonlendir();
     const c = window.claude;
     if (!c || typeof c.use !== 'function') {
-      D.capHazir = true; D.evdsBagli = false; D.guncel = { dosyalar: {} };
+      D.dbHazir = D.mcpHazir = D.sampleHazir = true; D.evdsBagli = false; D.guncel = { dosyalar: {} };
       const u = $('#yetenek-uyari');
       u.textContent = 'Bu sayfa Claude içinde açıldığında veri okur; burada veriler, resmi seriler ve soru penceresi kullanılamıyor.';
       u.hidden = false;
@@ -3169,26 +3206,27 @@ table.veri td .alt-yazi { display: block; font-size: 11.5px; color: var(--faint)
       return;
     }
     const al = (ad) => c.use(ad).catch(() => null);
-    [D.cap.db, D.cap.user, D.cap.sample, D.cap.downloads, D.cap.mcp] = await Promise.all(['db', 'user', 'sample', 'downloads', 'mcp'].map(al));
-    if (D.cap.user) { try { D.uid = await D.cap.user.id(); } catch (e) { D.uid = null; } }
-    if (D.cap.mcp) {
-      try {
-        const lt = await D.cap.mcp.listTools(EVDS_SUNUCU);
-        const s = (lt.servers || []).find((x) => x.server === EVDS_SUNUCU);
-        D.evdsBagli = !!(s && (s.tools || []).some((a) => a.name === 'get_series_data')) ? null : false;
-      } catch (e) { D.evdsBagli = false; }
-    } else D.evdsBagli = false;
-    D.capHazir = true;
-    if (!D.cap.db) {
-      const u = $('#yetenek-uyari');
-      u.textContent = 'Veriler yalnızca Claude’da oturum açıkken okunur.';
-      u.hidden = false;
-    }
-    evdsYetenekHazir();
-    guncelDinle();
-    haftalikDinle();
-    raporlariDinle();
-    sepetYukle();
+    const kullaniciP = al('user');
+    al('db').then((db) => {
+      D.cap.db = db; D.dbHazir = true;
+      if (!db) { const u = $('#yetenek-uyari'); u.textContent = 'Veriler yalnızca Claude’da oturum açıkken okunur.'; u.hidden = false; }
+      guncelDinle();
+      haftalikDinle();
+      return kullaniciP;
+    }).then(async (user) => {
+      D.cap.user = user;
+      if (user) { try { D.uid = await user.id(); } catch (e) { D.uid = null; } }
+      raporlariDinle();
+      sepetYukle();
+    });
+    al('mcp').then((mcp) => {
+      D.cap.mcp = mcp; D.mcpHazir = true;
+      if (!mcp) D.evdsBagli = false;
+      evdsYetenekHazir();
+      yenidenCiz();
+    });
+    al('sample').then((s) => { D.cap.sample = s; D.sampleHazir = true; });
+    al('downloads').then((d) => { D.cap.downloads = d; });
     yenidenCiz();
   }
   baslat();
