@@ -146,3 +146,38 @@
 .wt-il-cubuk { display: inline-block; vertical-align: middle; width: 56px; height: 6px; border-radius: 3px; background: var(--cds-chart-grid, var(--color-border-line)); margin-right: 8px; position: relative; overflow: hidden; }
 .wt-il-cubuk i { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--wt-vurgu); }
 .wt-bos-durum { color: var(--color-fg-muted); font-size: 14px; padding: 18px 4px; }
+
+/* canlılık matrisi */
+.wt-matris-duzen { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(250px, 1fr); gap: var(--cds-gap-md); align-items: start; }
+@media (max-width: 860px) { .wt-matris-duzen { grid-template-columns: minmax(0, 1fr); } }
+.wt-matris-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.wt-matris-izgara line { stroke: var(--cds-chart-grid); stroke-width: 1; }
+.wt-matris-izgara line.wt-sifir { stroke: var(--cds-chart-axis); stroke-width: 1.25; }
+.wt-matris-tik { fill: var(--color-fg-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.wt-matris-eksen { fill: var(--color-fg-muted); font-size: 12px; }
+.wt-matris-bolge { font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+.wt-matris-iz { fill: none; stroke: var(--color-fg-muted); stroke-width: 1.5; opacity: .55; }
+.wt-matris-nokta { fill: var(--color-fg-muted); }
+.wt-matris-not { fill: var(--color-fg-muted); font-size: 11px; }
+.wt-matris-etiket { fill: var(--color-fg); font-size: 12px; font-weight: 600; paint-order: stroke; stroke: var(--color-panel); stroke-width: 3px; stroke-linejoin: round; }
+.wt-matris-son { stroke: var(--color-panel); stroke-width: 2; }
+.wt-matris-halka { fill: none; stroke-width: 1.5; opacity: .5; }
+.wt-matris-senaryo { fill: var(--color-panel); stroke-width: 2.5; stroke-dasharray: 4 3; }
+.wt-matris-ok { stroke: var(--color-fg); stroke-width: 1.5; opacity: .7; }
+.wt-senaryo { gap: var(--cds-gap-md); }
+.wt-senaryo-baslik { margin: 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); }
+.wt-surgu { display: grid; gap: 4px; min-width: 0; }
+.wt-surgu label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 14px; }
+.wt-surgu output { font-variant-numeric: tabular-nums; font-weight: var(--cds-font-weight-medium); white-space: nowrap; }
+.wt-surgu input[type="range"] { width: 100%; margin: 0; accent-color: var(--wt-vurgu); }
+.wt-surgu-not { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.wt-surgu.wt-kapali { opacity: .5; }
+.wt-sifirla { justify-self: start; align-self: start; font: inherit; font-size: 14px; padding: 6px 14px; border-radius: var(--cds-radius); border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); cursor: pointer; }
+.wt-sifirla:hover { border-color: var(--wt-vurgu); }
+.wt-sifirla:focus-visible { outline: 2px solid var(--wt-vurgu); outline-offset: 2px; }
+.wt-senaryo-sonuc { margin: 0; font-size: 14px; line-height: 1.5; }
+.wt-bilesen-tablo { width: 100%; border-collapse: collapse; font-size: 14px; }
+.wt-bilesen-tablo th, .wt-bilesen-tablo td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--color-border-line); vertical-align: top; }
+.wt-bilesen-tablo th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-caption); }
+.wt-bilesen-tablo .wt-say { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+

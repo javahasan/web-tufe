@@ -2,6 +2,7 @@
 
   .venv/bin/python pano/test/olustur.py            # gerçek veri (data/cikti/pano)
   .venv/bin/python pano/test/olustur.py sentetik   # sentetik veri (data/sentetik/pano)
+  .venv/bin/python pano/test/olustur.py gercek evds.json yama.json   # EVDS örnekleri ve veri yamaları
 
 Çıktı: pano/test/gercek_test.html ya da sentetik_test.html. Sayfa, panonun çalışma ortamını
 (dash.data, dash.calc, dash.draw) basitçe taklit eder; hatalar window.HATALAR'da toplanır.
@@ -17,6 +18,11 @@ evds = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8")) if len(sys.argv
 kaynak = KOK / ("data/sentetik/pano" if tur == "sentetik" else "data/cikti/pano")
 veri = {p.stem: p.read_text(encoding="utf-8") for p in sorted(kaynak.glob("*.csv"))}
 veri["gercek_mansetler"] = (KOK / "data/cikti/mansetler_gercek.csv").read_text(encoding="utf-8")
+# İsteğe bağlı 3. argüman: veri seti yamaları (JSON: veri seti kimliği -> CSV yolu), ör. henüz
+# toplanmamış bir kaynağı denemek için deneme verisi
+if len(sys.argv) > 3:
+    for ad, yol in json.loads(Path(sys.argv[3]).read_text(encoding="utf-8")).items():
+        veri[ad] = Path(yol).read_text(encoding="utf-8")
 
 sablon = (KOK / "pano/test/site_test.html").read_text(encoding="utf-8")
 i = sablon.index("const VERI = ")

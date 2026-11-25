@@ -4,8 +4,10 @@
   // birleştirilmez. get_series_data yanıtı markdown tablodur; yükleyici {tarih, deger} satırlarına çevirir.
   const RESMI_KAYNAKLAR = ['resmi_tufe_yillik', 'resmi_gida_yillik', 'resmi_tufe_aylik', 'resmi_gida_aylik',
     'resmi_usd', 'resmi_aofm', 'resmi_beklenti'];
-  RESMI_KAYNAKLAR.forEach((id) => dash.loader(id, {
-    description: 'EVDS yanıtındaki markdown tablosunu {tarih, deger} satırlarına çevirir: günlük tarih GG-AA-YYYY → YYYY-AA-GG, aylık tarih YYYY-A → YYYY-AA. Değeri boş satırlar (tatil, yayımlanmamış dönem) atlanır.',
+  // Canlılık matrisinin resmi bileşenleri (haftalık kartlı harcama ve 2022'den resmi TÜFE)
+  const MATRIS_RESMI = ['resmi_kart_yillik', 'resmi_tufe_yillik_uzun'];
+  RESMI_KAYNAKLAR.concat(MATRIS_RESMI).forEach((id) => dash.loader(id, {
+    description: 'EVDS yanıtındaki markdown tablosunu {tarih, deger} satırlarına çevirir: günlük ve haftalık tarih GG-AA-YYYY → YYYY-AA-GG, aylık tarih YYYY-A → YYYY-AA. Değer son sütundur (haftalık serilerde araya YEARWEEK sütunu girer; varsa hafta alanına yazılır). Değeri boş satırlar (tatil, yayımlanmamış dönem) atlanır.',
     fn: ({ answer }) => {
       const metin = typeof answer === 'string' ? answer : (answer && typeof answer.result === 'string' ? answer.result : '');
       const satirlar = metin.split('\n').filter((s) => s.trim().startsWith('|'));
@@ -18,9 +20,12 @@
         if (m) return m[1] + '-' + m[2].padStart(2, '0');
         return s;
       };
-      const rows = satirlar.slice(2).map(hucre).filter((h) => h[1] !== undefined && h[1] !== '')
-        .map((h) => ({ tarih: tarih(h[0]), deger: Number(h[1]) })).filter((r) => Number.isFinite(r.deger));
-      return { columns: ['tarih', 'deger'], rows };
+      const bas = hucre(satirlar[0]);
+      const hi = bas.findIndex((b) => /^yearweek$/i.test(b));
+      const di = bas.length - 1;
+      const rows = satirlar.slice(2).map(hucre).filter((h) => h[di] !== undefined && h[di] !== '')
+        .map((h) => ({ tarih: tarih(h[0]), ...(hi > 0 ? { hafta: h[hi] } : {}), deger: Number(h[di]) })).filter((r) => Number.isFinite(r.deger));
+      return { columns: hi > 0 ? ['tarih', 'hafta', 'deger'] : ['tarih', 'deger'], rows };
     },
   }));
 

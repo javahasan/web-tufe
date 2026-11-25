@@ -1,6 +1,6 @@
 
   // ================================================================ site: menü ve bölüm geçişleri
-  const SAYFALAR = ['genel-bakis', 'gruplar', 'cekirdek', 'maddeler', 'araclar', 'veri', 'resmi', 'hareketlilik', 'akaryakit'];
+  const SAYFALAR = ['genel-bakis', 'gruplar', 'cekirdek', 'maddeler', 'araclar', 'veri', 'resmi', 'hareketlilik', 'akaryakit', 'matris'];
   const hareketAzalt = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   document.querySelectorAll('.wt-site').forEach((k) => k.style.setProperty('--wt-vurgu', dash.colors[0]));
 

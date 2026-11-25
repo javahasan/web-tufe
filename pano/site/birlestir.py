@@ -2,8 +2,8 @@
 
 Parçalar: pano/index.html (temel stil ve hesaplar), pano/taslak/ek.css ve ek.js
 (yeni çizimler), pano/site/site.css, govde.html, menu.js, bant.css/bant.js (manşet bandı)
-gercek.js (veri yeniyken açılış), resmi.js (TCMB EVDS bölümü) ve izleme.js
-(hareketlilik ve akaryakıt izleme bölümleri).
+gercek.js (veri yeniyken açılış), resmi.js (TCMB EVDS bölümü), izleme.js
+(hareketlilik ve akaryakıt izleme bölümleri) ve matris.js (canlılık matrisi).
 """
 import json, re, sys
 from datetime import datetime, timezone
@@ -21,6 +21,7 @@ bant_js = open("pano/site/bant.js", encoding="utf-8").read()
 gercek_js = open("pano/site/gercek.js", encoding="utf-8").read()
 resmi_js = open("pano/site/resmi.js", encoding="utf-8").read()
 izleme_js = open("pano/site/izleme.js", encoding="utf-8").read()
+matris_js = open("pano/site/matris.js", encoding="utf-8").read()
 
 bas = ek_js.index("// ================================================================ taslak: sekmeler")
 son = ek_js.index("// ================================================================ taslak: özet kartlarında")
@@ -36,7 +37,7 @@ for eski, yeni in [
     js = js.replace(eski, yeni)
 s = js.rstrip()
 assert s.endswith("})();")
-js = s[: -len("})();")] + ek_js + menu_js + bant_js + gercek_js + resmi_js + izleme_js + "})();\n"
+js = s[: -len("})();")] + ek_js + menu_js + bant_js + gercek_js + resmi_js + izleme_js + matris_js + "})();\n"
 html = '<meta name="dash-one-writer">\n<style>' + css + ek_css + site_css + bant_css + '</style>\n\n' + govde + '\n<script>' + js + '</script>\n'
 open("pano/site/index.html", "w", encoding="utf-8").write(html)
 open("pano/site/sayfa.js", "w", encoding="utf-8").write(js)

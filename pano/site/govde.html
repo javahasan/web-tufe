@@ -38,6 +38,7 @@
         <button type="button" data-sayfa="resmi" aria-current="false">Resmi Göstergeler</button>
         <button type="button" data-sayfa="hareketlilik" aria-current="false">Hareketlilik</button>
         <button type="button" data-sayfa="akaryakit" aria-current="false">Akaryakıt</button>
+        <button type="button" data-sayfa="matris" aria-current="false">Canlılık Matrisi</button>
         <span class="wt-menu-cizgi" aria-hidden="true"></span>
       </nav>
       <a class="wt-menu-dis" href="https://claude.ai/artifact/M8R7pxhtN7ZyJqceRbzt8X" target="_blank" rel="noopener">Analiz Masası ↗</a>
@@ -906,6 +907,101 @@
 
         <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
           <button type="button" class="wt-gecis-kart" data-git="hareketlilik"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Hareketlilik</span></button>
+          <button type="button" class="wt-gecis-kart wt-sonraki" data-git="matris"><span class="wt-gecis-yon">Sonraki bölüm</span><span class="wt-gecis-ad">Canlılık Matrisi →</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================ CANLILIK MATRİSİ -->
+    <section class="wt-sayfa" id="matris" aria-labelledby="b-matris" hidden>
+      <div class="wt-sayfa-bas">
+        <div class="wt-ic">
+          <p class="wt-kirinti"><a href="#genel-bakis" data-git="genel-bakis">Genel Bakış</a><span aria-hidden="true">/</span>Canlılık Matrisi</p>
+          <h1 id="b-matris">Canlılık Matrisi</h1>
+          <p class="wt-giris-metni">Fiyat baskısı ile talep ve hareketliliğin birlikte nerede durduğunu gösterir. Her bileşen kendi geçmişine göre ölçülür; merkez, o göstergenin son üç yıldaki olağan düzeyidir. Senaryo sürgüleriyle bileşenler farklı olsaydı noktanın nereye kayacağını görebilirsiniz; bu bir tahmin modeli değildir.</p>
+          <nav class="wt-bu-sayfada" aria-label="Bu sayfada">
+            <span class="wt-etiket">Bu sayfada</span>
+            <a href="#matris-konum">Konum</a>
+            <a href="#matris-senaryo">Senaryo</a>
+            <a href="#matris-bilesen">Bileşenler</a>
+            <a href="#matris-yontem">Yöntem</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="wt-ic wt-icerik">
+        <div class="wt-bolum" id="matris-konum">
+          <div class="wt-kartlar" data-draw="matris-kartlar" data-source="canlilik_matrisi">—</div>
+        </div>
+
+        <div class="wt-bolum" id="matris-senaryo">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Matris ve senaryo</h2>
+              <p class="wt-not">Sol üst canlı, sağ üst ısınma, sağ alt sıkışma (stagflasyon baskısı), sol alt durgunluk. Sürgüler son haftanın bileşenlerini değiştirir; bileşenlerin birbirine etkisi varsayılmaz.</p>
+            </div>
+          </div>
+          <div class="wt-matris-duzen">
+            <div class="wt-panel wt-matris">
+              <div class="wt-grafik" id="matris-grafik" data-draw="matris-grafik" data-source="canlilik_matrisi">—</div>
+            </div>
+            <div class="wt-panel wt-senaryo" data-draw="matris-kontroller" data-source="canlilik_matrisi">
+              <h3 class="wt-senaryo-baslik">Senaryo</h3>
+              <div class="wt-surgu">
+                <label for="senaryo-akaryakit"><span>Akaryakıt fiyatı</span><output id="senaryo-akaryakit-deger" for="senaryo-akaryakit">%0</output></label>
+                <input type="range" id="senaryo-akaryakit" min="-30" max="30" step="1" value="0">
+                <span class="wt-surgu-not">son 4 haftanın fiyatlarına göre</span>
+              </div>
+              <div class="wt-surgu">
+                <label for="senaryo-raf"><span>Raf fiyatları (Web TÜFE)</span><output id="senaryo-raf-deger" for="senaryo-raf">%0</output></label>
+                <input type="range" id="senaryo-raf" min="-5" max="5" step="0.5" value="0">
+                <span class="wt-surgu-not">son 4 haftadaki ek değişim; Web TÜFE eksene girince açılır</span>
+              </div>
+              <div class="wt-surgu">
+                <label for="senaryo-mobilite"><span>İsteğe bağlı hareketlilik</span><output id="senaryo-mobilite-deger" for="senaryo-mobilite">0 puan</output></label>
+                <input type="range" id="senaryo-mobilite" min="-20" max="20" step="1" value="0">
+                <span class="wt-surgu-not">yıllık değişime eklenen puan</span>
+              </div>
+              <div class="wt-surgu">
+                <label for="senaryo-kart"><span>Reel kartlı harcama</span><output id="senaryo-kart-deger" for="senaryo-kart">0 puan</output></label>
+                <input type="range" id="senaryo-kart" min="-20" max="20" step="1" value="0">
+                <span class="wt-surgu-not">reel yıllık değişime eklenen puan</span>
+              </div>
+              <button type="button" class="wt-sifirla" id="senaryo-sifirla">Sıfırla</button>
+              <p class="wt-senaryo-sonuc" data-draw="matris-senaryo-sonuc" data-source="canlilik_matrisi" aria-live="polite">—</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-bolum" id="matris-bilesen">
+          <div class="wt-bolum-bas">
+            <div>
+              <h2>Bileşenler: son değerler</h2>
+              <p class="wt-not">Değerler 4 haftalık ortalama yıllık değişimdir (raf fiyatı hariç); z, bileşenin son 156 haftalık ortalamasından kaç standart sapma uzakta olduğunu gösterir. Kartlı harcama bir iki hafta gecikmeyle yayımlanır; bir bileşenin son haftası yoksa en çok iki hafta önceki değeri kullanılır.</p>
+            </div>
+          </div>
+          <div class="wt-panel">
+            <div class="wt-tablo-kap">
+              <table class="wt-bilesen-tablo">
+                <thead>
+                  <tr><th>Bileşen</th><th>Eksen</th><th>Kaynak</th><th class="wt-say">Değer</th><th class="wt-say">z</th><th>Hafta</th><th>Durum</th></tr>
+                </thead>
+                <tbody data-draw="matris-bilesenler" data-source="canlilik_matrisi"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <details class="wt-detay" id="matris-yontem">
+          <summary>Yöntem ve sınırlar</summary>
+          <p><b>Fiyat ekseni:</b> akaryakıt (EPDK 8 firma ülke ortalaması; benzin ve motorinin haftalık ortalamasının 52 hafta öncesine göre değişimi). Web TÜFE genel endeksinin 4 haftalık değişimi (yıllığa çevrilmiş) en az 90 günlük veri biriktikten sonra eksene eşit ağırlıkla girer. Resmi TÜFE bu eksende kullanılmaz.</p>
+          <p><b>Talep ekseni:</b> İstanbul isteğe bağlı hareketlilik (İBB trafik indeksi, iş günü akşamı ve hafta sonu pencereleri; bayram haftaları ve bitmemiş hafta hariç) ve reel kartlı harcama (TCMB haftalık banka ve kredi kartı harcama tutarının yıllık değişimi, aynı ayın resmi TÜFE yıllık değişimiyle reelleştirilir; o ayın TÜFE'si henüz yayımlanmamışsa son yayımlanan ay kullanılır).</p>
+          <p><b>Standartlaştırma:</b> her bileşen 4 haftalık ortalamayla yumuşatılır ve o haftaya kadarki son 156 haftanın ortalaması ve standart sapmasıyla z-skoruna çevrilir (en az 20 hafta). Eksen değeri bileşenlerin eşit ağırlıklı ortalamasıdır. Bu yüzden matris "olağana göre" okunur: yüksek enflasyon döneminde bile fiyat ekseni, baskı alışılmıştan hafifse solda kalabilir.</p>
+          <p><b>Sınırlar:</b> hareketlilik yalnızca İstanbul'u, kartlı harcama Türkiye'yi kapsar. Bayram ve Ramazan'ın yıldan yıla kayması yıllık karşılaştırmaları bozar; kartlı harcamada kart kullanımının yapısal artışı ve hareketlilikte hava koşulları düzeltilmez. Hareketlilik serisi Eylül 2025'te başladığı için normal aralığı kısa bir geçmişe dayanır. Senaryo aracı bileşenler arasında nedensel bir ilişki varsaymaz; yatırım ya da kredi kararı için tek başına kullanılmamalıdır.</p>
+        </details>
+
+        <nav class="wt-gecis" aria-label="Bölümler arası geçiş">
+          <button type="button" class="wt-gecis-kart" data-git="akaryakit"><span class="wt-gecis-yon">Önceki bölüm</span><span class="wt-gecis-ad">← Akaryakıt</span></button>
           <button type="button" class="wt-gecis-kart wt-sonraki" data-git="genel-bakis"><span class="wt-gecis-yon">Başa dön</span><span class="wt-gecis-ad">Genel Bakış ↑</span></button>
         </nav>
       </div>
@@ -930,6 +1026,7 @@
         <a href="#resmi" data-git="resmi">Resmi Göstergeler</a>
         <a href="#hareketlilik" data-git="hareketlilik">Hareketlilik</a>
         <a href="#akaryakit" data-git="akaryakit">Akaryakıt</a>
+        <a href="#matris" data-git="matris">Canlılık Matrisi</a>
         <a href="https://claude.ai/artifact/M8R7pxhtN7ZyJqceRbzt8X" target="_blank" rel="noopener">Analiz Masası ↗</a>
       </nav>
       <div class="wt-altbilgi-not">
