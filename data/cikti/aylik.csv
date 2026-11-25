@@ -1,17 +1,17 @@
 seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duzey
-01,2026-11,9,2026-11-24,100.03047495121075,,,True,Gıda ve alkolsüz içecekler,ana_grup
-011,2026-11,9,2026-11-24,100.0865417272021,,,True,Gıda,grup
-0111,2026-11,9,2026-11-24,102.68755004092667,,,True,Tahıllar ve tahıl ürünleri,sinif
+01,2026-11,9,2026-11-24,100.03114002946117,,,True,Gıda ve alkolsüz içecekler,ana_grup
+011,2026-11,9,2026-11-24,100.08727737483314,,,True,Gıda,grup
+0111,2026-11,9,2026-11-24,102.69117720911036,,,True,Tahıllar ve tahıl ürünleri,sinif
 01111,2026-11,9,2026-11-24,100.8982481319154,,,True,Tahıllar,alt_sinif
 0111121,2026-11,9,2026-11-24,101.27698484479802,,,True,Pirinç,madde
 0111192,2026-11,9,2026-11-24,100.51808151678212,,,True,Bulgur,madde
 01112,2026-11,9,2026-11-24,107.22992370252528,,,True,Tahıl unları,alt_sinif
 0111211,2026-11,9,2026-11-24,107.22992370252528,,,True,Buğday unu,madde
-01113,2026-11,9,2026-11-24,102.61208308833288,,,True,Ekmek ve unlu mamuller,alt_sinif
+01113,2026-11,9,2026-11-24,102.61684915953536,,,True,Ekmek ve unlu mamuller,alt_sinif
 0111311,2026-11,9,2026-11-24,100.14145371668705,,,True,Ekmek,madde
 0111392,2026-11,9,2026-11-24,100.97603978274792,,,True,Diğer pastane ürünleri,madde
-0111393,2026-11,9,2026-11-24,102.9992715930021,,,True,Bisküvi,madde
-0111394,2026-11,9,2026-11-24,105.34272248006276,,,True,Kraker,madde
+0111393,2026-11,9,2026-11-24,102.9887231553988,,,True,Bisküvi,madde
+0111394,2026-11,9,2026-11-24,105.38650864363566,,,True,Kraker,madde
 0111396,2026-11,9,2026-11-24,100.54339321531108,,,True,Gofret,madde
 0111398,2026-11,9,2026-11-24,105.81782487380508,,,True,Baklava,madde
 0111399,2026-11,9,2026-11-24,102.35191372318414,,,True,"Simit (fırın, market vb. yerlerde satılan)",madde
@@ -21,14 +21,14 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0111501,2026-11,9,2026-11-24,99.37309503485397,,,True,Makarna,madde
 0111502,2026-11,9,2026-11-24,100.33931240946494,,,True,Şehriye,madde
 0112,2026-11,9,2026-11-24,98.84239918041224,,,True,"Canlı hayvanlar, kesilen kara hayvanlarının etleri ve diğer kısımları",sinif
-01122,2026-11,9,2026-11-24,98.76767339072148,,,True,"Et, taze, soğutulmuş veya dondurulmuş",alt_sinif
+01122,2026-11,9,2026-11-24,98.7676733907215,,,True,"Et, taze, soğutulmuş veya dondurulmuş",alt_sinif
 0112214,2026-11,9,2026-11-24,96.27576099168111,,,True,Dana eti,madde
 0112230,2026-11,9,2026-11-24,100.49996642881769,,,True,Kuzu eti,madde
 0112246,2026-11,9,2026-11-24,99.49026366938875,,,True,Tavuk eti,madde
 01123,2026-11,9,2026-11-24,98.58743682993011,,,True,"Et, kurutulmuş, tuzlanmış, salamura edilmiş veya tütsülenmiş",alt_sinif
 0112311,2026-11,9,2026-11-24,97.7397379517146,,,True,"Sucuk (kangal, dana etinden)",madde
 0112312,2026-11,9,2026-11-24,98.30607127258237,,,True,Dana salam,madde
-0112392,2026-11,9,2026-11-24,99.71054719260619,,,True,Beyaz et salam,madde
+0112392,2026-11,9,2026-11-24,99.7105471926062,,,True,Beyaz et salam,madde
 01124,2026-11,9,2026-11-24,101.45210059603909,,,True,"Kesilmiş hayvanların sakatat ve diğer parçaları (taze, soğutulmuş veya dondurulmuş, kurutulmuş, tuzlanmış, salamura edilmiş veya tütsülenmiş)",alt_sinif
 0112401,2026-11,9,2026-11-24,101.45210059603909,,,True,Sakatat,madde
 01125,2026-11,9,2026-11-24,99.70596846327265,,,True,"Kesilmiş hayvanların et, sakatat ve diğer parçalarından yemeye hazır hale getirilmiş ürünler",alt_sinif
@@ -38,17 +38,17 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0113,2026-11,9,2026-11-24,99.06234246539859,,,True,Balıklar ve diğer su ürünleri,sinif
 01131,2026-11,9,2026-11-24,99.13460702766054,,,True,"Balıklar, canlı, taze, soğutulmuş veya dondurulmuş",alt_sinif
 0113121,2026-11,9,2026-11-24,96.59145931679392,,,True,Somon balığı (ithal),madde
-0113151,2026-11,9,2026-11-24,95.4228994433217,,,True,Palamut balığı (yerli),madde
+0113151,2026-11,9,2026-11-24,95.42289944332178,,,True,Palamut balığı (yerli),madde
 0113191,2026-11,9,2026-11-24,105.33030738250434,,,True,Diğer balıklar,madde
 01133,2026-11,9,2026-11-24,98.15203486253291,,,True,Konserve edilmiş veya işlenmiş balık ürünleri,alt_sinif
 0113315,2026-11,9,2026-11-24,98.15203486253291,,,True,Konserve balık,madde
-0114,2026-11,9,2026-11-24,100.58218972094953,,,True,"Süt, diğer süt ürünleri ve yumurtalar",sinif
+0114,2026-11,9,2026-11-24,100.58218972094954,,,True,"Süt, diğer süt ürünleri ve yumurtalar",sinif
 01141,2026-11,9,2026-11-24,100.12144123190659,,,True,Çiğ ve tam yağlı süt,alt_sinif
 0114111,2026-11,9,2026-11-24,100.12144123190659,,,True,Tam yağlı süt (günlük ve uzun ömürlü),madde
 01142,2026-11,9,2026-11-24,99.07211572691334,,,True,Yağı alınmış süt,alt_sinif
 0114201,2026-11,9,2026-11-24,99.07211572691334,,,True,Yarım yağlı süt (uzun ömürlü),madde
-01143,2026-11,9,2026-11-24,102.22601742286592,,,True,Diğer sütler ve krema,alt_sinif
-0114331,2026-11,9,2026-11-24,102.22601742286592,,,True,"Krema, kaymak ve benzeri süt ürünleri",madde
+01143,2026-11,9,2026-11-24,102.22601742286594,,,True,Diğer sütler ve krema,alt_sinif
+0114331,2026-11,9,2026-11-24,102.22601742286594,,,True,"Krema, kaymak ve benzeri süt ürünleri",madde
 01145,2026-11,9,2026-11-24,101.07132156263944,,,True,Peynir,alt_sinif
 0114501,2026-11,9,2026-11-24,100.82576118859542,,,True,Beyaz peynir,madde
 0114502,2026-11,9,2026-11-24,101.85905324955712,,,True,Kaşar peyniri,madde
@@ -96,7 +96,7 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0116793,2026-11,9,2026-11-24,98.93028698891834,,,True,Kuru kayısı,madde
 01168,2026-11,9,2026-11-24,99.36258489478128,,,True,"Sert kabuklu meyveler, kabuklu veya kabuksuz",alt_sinif
 0116811,2026-11,9,2026-11-24,99.44704297700395,,,True,Badem içi,madde
-0116843,2026-11,9,2026-11-24,100.145559152211,,,True,Fındık içi,madde
+0116843,2026-11,9,2026-11-24,100.14555915221102,,,True,Fındık içi,madde
 0116854,2026-11,9,2026-11-24,100.86973439325556,,,True,Antep fıstığı,madde
 0116862,2026-11,9,2026-11-24,96.93785457138658,,,True,Ceviz içi,madde
 0116886,2026-11,9,2026-11-24,101.26580129409884,,,True,Yer fıstığı,madde
@@ -104,7 +104,7 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0116897,2026-11,9,2026-11-24,100.61964923729771,,,True,Leblebi,madde
 0116898,2026-11,9,2026-11-24,93.73142529773374,,,True,Ay çekirdeği,madde
 0117,2026-11,9,2026-11-24,100.68107075254012,,,True,"Sebzeler, yumrulu sebzeler, plantainler, yemeklik muzlar ve bakliyat",sinif
-01171,2026-11,9,2026-11-24,96.86024403418378,,,True,"Yeşil yapraklı veya saplı sebzeler, taze veya soğutulmuş",alt_sinif
+01171,2026-11,9,2026-11-24,96.86024403418368,,,True,"Yeşil yapraklı veya saplı sebzeler, taze veya soğutulmuş",alt_sinif
 0117123,2026-11,9,2026-11-24,97.4409033221341,,,True,Lahana,madde
 0117131,2026-11,9,2026-11-24,89.75925553956898,,,True,Karnabahar,madde
 0117141,2026-11,9,2026-11-24,100.0971113128635,,,True,Marul çeşitleri,madde
@@ -134,7 +134,7 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0117643,2026-11,9,2026-11-24,101.70789085973927,,,True,Mercimek,madde
 01179,2026-11,9,2026-11-24,98.54679834777345,,,True,"Konserve edilmiş veya işlenmiş sebze içerikli ürünler (salça, turşu, zeytin vb.)",alt_sinif
 0117923,2026-11,9,2026-11-24,98.38340953505771,,,True,Sebze konserveleri,madde
-0117992,2026-11,9,2026-11-24,96.34761217010524,,,True,Turşu,madde
+0117992,2026-11,9,2026-11-24,96.34761217010515,,,True,Turşu,madde
 0117995,2026-11,9,2026-11-24,100.27342289494992,,,True,Salça,madde
 0117998,2026-11,9,2026-11-24,99.17034108951957,,,True,Cipsler,madde
 0118,2026-11,9,2026-11-24,99.37399917727853,,,True,"Şeker, şekerlemeler ve tatlılar",sinif
@@ -153,7 +153,7 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0118593,2026-11,9,2026-11-24,97.65349384865563,,,True,Sürülebilir krem çikolata,madde
 01186,2026-11,9,2026-11-24,99.77025354661076,,,True,"Buz, dondurma ve buzlu şerbet (sorbe)",alt_sinif
 0118601,2026-11,9,2026-11-24,99.77025354661076,,,True,Dondurma,madde
-01189,2026-11,9,2026-11-24,99.60999515100416,,,True,Başka yerde sınıflandırılmamış tatlılar ve diğer şekerlemeler,alt_sinif
+01189,2026-11,9,2026-11-24,99.60999515100426,,,True,Başka yerde sınıflandırılmamış tatlılar ve diğer şekerlemeler,alt_sinif
 0118916,2026-11,9,2026-11-24,100.02172871650376,,,True,Tahin helvası,madde
 0118991,2026-11,9,2026-11-24,100.00000000000004,,,True,Lokum,madde
 0118994,2026-11,9,2026-11-24,97.1044267796905,,,True,Sakız,madde
@@ -169,7 +169,7 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 01193,2026-11,9,2026-11-24,98.68460122410956,,,True,"Tuz, çeşniler ve soslar",alt_sinif
 0119311,2026-11,9,2026-11-24,97.90077413112323,,,True,Tuz,madde
 0119393,2026-11,9,2026-11-24,97.28562323972689,,,True,Sirke,madde
-0119396,2026-11,9,2026-11-24,100.08756388899258,,,True,Ketçap,madde
+0119396,2026-11,9,2026-11-24,100.08756388899268,,,True,Ketçap,madde
 0119397,2026-11,9,2026-11-24,99.340250991703,,,True,Mayonez,madde
 01194,2026-11,9,2026-11-24,101.4454727268851,,,True,"Baharatlar, yemeklerde kullanılan otlar ve tohumlar",alt_sinif
 0119401,2026-11,9,2026-11-24,104.34131042818257,,,True,Taze aromatik otlar,madde
@@ -178,9 +178,9 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0119902,2026-11,9,2026-11-24,99.14289107029819,,,True,Kabartma maddeleri,madde
 0119904,2026-11,9,2026-11-24,99.90536790056467,,,True,Hazır toz tatlı karışımları,madde
 012,2026-11,9,2026-11-24,99.50077510851645,,,True,Alkolsüz içecekler,grup
-0121,2026-11,9,2026-11-24,100.70585671689707,,,True,Meyve ve sebze suları,sinif
-01210,2026-11,9,2026-11-24,100.70585671689707,,,True,Meyve ve sebze suları,alt_sinif
-0121001,2026-11,9,2026-11-24,100.70585671689707,,,True,Meyve suyu,madde
+0121,2026-11,9,2026-11-24,100.70585671689709,,,True,Meyve ve sebze suları,sinif
+01210,2026-11,9,2026-11-24,100.70585671689709,,,True,Meyve ve sebze suları,alt_sinif
+0121001,2026-11,9,2026-11-24,100.70585671689709,,,True,Meyve suyu,madde
 0122,2026-11,9,2026-11-24,98.12078065382994,,,True,Kahve ve kahve ikameleri,sinif
 01220,2026-11,9,2026-11-24,98.12078065382994,,,True,Kahve,alt_sinif
 0122011,2026-11,9,2026-11-24,100.97125105790002,,,True,Kahve,madde
@@ -241,29 +241,29 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 1312016,2026-11,9,2026-11-24,100.85084219465264,,,True,Diş macunu,madde
 1312017,2026-11,9,2026-11-24,98.44831752680861,,,True,El sabunu (katı ve sıvı),madde
 1312018,2026-11,9,2026-11-24,82.53949658628471,,,True,Banyo sabunu,madde
-1312019,2026-11,9,2026-11-24,99.87279840749424,,,True,Parfüm,madde
+1312019,2026-11,9,2026-11-24,99.87279840749426,,,True,Parfüm,madde
 1312020,2026-11,9,2026-11-24,96.64875546013309,,,True,Deodorant,madde
 1312021,2026-11,9,2026-11-24,94.15358548942847,,,True,Kolonya,madde
 1312022,2026-11,9,2026-11-24,100.63835102731493,,,True,Diğer kişisel bakım ürünleri,madde
 1312023,2026-11,9,2026-11-24,95.79948837548316,,,True,Makyaj malzemeleri,madde
 1312024,2026-11,9,2026-11-24,100.00000000000004,,,True,Güneş kremi,madde
 1312025,2026-11,9,2026-11-24,92.99714104746026,,,True,Saç bakım ürünleri,madde
-1312026,2026-11,9,2026-11-24,105.23957215195821,,,True,Tuvalet kağıdı,madde
+1312026,2026-11,9,2026-11-24,105.23957215195823,,,True,Tuvalet kağıdı,madde
 1312027,2026-11,9,2026-11-24,101.23058472658066,,,True,Diğer kağıt ürünleri,madde
 1312030,2026-11,9,2026-11-24,99.7513860835153,,,True,Hijyenik kadın bağı,madde
-132,2026-11,9,2026-11-24,98.75842207491819,,,True,Diğer kişisel eşyalar,grup
-1329,2026-11,9,2026-11-24,98.75842207491819,,,True,Başka yerde sınıflandırılmamış diğer kişisel eşyalar,sinif
-13291,2026-11,9,2026-11-24,98.75842207491819,,,True,"Başka yerde sınıflandırılmamış seyahat eşyaları, bebekler için malzemeler ve diğer kişisel eşyalar",alt_sinif
-1329129,2026-11,9,2026-11-24,98.75842207491819,,,True,Bebek bezi,madde
-GIDA,2026-11,9,2026-11-24,100.03047495121075,,,True,Gıda ve alkolsüz içecekler,ozel
+132,2026-11,9,2026-11-24,98.7584220749181,,,True,Diğer kişisel eşyalar,grup
+1329,2026-11,9,2026-11-24,98.7584220749181,,,True,Başka yerde sınıflandırılmamış diğer kişisel eşyalar,sinif
+13291,2026-11,9,2026-11-24,98.7584220749181,,,True,"Başka yerde sınıflandırılmamış seyahat eşyaları, bebekler için malzemeler ve diğer kişisel eşyalar",alt_sinif
+1329129,2026-11,9,2026-11-24,98.7584220749181,,,True,Bebek bezi,madde
+GIDA,2026-11,9,2026-11-24,100.03114002946117,,,True,Gıda ve alkolsüz içecekler,ozel
 ISLENMEMIS_GIDA,2026-11,9,2026-11-24,99.43458097025261,,,True,İşlenmemiş gıda,ozel
-ISLENMIS_GIDA,2026-11,9,2026-11-24,100.41187647596264,,,True,İşlenmiş gıda,ozel
-MALLAR,2026-11,9,2026-11-24,99.91096309003807,,,True,Mallar,ozel
-MEVSIMLIK_HARIC,2026-11,9,2026-11-24,99.95005024529665,,,True,Mevsimlik ürünler hariç,ozel
+ISLENMIS_GIDA,2026-11,9,2026-11-24,100.4129668795396,,,True,İşlenmiş gıda,ozel
+MALLAR,2026-11,9,2026-11-24,99.91155005317157,,,True,Mallar,ozel
+MEVSIMLIK_HARIC,2026-11,9,2026-11-24,99.95074050559028,,,True,Mevsimlik ürünler hariç,ozel
 TAZE_MS,2026-11,9,2026-11-24,99.69477460099063,,,True,Taze meyve ve sebze,ozel
-TEMEL_MALLAR,2026-11,9,2026-11-24,99.00655843308893,,,True,Temel mallar,ozel
-TUFE,2026-11,9,2026-11-24,99.91096309003807,,,True,Genel endeks,genel
-TUFE_B,2026-11,9,2026-11-24,100.16260801076122,,,True,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel
-TUFE_C,2026-11,9,2026-11-24,99.00655843308893,,,True,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel
-TUFE_D,2026-11,9,2026-11-24,100.16260801076122,,,True,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel
-TUFE_E,2026-11,9,2026-11-24,99.91096309003807,,,True,E: Alkollü içecekler ve tütün hariç,ozel
+TEMEL_MALLAR,2026-11,9,2026-11-24,99.00655843308894,,,True,Temel mallar,ozel
+TUFE,2026-11,9,2026-11-24,99.91155005317157,,,True,Genel endeks,genel
+TUFE_B,2026-11,9,2026-11-24,100.163503097753,,,True,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel
+TUFE_C,2026-11,9,2026-11-24,99.00655843308894,,,True,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel
+TUFE_D,2026-11,9,2026-11-24,100.163503097753,,,True,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel
+TUFE_E,2026-11,9,2026-11-24,99.91155005317157,,,True,E: Alkollü içecekler ve tütün hariç,ozel
