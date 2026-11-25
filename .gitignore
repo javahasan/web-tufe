@@ -15,3 +15,5 @@ data/cikti/pano/
 pano/test/gercek_test.html
 pano/test/analiz_test.html
 pano/test/gercek_test_akaryakit.html
+pano/test/platform_test.html
+pano/test/platform_veri/

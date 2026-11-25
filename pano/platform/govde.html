@@ -1,0 +1,404 @@
+<header class="ust">
+  <div class="dis">
+    <div class="ic ust-sira">
+      <div class="marka">
+        <span class="marka-isaret" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20"><path d="M2 15 L7 9 L11 12 L18 4" fill="none" stroke="#7fd8cc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="4" r="1.9" fill="#f2b48a"/></svg>
+        </span>
+        <div>
+          <h1>Web TÜFE Platformu</h1>
+          <p>Günlük market fiyatları, resmi enflasyon ve beklentiler, akaryakıt, hareketlilik ve haftalık ekonomik görünüm</p>
+        </div>
+      </div>
+      <div class="durumlar" aria-live="polite">
+        <span class="durum" id="durum-web"><i></i><span>Web TÜFE yükleniyor</span></span>
+        <span class="durum kapali" id="durum-evds"><i></i><span>EVDS bekleniyor</span></span>
+        <span class="durum" id="durum-izleme"><i></i><span>Akaryakıt ve trafik yükleniyor</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="bant" id="bant">
+    <div class="dis">
+      <div class="ic bant-ic">
+        <span class="bant-etiket">Manşet</span>
+        <div class="bant-pencere" id="bant-pencere" tabindex="0" aria-label="Manşet rakamları">
+          <div class="bant-serit" id="bant-serit"><div class="bant-liste"><span class="manset"><span class="manset-ad">Manşetler yükleniyor…</span></span></div></div>
+        </div>
+        <button type="button" class="bant-dugme" id="bant-dugme" aria-pressed="false">Durdur</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="sekme-cubugu dis" aria-label="Bölümler">
+  <div class="ic sekmeler">
+    <a href="#enflasyon" data-sekme="enflasyon">Enflasyon Takibi</a>
+    <a href="#kisisel" data-sekme="kisisel">Kişisel Enflasyon</a>
+    <a href="#makro" data-sekme="makro">Makro Göstergeler</a>
+    <a href="#akaryakit-mobilite" data-sekme="akaryakit-mobilite">Akaryakıt ve Mobilite</a>
+    <a href="#analiz" data-sekme="analiz">Ekonomik Analiz</a>
+  </div>
+</nav>
+
+<main class="dis">
+  <div class="ic">
+    <p class="uyari-serit" id="yetenek-uyari" hidden></p>
+
+    <!-- ============================================================ ENFLASYON -->
+    <section class="sayfa" id="enflasyon" aria-labelledby="b-enflasyon" hidden>
+      <div class="sayfa-bas">
+        <div>
+          <h2 id="b-enflasyon">Enflasyon Takibi</h2>
+          <p>Üstte bu projenin her gün market raflarından hesapladığı Web TÜFE, altta TÜİK’in resmi aylık TÜFE’si. İki endeks ayrı kaynaklardır; hiçbir grafikte ya da hesapta birleştirilmez.</p>
+        </div>
+      </div>
+
+      <div class="blok" id="web-blok">
+        <div class="blok-bas">
+          <h3><span class="rozet web">Web TÜFE · bu proje · günlük</span> Market fiyatlarından günlük endeks</h3>
+          <p id="web-giris">İstanbul (Anadolu), Ankara ve İzmir’de 7 market zincirinden her gün toplanan raf fiyatları; TÜİK 2026 sepet ağırlıklarıyla. Baz: ilk toplama günü = 100.</p>
+        </div>
+        <div class="kpi-izgara" id="web-kpi"></div>
+        <div class="izgara">
+          <article class="kart y8" id="web-seyir">
+            <div class="kart-bas">
+              <div><h4>Günlük seyir</h4><p>Genel endeks ve seçilen göstergeler (ilk toplama günü = 100)</p></div>
+            </div>
+            <div class="cipler" id="web-seyir-secim" aria-label="Grafikte gösterilecek seriler"></div>
+            <div class="grafik" id="web-seyir-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> marketfiyati.org.tr fiyatlarından bu projenin hesabı</span><span id="web-seyir-not"></span></div>
+          </article>
+          <article class="kart y4" id="web-yayginlik">
+            <div class="kart-bas"><div><h4>Son toplamada fiyat yönü</h4><p>Önceki toplamaya göre fiyatı artan, düşen ve değişmeyen maddeler</p></div></div>
+            <div id="web-yayginlik-icerik"></div>
+          </article>
+          <article class="kart y6" id="web-gruplar">
+            <div class="kart-bas"><div><h4>Ana gruplar ve özel göstergeler</h4><p>Endeks, son toplamaya göre ve başlangıçtan bu yana değişim; kapsam, grubun sepet ağırlığının fiyatı izlenen payıdır</p></div></div>
+            <div class="tablo-kap" id="web-gruplar-tablo"></div>
+          </article>
+          <article class="kart y6" id="web-hareketler">
+            <div class="kart-bas">
+              <div><h4>En çok değişen maddeler</h4><p id="web-hareket-aciklama">Önceki toplamaya göre</p></div>
+              <div class="secici" id="web-hareket-donem" role="group" aria-label="Dönem">
+                <button type="button" data-deger="gunluk" aria-pressed="true">Son toplama</button>
+                <button type="button" data-deger="baslangic" aria-pressed="false">Başlangıçtan</button>
+              </div>
+            </div>
+            <div class="grafik" id="web-hareket-grafik"></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="ayrac" role="presentation"></div>
+
+      <div class="blok" id="resmi-blok">
+        <div class="blok-bas">
+          <h3><span class="rozet resmi">TÜİK TÜFE · resmi · aylık</span> Resmi enflasyon ve çekirdek göstergeler</h3>
+          <p>TÜİK’in tüketici fiyat endeksi (2025=100) ile özel kapsamlı B ve C göstergeleri. Kaynak: TCMB EVDS; sayfa açıldığında sizin EVDS bağlantınızla okunur.</p>
+        </div>
+        <div class="kpi-izgara" id="resmi-kpi"></div>
+        <div class="izgara">
+          <article class="kart y7" id="resmi-yillik">
+            <div class="kart-bas">
+              <div><h4>Yıllık enflasyon: TÜFE, B ve C</h4><p>Bir önceki yılın aynı ayına göre yüzde değişim</p></div>
+              <div class="secici" id="resmi-yillik-aralik" role="group" aria-label="Dönem">
+                <button type="button" data-deger="24" aria-pressed="false">2 yıl</button>
+                <button type="button" data-deger="48" aria-pressed="true">4 yıl</button>
+                <button type="button" data-deger="0" aria-pressed="false">Tümü</button>
+              </div>
+            </div>
+            <div class="grafik" id="resmi-yillik-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TÜİK, TCMB EVDS (TP.TUKFIY2025.GENEL, TP.FE25.OKTG03, TP.FE25.OKTG04)</span></div>
+          </article>
+          <article class="kart y5" id="resmi-aylik">
+            <div class="kart-bas"><div><h4>Aylık TÜFE değişimi</h4><p>Son 24 ay, bir önceki aya göre yüzde</p></div></div>
+            <div class="grafik" id="resmi-aylik-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TÜİK, TCMB EVDS</span></div>
+          </article>
+          <article class="kart" id="resmi-gruplar">
+            <div class="kart-bas"><div><h4>Ana harcama gruplarında yıllık değişim</h4><p id="resmi-gruplar-not">Son yayımlanan ay; kesik çizgi genel TÜFE</p></div></div>
+            <div class="grafik" id="resmi-gruplar-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TÜİK, TCMB EVDS (TP.TUKFIY2025.01–13); yıllık değişim endeks düzeylerinden hesaplanır</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ KİŞİSEL -->
+    <section class="sayfa" id="kisisel" aria-labelledby="b-kisisel" hidden>
+      <div class="sayfa-bas">
+        <div>
+          <h2 id="b-kisisel">Kişisel Enflasyon</h2>
+          <p>Harcamanızın gruplara dağılımını girin; size özel enflasyonu ve bir tutarın zaman içindeki karşılığını görün. Kaynağı seçin: iki hesap ayrı tutulur.</p>
+        </div>
+        <div class="secici" id="sepet-kaynak" role="group" aria-label="Veri kaynağı">
+          <button type="button" data-deger="resmi" aria-pressed="true">TÜİK TÜFE · resmi</button>
+          <button type="button" data-deger="web" aria-pressed="false">Web TÜFE · bu proje</button>
+        </div>
+      </div>
+
+      <div class="sepet-duzen">
+        <article class="kart" id="sepet-agirliklar">
+          <div class="kart-bas">
+            <div><h4>Harcama sepetiniz</h4><p id="sepet-agirlik-not">Her gruba harcamanızın yüzde kaçını ayırdığınızı yazın. Toplamın 100 olması gerekmez; oranlar kendiliğinden ölçeklenir.</p></div>
+            <button type="button" class="dugme sade" id="sepet-sifirla">Resmi ağırlıklara dön</button>
+          </div>
+          <div id="sepet-satirlar"></div>
+          <p class="kart-ayak" id="sepet-kayit-durum"></p>
+        </article>
+        <div style="display:grid;gap:14px;min-width:0">
+          <article class="kart" id="sepet-sonuc">
+            <div class="kart-bas"><div><h4 id="sepet-sonuc-baslik">Kişisel yıllık enflasyonunuz</h4><p id="sepet-sonuc-alt"></p></div></div>
+            <div id="sepet-sonuc-icerik"></div>
+          </article>
+          <article class="kart" id="sepet-hesaplayici">
+            <div class="kart-bas"><div><h4>Tutar hesaplayıcı</h4><p id="hesap-aciklama">Bir tutarın iki tarih arasında ne kadara karşılık geldiğini hesaplar.</p></div></div>
+            <div class="hesap-satir">
+              <label class="alan"><span>Tutar (₺)</span><input class="girdi" id="hesap-tutar" type="number" inputmode="decimal" min="0" step="any" value="1000"></label>
+              <label class="alan"><span>Başlangıç</span><select class="secim" id="hesap-bas"></select></label>
+              <label class="alan"><span>Bitiş</span><select class="secim" id="hesap-son"></select></label>
+              <label class="alan"><span>Endeks</span><select class="secim" id="hesap-endeks"></select></label>
+            </div>
+            <div class="hesap-sonuc" id="hesap-sonuc">—</div>
+          </article>
+        </div>
+        <article class="kart" id="sepet-seyir" style="grid-column:1/-1">
+          <div class="kart-bas"><div><h4 id="sepet-seyir-baslik">Kişisel enflasyonunuz ve genel endeks</h4><p id="sepet-seyir-alt"></p></div></div>
+          <div class="grafik" id="sepet-seyir-grafik"></div>
+          <div class="kart-ayak" id="sepet-seyir-ayak"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ MAKRO -->
+    <section class="sayfa" id="makro" aria-labelledby="b-makro" hidden>
+      <div class="sayfa-bas">
+        <div>
+          <h2 id="b-makro">Makro Göstergeler</h2>
+          <p>Beklenti ve eğilim anketleri, para politikası, kur ve faaliyet göstergeleri. Tüm seriler TCMB EVDS’den, sayfa açıldığında sizin EVDS bağlantınızla okunur.</p>
+        </div>
+        <span class="rozet resmi">Resmi · TCMB EVDS</span>
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><h3>Enflasyon beklentileri</h3><p>Piyasa katılımcıları, reel kesim ve hanehalkının 12 ay sonrası için yıllık TÜFE beklentisi; gerçekleşen yıllık TÜFE ile birlikte.</p></div>
+        <div class="kpi-izgara" id="makro-beklenti-kpi"></div>
+        <div class="izgara">
+          <article class="kart y8">
+            <div class="kart-bas"><div><h4>12 ay sonrası yıllık enflasyon beklentisi</h4><p>Anket grubu başına, % · kesik çizgi gerçekleşen yıllık TÜFE</p></div></div>
+            <div class="grafik" id="makro-beklenti-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TCMB Sektörel Enflasyon Beklentileri (TP.ENFBEK.*), TÜİK TÜFE</span></div>
+          </article>
+          <article class="kart y4">
+            <div class="kart-bas"><div><h4>Piyasa katılımcıları: vade yapısı</h4><p>Son anket, yıllık TÜFE beklentisi</p></div></div>
+            <div class="grafik" id="makro-vade-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TCMB Piyasa Katılımcıları Anketi</span></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><h3>Para politikası ve kur</h3><p>Politika faizi, TCMB’nin ağırlıklı ortalama fonlama maliyeti, ABD doları kuru ve piyasa katılımcılarının yıl sonu beklentileri.</p></div>
+        <div class="kpi-izgara" id="makro-para-kpi"></div>
+        <div class="izgara">
+          <article class="kart y6">
+            <div class="kart-bas"><div><h4>Politika faizi ve fonlama maliyeti</h4><p>%, aylık politika faizi ve günlük ağırlıklı ortalama fonlama maliyeti</p></div></div>
+            <div class="grafik" id="makro-faiz-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> BIS derlemesi (TP.BISPOLFAIZ.TUR), TCMB (TP.APIFON4)</span></div>
+          </article>
+          <article class="kart y6">
+            <div class="kart-bas"><div><h4>ABD doları kuru</h4><p>TCMB döviz alış kuru, TL · kesik çizgi yıl sonu kur beklentisi</p></div></div>
+            <div class="grafik" id="makro-kur-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TCMB (TP.DK.USD.A.YTL), Piyasa Katılımcıları Anketi (TP.PKAUO.S05.B.U)</span></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><h3>Güven ve faaliyet anketleri</h3><p>Tüketici güveni, reel kesim güveni, imalat sanayii kapasite kullanımı ve büyüme beklentileri.</p></div>
+        <div class="kpi-izgara" id="makro-anket-kpi"></div>
+        <div class="izgara">
+          <article class="kart y6">
+            <div class="kart-bas"><div><h4>Güven endeksleri</h4><p>100’ün üstü iyimserlik, altı kötümserlik · reel kesim mevsimsellikten arındırılmış</p></div></div>
+            <div class="grafik" id="makro-guven-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TÜİK–TCMB Tüketici Güven Endeksi (TP.TG2.Y01), TCMB Reel Kesim Güven Endeksi (TP.GY1.N2.MA)</span></div>
+          </article>
+          <article class="kart y6">
+            <div class="kart-bas"><div><h4>Kapasite kullanım oranı ve büyüme beklentisi</h4><p>İmalat sanayii KKO (%, mevsimsellikten arındırılmış) · piyasa katılımcılarının GSYH büyüme beklentisi</p></div></div>
+            <div class="grafik" id="makro-kko-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> TCMB (TP.KKO.MA, TP.PKAUO.S07.A.U, TP.PKAUO.S07.B.U)</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ AKARYAKIT VE MOBİLİTE -->
+    <section class="sayfa" id="akaryakit-mobilite" aria-labelledby="b-izleme" hidden>
+      <div class="sayfa-bas">
+        <div>
+          <h2 id="b-izleme">Akaryakıt ve Mobilite</h2>
+          <p>EPDK’nın bayi satış fiyatlarından akaryakıt, İBB trafik indeksinden İstanbul hareketliliği. İki veri de her gün güncellenir.</p>
+        </div>
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><h3><span class="rozet yakit">EPDK · günlük</span> Akaryakıt fiyatları</h3><p>Benzin ve motorinde en yüksek hacimli 8 firmanın ülke ortalaması; otogaz ve il fiyatlarında firma fiyatlarının ortancası.</p></div>
+        <div class="kpi-izgara" id="yakit-kpi"></div>
+        <div class="izgara">
+          <article class="kart y7">
+            <div class="kart-bas">
+              <div><h4>Ülke ortalaması</h4><p>TL/litre</p></div>
+              <div class="secici" id="yakit-aralik" role="group" aria-label="Dönem">
+                <button type="button" data-deger="90" aria-pressed="false">3 ay</button>
+                <button type="button" data-deger="365" aria-pressed="true">1 yıl</button>
+                <button type="button" data-deger="0" aria-pressed="false">2023’ten</button>
+              </div>
+            </div>
+            <div class="grafik" id="yakit-grafik"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> EPDK lisans web servisleri, bu projenin günlük derlemesi</span></div>
+          </article>
+          <article class="kart y5">
+            <div class="kart-bas">
+              <div><h4>İllere göre son fiyatlar</h4><p id="yakit-il-not">Firma ortancası, TL/litre</p></div>
+            </div>
+            <div class="hesap-satir" style="margin-bottom:8px">
+              <label class="alan"><span>İl ara</span><input class="girdi" id="yakit-il-ara" type="search" placeholder="Ör. İzmir" autocomplete="off"></label>
+              <label class="alan"><span>Sırala</span>
+                <select class="secim" id="yakit-il-sira">
+                  <option value="benzin">Benzin (pahalıdan)</option>
+                  <option value="motorin">Motorin (pahalıdan)</option>
+                  <option value="otogaz">Otogaz (pahalıdan)</option>
+                  <option value="il">İl adı</option>
+                </select>
+              </label>
+            </div>
+            <div class="tablo-kap" id="yakit-il-tablo" style="max-height:420px;overflow-y:auto"></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><h3><span class="rozet trafik">İBB · saatlik</span> İstanbul hareketliliği</h3><p>İBB trafik indeksinden (yol tıkanıklığı, %) gün tipi ve saat penceresine göre hesaplanan göstergeler. Yıllık değişim 52 hafta önceki aynı gün tipine göredir; bayram haftaları ve bitmemiş hafta dışarıda bırakılır.</p></div>
+        <div class="kpi-izgara" id="mobilite-kpi"></div>
+        <div class="izgara">
+          <article class="kart y7">
+            <div class="kart-bas"><div><h4>Son 21 gün: saatlik trafik indeksi</h4><p>Aynı gün ve saatin önceki 8 haftadaki ortancasıyla (normal)</p></div></div>
+            <div class="grafik" id="mobilite-saatlik-grafik"></div>
+          </article>
+          <article class="kart y5">
+            <div class="kart-bas"><div><h4>Haftalık eğilim</h4><p>Geçen yılın aynı haftasına göre yüzde değişim</p></div></div>
+            <div class="grafik" id="mobilite-haftalik-grafik"></div>
+          </article>
+          <article class="kart">
+            <div class="kart-bas"><div><h4>Saat pencereleri: son 10 hafta</h4><p>Yıllık yüzde değişim; yeşil artış, kırmızı düşüş</p></div></div>
+            <div class="tablo-kap" id="mobilite-isi"></div>
+            <div class="kart-ayak"><span><b>Kaynak:</b> İBB Açık Veri, trafik indeksi (İBB Açık Veri Lisansı); göstergeler bu projede hesaplanır</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ EKONOMİK ANALİZ -->
+    <section class="sayfa" id="analiz" aria-labelledby="b-analiz" hidden>
+      <div class="sayfa-bas">
+        <div>
+          <h2 id="b-analiz">Ekonomik Analiz</h2>
+          <p>Fiyat baskısı ile talebi aynı düzlemde gösteren canlılık matrisi ve her hafta yayımlanan ekonomik görünüm özeti.</p>
+        </div>
+      </div>
+
+      <div class="blok" id="matris">
+        <div class="blok-bas">
+          <h3>Ekonomik canlılık matrisi</h3>
+          <p>Yatay eksen fiyat baskısı (akaryakıt; Web TÜFE 90 günlük geçmişe ulaşınca raf fiyatı da), dikey eksen talep ve canlılık (İstanbul isteğe bağlı hareketlilik ve reel kartlı harcama). Her bileşen kendi son 156 haftalık olağan düzeyine göre standartlaştırılır (σ); kaynaklar birleştirilmez, yalnızca sapmaları aynı ölçeğe getirilir.</p>
+        </div>
+        <div class="matris-duzen">
+          <article class="kart">
+            <div class="grafik" id="matris-grafik" style="min-height:300px"></div>
+            <div class="kart-ayak" id="matris-not"></div>
+          </article>
+          <div style="display:grid;gap:14px;align-content:start;min-width:0">
+            <article class="kart" id="matris-bolge"></article>
+            <article class="kart">
+              <div class="kart-bas">
+                <div><h4>Senaryo</h4><p>Son haftanın bileşenleri şu kadar farklı olsaydı nokta nereye giderdi? Senaryodur, tahmin değildir; bileşenler arası etki varsayılmaz.</p></div>
+                <button type="button" class="dugme sade" id="senaryo-sifirla">Sıfırla</button>
+              </div>
+              <div class="surguler">
+                <label class="surgu" id="surgu-akaryakit"><span class="surgu-bas"><span>Akaryakıt fiyatı</span><output id="senaryo-akaryakit-deger">%0</output></span><input type="range" id="senaryo-akaryakit" min="-20" max="20" step="1" value="0"></label>
+                <label class="surgu" id="surgu-raf"><span class="surgu-bas"><span>Raf fiyatı (aylık)</span><output id="senaryo-raf-deger">%0</output></span><input type="range" id="senaryo-raf" min="-3" max="3" step="0.5" value="0"></label>
+                <label class="surgu" id="surgu-mobilite"><span class="surgu-bas"><span>İsteğe bağlı hareketlilik</span><output id="senaryo-mobilite-deger">0 puan</output></span><input type="range" id="senaryo-mobilite" min="-15" max="15" step="1" value="0"></label>
+                <label class="surgu" id="surgu-kart"><span class="surgu-bas"><span>Reel kartlı harcama</span><output id="senaryo-kart-deger">0 puan</output></span><input type="range" id="senaryo-kart" min="-15" max="15" step="1" value="0"></label>
+              </div>
+              <p class="senaryo-sonuc" id="senaryo-sonuc">Sürgüleri oynatın: nokta, bileşenler o kadar farklı olsaydı matrisin neresinde olacağını gösterir.</p>
+            </article>
+          </div>
+          <article class="kart" style="grid-column:1/-1">
+            <div class="kart-bas"><div><h4>Bileşenler: son hafta</h4><p>Yüzde değişim ve kendi olağan düzeyinden sapma</p></div></div>
+            <div class="tablo-kap" id="matris-bilesenler"></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="ayrac" role="presentation"></div>
+
+      <div class="blok" id="haftalik">
+        <div class="blok-bas">
+          <h3>Haftalık ekonomik görünüm</h3>
+          <div class="hafta-secim" id="hafta-secim" hidden>
+            <label for="hafta-listesi" class="gorsel-gizli">Hafta</label>
+            <select class="secim" id="hafta-listesi"></select>
+          </div>
+          <p>Her pazartesi Web TÜFE’nin haftalık seyri ve resmi göstergelerle hazırlanan kısa değerlendirme.</p>
+        </div>
+        <article class="kart" id="haftalik-icerik">
+          <p class="bos-durum">Haftalık görünüm yükleniyor…</p>
+        </article>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="dis alt-bilgi">
+  <div class="ic">
+    <p>Web TÜFE bu projenin marketfiyati.org.tr fiyatlarından hesapladığı deneysel bir endekstir; TÜİK’in resmi TÜFE’si değildir ve onunla birleştirilmez. Resmi seriler TCMB EVDS’den okunur; TCMB yalnızca veri sağlayıcıdır. Akaryakıt fiyatları EPDK’nın web servislerinden, hareketlilik göstergeleri İBB’nin İstanbul trafik indeksinden (İBB Açık Veri Lisansı) bu projede derlenir.</p>
+    <p>Soru penceresindeki yanıtlar ve haftalık görünüm yapay zekâ tarafından üretilir; yanıltıcı olabilir ve yatırım tavsiyesi değildir.</p>
+  </div>
+</footer>
+
+<!-- ============================================================ SORU PENCERESİ -->
+<button type="button" class="sohbet-dugme" id="sohbet-ac" aria-controls="sohbet" aria-expanded="false">
+  <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4.5h12a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 13V6A1.5 1.5 0 0 1 4 4.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6.5 8.5h7M6.5 11h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+  <span>Soru sor</span>
+</button>
+<section class="sohbet" id="sohbet" role="dialog" aria-modal="false" aria-labelledby="sohbet-baslik" hidden>
+  <div class="sohbet-bas">
+    <h2 id="sohbet-baslik">Analiz asistanı<small id="sohbet-alt">Veriyle yanıt, grafikli rapor</small></h2>
+    <button type="button" class="ikon-dugme" id="sohbet-gecmis" aria-pressed="false" aria-label="Kayıtlı yanıtlar" title="Kayıtlı yanıtlar">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 5.5V9l2.5 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <button type="button" class="ikon-dugme sohbet-genislet" id="sohbet-genislet" aria-pressed="false" aria-label="Pencereyi büyüt" title="Pencereyi büyüt">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M10.5 3.5h4v4M7.5 14.5h-4v-4M14.5 3.5l-5 5M3.5 14.5l5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <button type="button" class="ikon-dugme" id="sohbet-kapat" aria-label="Kapat" title="Kapat">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4.5 4.5l9 9M13.5 4.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="sohbet-govde" id="sohbet-govde" aria-live="polite"></div>
+  <div class="sohbet-govde" id="sohbet-gecmis-liste" hidden></div>
+  <form class="sohbet-alt" id="sohbet-form">
+    <label for="sohbet-soru" class="gorsel-gizli">Sorunuz</label>
+    <textarea id="sohbet-soru" maxlength="1500" rows="2" placeholder="Ör. Son haftada en çok pahalanan gıdalar hangileri?"></textarea>
+    <div class="sira">
+      <div class="secici" id="sohbet-mod" role="group" aria-label="Yanıt türü">
+        <button type="button" data-deger="kisa" aria-pressed="true">Kısa yanıt</button>
+        <button type="button" data-deger="whitepaper" aria-pressed="false">Ayrıntılı rapor</button>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button type="button" class="dugme ikincil" id="sohbet-dur" hidden>Durdur</button>
+        <button type="submit" class="dugme" id="sohbet-gonder">Sor</button>
+      </div>
+    </div>
+    <p class="sohbet-hata" id="sohbet-hata" hidden></p>
+  </form>
+</section>

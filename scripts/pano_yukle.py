@@ -1,4 +1,4 @@
-"""Panoya ve Analiz Masası'na günlük dosya yüklemesi için yardımcı.
+"""Web TÜFE Platformu'na (Analiz Masası adresi) günlük dosya yüklemesi için yardımcı.
 
 Zamanlanmış Claude görevi ("webtufe-pano-mansetleri") bunu kullanır:
 
@@ -9,9 +9,8 @@ Zamanlanmış Claude görevi ("webtufe-pano-mansetleri") bunu kullanır:
   .venv/bin/python scripts/pano_yukle.py analiz-belgesi <cikti.json>
       Analiz Masası'nın "veri/guncel" belgesini kayıtlı varlık kimliklerinden yazar.
 
-Hedefler iki sayfadadır:
-  pano:<veri seti>     Web Fiyat Endeksi panosu; dosya, aynı adlı veri setinin kaynağı olur.
-  analiz:<dosya adı>   Analiz Masası; dosyaların adresleri "veri/guncel" belgesinde tutulur.
+Hedefler "analiz:<dosya adı>" biçimindedir; dosyaların adresleri platformun "veri/guncel"
+belgesinde tutulur. (Eski "pano:" kayıtları pano_durum.json'da kalabilir; artık kullanılmaz.)
 
 Bir dosya, verisi o hedefe en son yüklenen veriden daha yeniyse hazırdır. (GitHub zamanlanmış
 toplamayı saatlerce geciktirebildiği ve Mac her gün açık olmadığı için "bugünün verisi" şartı
@@ -39,17 +38,16 @@ PANO = "https://claude.ai/artifact/EBnsgW9YWx84vQTiunF39Z"
 ANALIZ = "https://claude.ai/artifact/M8R7pxhtN7ZyJqceRbzt8X"
 
 # hedef -> (artifact, dosya)
+# 25.11.2026'dan beri tüm sekmeler (enflasyon, kişisel enflasyon, makro, akaryakıt ve mobilite,
+# ekonomik analiz, soru penceresi) Analiz Masası adresindeki "Web TÜFE Platformu" sayfasındadır;
+# eski "Web Fiyat Endeksi" panosu (Data türü) artık güncellenmez.
 HEDEFLER = {
-    "pano:gercek_mansetler": (PANO, CIKTI / "mansetler_gercek.csv"),
-    "pano:gunluk": (PANO, PANO_DIZIN / "gunluk.csv"),
-    "pano:aylik": (PANO, PANO_DIZIN / "aylik.csv"),
-    "pano:son_degisimler": (PANO, PANO_DIZIN / "son_degisimler.csv"),
-    "pano:gozlem": (PANO, PANO_DIZIN / "gozlem.csv"),
-    "pano:mobilite_saatlik": (PANO, PANO_DIZIN / "mobilite_saatlik.csv"),
-    "pano:mobilite_gunluk": (PANO, PANO_DIZIN / "mobilite_gunluk.csv"),
-    "pano:mobilite_haftalik": (PANO, PANO_DIZIN / "mobilite_haftalik.csv"),
-    "pano:akaryakit_ulke": (PANO, PANO_DIZIN / "akaryakit_ulke.csv"),
-    "pano:akaryakit_il": (PANO, PANO_DIZIN / "akaryakit_il.csv"),
+    "analiz:mansetler_gercek": (ANALIZ, CIKTI / "mansetler_gercek.csv"),
+    "analiz:gozlem": (ANALIZ, PANO_DIZIN / "gozlem.csv"),
+    "analiz:akaryakit_ulke": (ANALIZ, PANO_DIZIN / "akaryakit_ulke.csv"),
+    "analiz:akaryakit_il": (ANALIZ, PANO_DIZIN / "akaryakit_il.csv"),
+    "analiz:mobilite_saatlik": (ANALIZ, PANO_DIZIN / "mobilite_saatlik.csv"),
+    "analiz:mobilite_gunluk": (ANALIZ, PANO_DIZIN / "mobilite_gunluk.csv"),
     "analiz:gunluk": (ANALIZ, PANO_DIZIN / "gunluk.csv"),
     "analiz:aylik": (ANALIZ, PANO_DIZIN / "aylik.csv"),
     "analiz:son_degisimler": (ANALIZ, PANO_DIZIN / "son_degisimler.csv"),
@@ -148,11 +146,11 @@ def analiz_belgesi(cikti: str) -> dict:
         if not hedef.startswith("analiz:") or hedef not in kayit:
             continue
         dosyalar[hedef.split(":", 1)[1]] = "/_blob/" + kayit[hedef]["varlik_id"]
-        if not hedef.startswith("analiz:mobilite_"):     # belgenin tarihi Web TÜFE'nin son günüdür
+        if hedef.split(":", 1)[1] in ("gunluk", "aylik", "son_degisimler", "madde_endeksleri"):  # belgenin tarihi Web TÜFE'nin son günüdür
             tarihler.append(kayit[hedef]["tarih"])
     belge = {"tarih": max(tarihler) if tarihler else None,
              "guncelleme": datetime.now(ZoneInfo("Europe/Istanbul")).isoformat(timespec="seconds"),
-             "kaynak": "Web TÜFE (marketfiyati.org.tr fiyatları, bu proje); mobilite_* İBB trafik indeksi",
+             "kaynak": "Web TÜFE (marketfiyati.org.tr fiyatları, bu proje); mobilite_* İBB trafik indeksi; akaryakit_* EPDK",
              "dosyalar": dosyalar}
     Path(cikti).write_text(json.dumps(belge, ensure_ascii=False, indent=2), encoding="utf-8")
     return belge
