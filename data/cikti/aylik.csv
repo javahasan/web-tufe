@@ -232,7 +232,7 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 0974003,2026-11,9,2026-11-24,100.00000000000004,,,True,Kalemler,madde
 0974005,2026-11,9,2026-11-24,100.00000000000004,,,True,Yazım ve çizim kağıtları,madde
 0974009,2026-11,9,2026-11-24,100.00000000000004,,,True,Diğer kırtasiye malzemeleri,madde
-13,2026-11,9,2026-11-24,98.1136211268993,,,True,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup
+13,2026-11,9,2026-11-24,98.11144311545468,,,True,"Kişisel bakım, sosyal koruma ve çeşitli mal ve hizmetler",ana_grup
 131,2026-11,9,2026-11-24,98.05668079331566,,,True,Kişisel bakım,grup
 1312,2026-11,9,2026-11-24,98.05668079331566,,,True,"Kişisel bakıma yönelik diğer aletler, malzemeler ve ürünler",sinif
 13120,2026-11,9,2026-11-24,98.05668079331566,,,True,"Kişisel bakıma yönelik diğer aletler, malzemeler ve ürünler",alt_sinif
@@ -251,19 +251,19 @@ seri_kodu,ay,gun,son_gun,endeks,aylik_degisim,yillik_degisim,kesin,seri_adi,duze
 1312026,2026-11,9,2026-11-24,105.23957215195823,,,True,Tuvalet kağıdı,madde
 1312027,2026-11,9,2026-11-24,101.23058472658066,,,True,Diğer kağıt ürünleri,madde
 1312030,2026-11,9,2026-11-24,99.7513860835153,,,True,Hijyenik kadın bağı,madde
-132,2026-11,9,2026-11-24,98.7584220749181,,,True,Diğer kişisel eşyalar,grup
-1329,2026-11,9,2026-11-24,98.7584220749181,,,True,Başka yerde sınıflandırılmamış diğer kişisel eşyalar,sinif
-13291,2026-11,9,2026-11-24,98.7584220749181,,,True,"Başka yerde sınıflandırılmamış seyahat eşyaları, bebekler için malzemeler ve diğer kişisel eşyalar",alt_sinif
-1329129,2026-11,9,2026-11-24,98.7584220749181,,,True,Bebek bezi,madde
+132,2026-11,9,2026-11-24,98.73148938400209,,,True,Diğer kişisel eşyalar,grup
+1329,2026-11,9,2026-11-24,98.73148938400209,,,True,Başka yerde sınıflandırılmamış diğer kişisel eşyalar,sinif
+13291,2026-11,9,2026-11-24,98.73148938400209,,,True,"Başka yerde sınıflandırılmamış seyahat eşyaları, bebekler için malzemeler ve diğer kişisel eşyalar",alt_sinif
+1329129,2026-11,9,2026-11-24,98.73148938400209,,,True,Bebek bezi,madde
 GIDA,2026-11,9,2026-11-24,100.03114002946117,,,True,Gıda ve alkolsüz içecekler,ozel
 ISLENMEMIS_GIDA,2026-11,9,2026-11-24,99.43458097025261,,,True,İşlenmemiş gıda,ozel
-ISLENMIS_GIDA,2026-11,9,2026-11-24,100.4129668795396,,,True,İşlenmiş gıda,ozel
-MALLAR,2026-11,9,2026-11-24,99.91155005317157,,,True,Mallar,ozel
-MEVSIMLIK_HARIC,2026-11,9,2026-11-24,99.95074050559028,,,True,Mevsimlik ürünler hariç,ozel
+ISLENMIS_GIDA,2026-11,9,2026-11-24,100.41296687953968,,,True,İşlenmiş gıda,ozel
+MALLAR,2026-11,9,2026-11-24,99.91144619622527,,,True,Mallar,ozel
+MEVSIMLIK_HARIC,2026-11,9,2026-11-24,99.95061811845439,,,True,Mevsimlik ürünler hariç,ozel
 TAZE_MS,2026-11,9,2026-11-24,99.69477460099063,,,True,Taze meyve ve sebze,ozel
-TEMEL_MALLAR,2026-11,9,2026-11-24,99.00655843308894,,,True,Temel mallar,ozel
-TUFE,2026-11,9,2026-11-24,99.91155005317157,,,True,Genel endeks,genel
-TUFE_B,2026-11,9,2026-11-24,100.163503097753,,,True,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel
-TUFE_C,2026-11,9,2026-11-24,99.00655843308894,,,True,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel
-TUFE_D,2026-11,9,2026-11-24,100.163503097753,,,True,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel
-TUFE_E,2026-11,9,2026-11-24,99.91155005317157,,,True,E: Alkollü içecekler ve tütün hariç,ozel
+TEMEL_MALLAR,2026-11,9,2026-11-24,99.00568116425025,,,True,Temel mallar,ozel
+TUFE,2026-11,9,2026-11-24,99.91144619622527,,,True,Genel endeks,genel
+TUFE_B,2026-11,9,2026-11-24,100.16334451086941,,,True,"B: İşlenmemiş gıda, enerji, alkollü içecekler, tütün ve altın hariç",ozel
+TUFE_C,2026-11,9,2026-11-24,99.00568116425025,,,True,"C: Enerji, gıda ve alkolsüz içecekler, alkollü içecekler, tütün ve altın hariç",ozel
+TUFE_D,2026-11,9,2026-11-24,100.16334451086941,,,True,"D: İşlenmemiş gıda, alkollü içecekler, tütün ve altın hariç",ozel
+TUFE_E,2026-11,9,2026-11-24,99.91144619622527,,,True,E: Alkollü içecekler ve tütün hariç,ozel
