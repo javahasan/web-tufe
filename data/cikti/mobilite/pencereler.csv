@@ -2648,12 +2648,15 @@ tarih,pencere,tur,deger,yillik_baz,yillik_baz_gun,kisa_baz,kisa_baz_gun,yillik_d
 2026-11-22,hafta_sonu_gece,istege_bagli,36.5,32.0,3,34.0,8,14.06,7.35,pazar,False,False,False,False,True
 2026-11-22,hafta_sonu_gunduz,istege_bagli,49.444,52.444,3,46.0,8,-5.72,7.49,pazar,False,False,False,False,True
 2026-11-23,is_gunu_gece,istege_bagli,30.0,20.0,3,23.0,7,50.0,30.43,is_gunu,False,False,False,False,True
-2026-11-23,is_gunu_ogle,istege_bagli_zayif,46.667,52.167,3,43.333,7,-10.54,7.69,is_gunu,False,False,False,False,True
+2026-11-23,is_gunu_ogle,istege_bagli_zayif,46.5,52.167,3,43.333,7,-10.86,7.31,is_gunu,False,False,False,False,True
 2026-11-23,karma_aksam,karma,68.25,67.75,3,65.25,7,0.74,4.6,is_gunu,False,False,False,False,True
 2026-11-23,zorunlu_sabah,zorunlu,50.0,58.125,2,51.25,7,-13.98,-2.44,is_gunu,False,False,False,False,True
 2026-11-24,is_gunu_gece,istege_bagli,21.0,24.25,3,25.25,7,-13.4,-16.83,is_gunu,False,False,False,False,True
 2026-11-24,is_gunu_ogle,istege_bagli_zayif,51.667,54.167,3,53.5,7,-4.62,-3.43,is_gunu,False,False,False,False,True
 2026-11-24,karma_aksam,karma,70.75,73.25,3,71.75,7,-3.41,-1.39,is_gunu,False,False,False,False,True
 2026-11-24,zorunlu_sabah,zorunlu,58.0,50.5,3,50.5,7,14.85,14.85,is_gunu,False,False,False,False,True
-2026-11-25,is_gunu_ogle,istege_bagli_zayif,52.333,53.667,3,53.083,6,-2.49,-1.41,is_gunu,False,False,False,False,True
+2026-11-25,is_gunu_gece,istege_bagli,28.25,25.0,3,28.375,6,13.0,-0.44,is_gunu,False,False,False,False,True
+2026-11-25,is_gunu_ogle,istege_bagli_zayif,52.5,53.667,3,53.083,6,-2.17,-1.1,is_gunu,False,False,False,False,True
+2026-11-25,karma_aksam,karma,75.0,73.0,3,74.375,6,2.74,0.84,is_gunu,False,False,False,False,True
 2026-11-25,zorunlu_sabah,zorunlu,48.25,49.5,3,49.75,6,-2.53,-3.02,is_gunu,False,False,False,False,True
+2026-11-26,zorunlu_sabah,zorunlu,46.25,48.0,3,47.375,6,-3.65,-2.37,is_gunu,False,False,False,False,True
